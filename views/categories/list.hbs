@@ -1,0 +1,15 @@
+<h1>Danh sách chuyên mục</h1>
+<ul>
+    {{#each categories}}
+    <li>
+        <strong>{{this.name}}</strong>
+        {{#if this.children}}
+        <ul>
+            {{#each this.children}}
+            <li>{{this.name}}</li>
+            {{/each}}
+        </ul>
+        {{/if}}
+    </li>
+    {{/each}}
+</ul>
