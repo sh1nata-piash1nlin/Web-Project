@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title> <!-- Dynamic Title -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <style>
+        .navbar-brand img {
+            height: 40px;
+        }
+
+        .main-nav .nav-link {
+            color: #222;
+            padding: 0.5rem 1rem;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 20px;
+        }
+
+        .article-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .article-meta {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .comment-count {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .related-news {
+            border-left: 3px solid #e5e5e5;
+            padding-left: 15px;
+        }
+
+        .related-news h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Thêm style cho dropdown menu */
+        .dropdown-menu {
+            border-radius: 0;
+            margin-top: 10;
+            border-top: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 0%;
+        }
+
+        .dropdown-item {
+            font-size: 14px;
+            padding: 0.5rem 1rem;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .nav-item.dropdown:hover .nav-link {
+            background-color: #f8f9fa;
+        }
+
+        .home-icon {
+            font-size: 18px;
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .home-icon:hover {
+            color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="/images/logo.svg" alt="VnExpress">
+            </a>
+
+            <div class="d-flex align-items-center">
+                <div class="me-3">Mới nhất</div>
+                <div class="me-3">International</div>
+                <a class="btn btn-outline-dark btn-sm" href="/login">Login</a>
+                {{!-- <div> 
+                    <a class="btn btn-sm btn-primary" href="/login" role="button">
+                        <i class="bi bi-hand-index"> Login </i>
+                </div> --}}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Secondary Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom py-0">
+        <div class="container">
+            <div class="navbar-collapse">
+                <ul class="navbar-nav main-nav d-flex justify-content-evenly w-100">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="bi bi-house-door home-icon"></i>
+                        </a>
+                    </li>
+                    {{#each categories}}
+                    <li class="nav-item dropdown">
+                        <!-- Hiển thị danh mục cha -->
+                        <a class="nav-link dropdown-toggle" href="{{this.link}}" id="navbarDropdown{{this.id}}"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{this.name}}
+                        </a>
+                        {{#if this.subcategories.length}}
+                        <!-- Chỉ hiển thị dropdown khi có danh mục con -->
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown{{this.id}}">
+                            {{#each this.subcategories}}
+                            <li><a class="dropdown-item" href="{{this.link}}">{{this.name}}</a></li>
+                            {{/each}}
+                        </ul>
+                        {{/if}}
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Main Content Column -->
+            <div class="col-lg-8">
+                {{{body}}}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="sidebar">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Tin nổi bật</h5>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6"></div>
+                            <div class="col-lg-6">
+                                <div class="card-body">
+                                    {{#each featuredNews}}
+                                    <div class="related-news mb-3">
+                                        <h3><a href="{{this.link}}"
+                                                class="text-dark text-decoration-none">{{this.title}}</a>
+                                        </h3>
+                                        <div class="comment-count">
+                                            <i class="bi bi-chat-dots"></i> {{this.comments}}
+                                        </div>
+                                    </div>
+                                    {{/each}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Tin mới nhất</h5>
+                        </div>
+                        <div class="card-body">
+                            {{#each latestNews}}
+                            <div class="related-news mb-3">
+                                <h3><a href="{{this.link}}" class="text-dark text-decoration-none">{{this.title}}</a>
+                                </h3>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="bg-white py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Left Section: 60% -->
+                <div class="col-lg-7 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0">Entertainment</h3>
+                            <a href="category-01.html" class="btn btn-outline-light btn-sm">
+                                View All
+                                <i class="fas fa-caret-right ml-2"></i>
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <ul class="nav nav-tabs" id="entertainmentTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active text-dark" id="tab-all" data-toggle="tab" href="#tab1-1"
+                                        role="tab">All</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" id="tab-celebrity" data-toggle="tab" href="#tab1-2"
+                                        role="tab">Celebrity</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" id="tab-movies" data-toggle="tab" href="#tab1-3"
+                                        role="tab">Movies</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" id="tab-music" data-toggle="tab" href="#tab1-4"
+                                        role="tab">Music</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" id="tab-games" data-toggle="tab" href="#tab1-5"
+                                        role="tab">Games</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content mt-4">
+                                <div class="tab-pane fade show active" id="tab1-1" role="tabpanel">
+                                    <div class="row">
+                                        {{#each posts}}
+                                        <div class="col-md-6 mb-4">
+                                            <div class="card h-100 border border-secondary shadow-sm">
+                                                <a href="{{this.link}}">
+                                                    <img src="{{this.image}}" class="card-img-top" alt="Post Image">
+                                                </a>
+                                                <div class="card-body bg-light">
+                                                    <h5 class="card-title">
+                                                        <a href="{{this.link}}" class="text-dark font-weight-bold">
+                                                            {{this.title}}
+                                                        </a>
+                                                    </h5>
+                                                    <p class="text-muted mb-0">
+                                                        <a href="{{this.categoryLink}}"
+                                                            class="text-secondary">{{this.category}}</a>
+                                                        <span class="mx-2">•</span>
+                                                        <small>{{this.date}}</small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{/each}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Section: 40% -->
+                <div class="col-lg-5">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body bg-white text-black">
+                            <h5 class="card-title">Related Topics</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-3">
+                                    <a href="#" class="text-dark">
+                                        <i class="fas fa-chevron-right mr-2"></i> Topic 1
+                                    </a>
+                                </li>
+                                <li class="mb-3">
+                                    <a href="#" class="text-dark">
+                                        <i class="fas fa-chevron-right mr-2"></i> Topic 2
+                                    </a>
+                                </li>
+                                <li class="mb-3">
+                                    <a href="#" class="text-dark">
+                                        <i class="fas fa-chevron-right mr-2"></i> Topic 3
+                                    </a>
+                                </li>
+                                <li class="mb-3">
+                                    <a href="#" class="text-dark">
+                                        <i class="fas fa-chevron-right mr-2"></i> Topic 4
+                                    </a>
+                                </li>
+                            </ul>
+                            <a href="#" class="btn btn-outline-dark btn-sm">See More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light mt-5">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Về chúng tôi</h5>
+                    <!-- Footer content -->
+                </div>
+                <div class="col-md-4">
+                    <h5>Chuyên mục</h5>
+                    <!-- Categories -->
+                </div>
+                <div class="col-md-4">
+                    <h5>Liên hệ</h5>
+                    <!-- Contact info -->
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

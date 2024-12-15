@@ -5,7 +5,6 @@ const sequelize = new Sequelize('oauth', 'root', null, {
     logging: false, 
 }); 
 
-//check connect to DB yet? 
 const connectDB = async () => {
     try {
         await sequelize.authenticate();

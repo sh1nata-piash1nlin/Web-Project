@@ -3,23 +3,23 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
+  const Users = sequelize.define('Users', {
+    id: {
+        type: DataTypes.STRING, // Google profile ID, lưu dưới dạng chuỗi
+        primaryKey: true,
+        allowNull: false,
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+    },
+    typeLogin: {
+        type: DataTypes.STRING,
+        allowNull: true, // Có thể để null, sẽ chứa giá trị provider (vd: "google")
     }
-  }
-  User.init({
-    email: DataTypes.STRING,
-    role: DataTypes.STRING, 
-    typeLogin: DataTypes.STRING, 
-  }, {
-    sequelize,
-    modelName: 'User',
-  });
-  return User;
+}, {
+    timestamps: true // Nếu bạn muốn thêm cột `createdAt` và `updatedAt`
+});
+return Users;
 };

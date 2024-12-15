@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
@@ -13,9 +13,11 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
-    "mysql2": "^3.11.3",
+    "express-handlebars": "^8.0.1",
+    "mysql2": "^3.11.5",
     "nodemon": "^3.1.7",
     "passport": "^0.7.0",
+    "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
     "sequelize": "^6.37.5"
   },
