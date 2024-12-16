@@ -20,11 +20,13 @@ router.post('/login', async function (req, res) {
     const user = await userService.findByUsername(req.body.email);
     if (!user) {
       return res.render('login', {
-        showErrors: true
+        layout: 'login-layout',
+        showErrors: true,
       });
     }
     if (!bcrypt.compareSync(req.body.password, user.password)) {
       return res.render('login', {
+        layout: 'login-layout',
         showErrors: true
       });
     }
