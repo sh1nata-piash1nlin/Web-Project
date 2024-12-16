@@ -16,6 +16,24 @@ router.get('/login', async(req, res)=>{
     })
 })
 
+router.post('/login', async function (req, res) {
+    const user = await userService.findByUsername(req.body.email);
+    if (!user) {
+      return res.render('login', {
+        showErrors: true
+      });
+    }
+    if (!bcrypt.compareSync(req.body.password, user.password)) {
+      return res.render('login', {
+        showErrors: true
+      });
+    }
+  
+    // req.session.isAuthenticated = true;
+    // req.session.authUser = user;
+    res.redirect('/');
+  });
+
 router.get('/signup', async(req, res)=>{
     res.render('signup.hbs',{
         layout: 'login-layout',
@@ -30,7 +48,7 @@ router.post('/signup', async(req, res)=>{
     }
     console.log(entity);
     const ret = await userService.add(entity);
-    res.redirect('/login');
+    res.redirect('/');
 
 })
 
