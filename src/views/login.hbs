@@ -102,11 +102,20 @@
       <p class="text-center">
         Don't have an account? <a href="/signup"><u>Sign up</u></a>
       </p>
-      <form>
+
+      <!-- Add the error message here -->
+      {{#if showError}}
+        <div class="alert alert-danger" role="alert">
+          You have entered an invalid username or password. If you used a third-party account before, try signing in with that instead.
+        </div>
+      {{/if}}
+
+      <form method="post">
         <div class="mb-3">
           <!-- Email Input Field -->
           <input
             type="email"
+            name="email"
             class="form-control"
             id="email"
             placeholder="Email address"
@@ -117,6 +126,7 @@
           <div class="input-group">
             <input
               type="password"
+              name="password"
               class="form-control"
               id="password"
               placeholder="Password"
@@ -129,7 +139,7 @@
             <a href="#" class="text-decoration-none">Forgot password?</a>
           </div>
         </div>
-        <button type="submit" class="btn btn-dark w-100 mb-3">Sign in</button>
+        <button type="submit" formaction="/login" class="btn btn-dark w-100 mb-3">Sign in</button>
       </form>
       <p class="text-center mt-2 small">
         By creating an account or signing in, I agree to the
