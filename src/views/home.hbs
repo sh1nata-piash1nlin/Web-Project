@@ -1,0 +1,65 @@
+<!-- Featured Article -->
+<div class="featured-article mb-4">
+    {{#if featuredArticles.[0]}}
+    <img src="/public/images/{{featuredArticles.[0].featured_image}}" alt="{{featuredArticles.[0].title}}"
+        class="img-fluid mb-3">
+    <h1 class="article-title">
+        <a href="#" class="text-dark text-decoration-none">
+            {{featuredArticles.[0].title}}
+        </a>
+    </h1>
+    <p class="lead">{{featuredArticles.[0].abstract}}</p>
+    <div class="article-meta">
+        <span>{{featuredArticles.[0].category_name}}</span> •
+        <span>{{featuredArticles.[0].author_name}}</span> •
+        <small>{{featuredArticles.[0].publish_date}}</small>
+    </div>
+    <div class="comment-count">
+        <i class="bi bi-chat-dots"></i> {{featuredArticles.[0].comments}}
+    </div>
+    {{else}}
+    <p>Không có bài báo nổi bật</p>
+    {{/if}}
+</div>
+
+
+<!-- News Grid -->
+<div class="row">
+    {{#each featuredArticles}}
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <img src="/public/images/{{this.featured_image}}" class="card-img-top" alt="{{this.title}}">
+            <div class="card-body">
+                <h3 class="card-title" style="font-size: 1.2rem;">
+                    <a href="#" class="text-dark text-decoration-none">
+                        {{this.title}}
+                    </a>
+                </h3>
+                <p class="card-text" style="font-size: 0.9rem;">{{this.abstract}}</p>
+                <div class="article-meta" style="font-size: 0.8rem;">
+                    <span>{{this.category_name}}</span> •
+                    <small>{{this.publish_date}}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>
+
+
+
+<!-- Latest News List -->
+<div class="latest-news mt-4">
+    <h4 class="border-bottom pb-2">Tin theo chuyên mục</h4>
+    <div class="list-group list-group-flush">
+        {{#each latestNews}}
+        <a href="#" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{this.title}}</h5>
+                <small>{{this.publish_date}}</small>
+            </div>
+            <p class="mb-1">{{this.abstract}}</p>
+        </a>
+        {{/each}}
+    </div>
+</div>
