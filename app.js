@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path'); // Thêm dòng này
 const cors = require('cors');
 require('dotenv').config(); // Load environment variables
 const connectDB = require('./src/config/connectDB'); // Database connection
@@ -29,11 +30,8 @@ app.use((req, res, next) => {
 app.use(cors({
     origin: process.env.URL_CLIENT, // Allow client URL specified in environment variables
 }));
-
 app.use('/static', express.static('src/static'));
-
-
-// Middleware to parse JSON and URL-encoded data
+app.use('/public', express.static(path.join(__dirname, 'src', 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

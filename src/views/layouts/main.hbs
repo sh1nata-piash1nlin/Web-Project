@@ -80,6 +80,82 @@
         .home-icon:hover {
             color: #007bff;
         }
+
+        .featured-article img {
+            max-width: 200%;
+            /* Đảm bảo hình không vượt quá chiều rộng khung chứa */
+            height: auto;
+            /* Giữ tỷ lệ hình ảnh */
+            width: 750px;
+            /* Đặt chiều rộng cụ thể (có thể thay đổi theo ý bạn) */
+            border-radius: 5px;
+            /* Tùy chọn: bo góc hình ảnh */
+        }
+
+        .col-lg-6 img {
+            margin-top: 20px;
+            /* Tạo khoảng cách phía trên ảnh */
+            margin-bottom: 20px;
+            /* Khoảng cách phía dưới ảnh */
+            margin-left: 35px;
+            /* Khoảng cách từ bên trái */
+            display: block;
+            /* Đảm bảo ảnh không bị dính margin của flexbox */
+            max-width: 300px;
+            /* Giới hạn chiều rộng ảnh */
+            height: auto;
+            /* Tự động điều chỉnh chiều cao */
+            border-radius: 10px;
+            /* Bo tròn góc ảnh */
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        /* Chỉnh cỡ chữ cho tiêu đề trong cột thứ hai */
+        /* Cột thứ nhất */
+        .row .col-lg-6 .card-body {
+            padding-left: 0;
+            /* Loại bỏ khoảng cách bên trái */
+            padding-right: 0;
+            /* Loại bỏ khoảng cách bên phải */
+        }
+
+        .row .col-lg-6 img {
+            width: 100%;
+            /* Đảm bảo ảnh chiếm toàn bộ chiều rộng cột */
+            height: auto;
+            /* Điều chỉnh chiều cao ảnh tự động */
+            border-radius: 10px;
+            /* Bo tròn góc ảnh */
+            margin-top: 20px;
+            /* Khoảng cách phía trên */
+            margin-bottom: 20px;
+            /* Khoảng cách phía dưới */
+        }
+
+        /* Cột thứ hai */
+        .row .col-lg-6 h4 {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+            /* Đảm bảo không bị tràn */
+        }
+
+        .row .col-lg-6 a {
+            color: #343a40;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .row .col-lg-6 a:hover {
+            color: #007bff;
+            /* Màu khi hover */
+        }
     </style>
 </head>
 
@@ -88,7 +164,7 @@
     <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <img src="/images/logo.svg" alt="VnExpress">
+                <div class="me-3">VnExpress</div>
             </a>
 
             <div class="d-flex align-items-center">
@@ -121,11 +197,11 @@
             {{else}}
                 <!-- Show the Login button if the user is not logged in -->
                 <a class="btn btn-outline-dark btn-sm" href="/login">Login</a>
+
             {{/if}}
             </div>
 
-                
-                {{!-- <div> 
+                          
                     <a class="btn btn-sm btn-primary" href="/login" role="button">
                         <i class="bi bi-hand-index"> Login </i>
                 </div> --}}
@@ -180,23 +256,31 @@
                         <div class="card-header">
                             <h5 class="mb-0">Tin nổi bật</h5>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-6"></div>
-                            <div class="col-lg-6">
+                        <div class="row mb-4">
+                            {{#each featuredArticles}}
+                            <div class="col-lg-6 d-flex align-items-center justify-content-center">
+                                <!-- Phần ảnh -->
+                                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded"
+                                    style="width: 100%; max-width: 300px; height: auto; border-radius: 10px; margin-top: 20px; margin-bottom: 20px;">
+                            </div>
+                            <div class="col-lg-6 d-flex align-items-center">
+                                <!-- Phần nội dung -->
                                 <div class="card-body">
-                                    {{#each featuredNews}}
                                     <div class="related-news mb-3">
-                                        <h3><a href="{{this.link}}"
+                                        <h3>
+                                            <a href="{{this.link}}"
                                                 class="text-dark text-decoration-none">{{this.title}}</a>
                                         </h3>
                                         <div class="comment-count">
                                             <i class="bi bi-chat-dots"></i> {{this.comments}}
                                         </div>
                                     </div>
-                                    {{/each}}
                                 </div>
                             </div>
+                            {{/each}}
                         </div>
+
+
                     </div>
 
                     <div class="card">
@@ -204,7 +288,7 @@
                             <h5 class="mb-0">Tin mới nhất</h5>
                         </div>
                         <div class="card-body">
-                            {{#each latestNews}}
+                            {{#each featuredArticles}}
                             <div class="related-news mb-3">
                                 <h3><a href="{{this.link}}" class="text-dark text-decoration-none">{{this.title}}</a>
                                 </h3>
@@ -222,7 +306,7 @@
                 <!-- Left Section: 60% -->
                 <div class="col-lg-7 mb-4">
                     <div class="card border-0 shadow-sm h-100">
-                        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <div class="card-header bg-dark text-white d-flex justify-content-between">
                             <h3 class="mb-0">Entertainment</h3>
                             <a href="category-01.html" class="btn btn-outline-light btn-sm">
                                 View All
@@ -254,30 +338,39 @@
                             </ul>
                             <div class="tab-content mt-4">
                                 <div class="tab-pane fade show active" id="tab1-1" role="tabpanel">
-                                    <div class="row">
-                                        {{#each posts}}
-                                        <div class="col-md-6 mb-4">
-                                            <div class="card h-100 border border-secondary shadow-sm">
-                                                <a href="{{this.link}}">
-                                                    <img src="{{this.image}}" class="card-img-top" alt="Post Image">
-                                                </a>
-                                                <div class="card-body bg-light">
-                                                    <h5 class="card-title">
-                                                        <a href="{{this.link}}" class="text-dark font-weight-bold">
-                                                            {{this.title}}
-                                                        </a>
-                                                    </h5>
-                                                    <p class="text-muted mb-0">
-                                                        <a href="{{this.categoryLink}}"
-                                                            class="text-secondary">{{this.category}}</a>
-                                                        <span class="mx-2">•</span>
-                                                        <small>{{this.date}}</small>
-                                                    </p>
+                                    <div class="row mb-4">
+                                        {{#each featuredArticles}}
+                                        <div class="col-lg-6 d-flex align-items-start">
+                                            {{#if @first}}
+                                            <!-- Cột đầu tiên: Ảnh, tiêu đề và thông tin bài viết đầu tiên -->
+                                            <div class="card-body">
+                                                <img src="/public/images/{{this.featured_image}}"
+                                                    class="img-fluid rounded"
+                                                    style="width: 100%; height: auto; border-radius: 10px; margin-top: 0px; margin-bottom:  20px;">
+                                                <h3 class="mb-2">
+                                                    <a href="{{this.link}}"
+                                                        class="text-dark text-decoration-none">{{this.title}}</a>
+                                                </h3>
+                                                <div class="comment-count mb-2">
+                                                    <i class="bi bi-chat-dots"></i> {{this.comments}} Comments
                                                 </div>
+                                                <p class="text-muted">{{this.abstract}}</p>
                                             </div>
+                                            {{else}}
+                                            <!-- Cột thứ hai: Chỉ hiển thị tên của các bài viết còn lại -->
+                                            <div class="mb-3">
+                                                <h4>
+                                                    <a href="{{this.link}}"
+                                                        class="text-dark text-decoration-none">{{this.title}}</a>
+                                                </h4>
+                                            </div>
+                                            {{/if}}
                                         </div>
                                         {{/each}}
                                     </div>
+
+
+
                                 </div>
                             </div>
                         </div>
@@ -318,6 +411,7 @@
             </div>
         </div>
     </section>
+
 
 
     <!-- Footer -->

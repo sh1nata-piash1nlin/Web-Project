@@ -1,9 +1,9 @@
 const { Sequelize } = require('sequelize');
-const sequelize = new Sequelize('oauth', 'root', null, {
+const sequelize = new Sequelize('oauth', 'root', "Hoanghoahong789", {
     host: 'localhost',
-    dialect: 'mysql', 
-    logging: false, 
-}); 
+    dialect: 'mysql',
+    logging: false,
+});
 
 const connectDB = async () => {
     try {
