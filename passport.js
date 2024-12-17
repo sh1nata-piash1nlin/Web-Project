@@ -17,7 +17,8 @@ async function(accessToken, refreshToken, profile, cb) {
               defaults: {
                   id: profile.id, 
                   email: profile.emails[0]?.value,
-                  typeLogin: profile?.provider  
+                  typeLogin: profile?.provider,  
+                  avatar: 'static/img/default.png'
               }
           });
           return cb(null, user); 
@@ -46,7 +47,9 @@ passport.use(new FacebookStrategy({
                 defaults: {
                     id: profile.id, 
                     email: profile.emails[0]?.value,
-                    typeLogin: profile?.provider  
+                    typeLogin: profile?.provider, 
+                    avatar: 'static/img/default.png'
+
                 }
             });
             return cb(null, user); 

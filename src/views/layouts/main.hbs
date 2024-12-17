@@ -170,8 +170,38 @@
             <div class="d-flex align-items-center">
                 <div class="me-3">Mới nhất</div>
                 <div class="me-3">International</div>
+                {{!-- <a class="btn btn-outline-dark btn-sm" href="/login">Login</a> --}}
+
+            {{#if isAuthenticated}}
+                <!-- Show the avatar when the user is logged in -->
+                <div class="dropdown">
+                    <img src="{{authUser.avatar}}"
+                        onerror="this.onerror=null; this.src='/src/static/img/default.png';"
+                        alt="User Avatar" 
+                        class="rounded-circle" 
+                        style="width: 40px; height: 40px; cursor: pointer;"
+                        id="navbarDropdownAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+                    <!-- Dropdown menu for profile options -->
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAvatar">
+                        <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                        <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form action="/logout" method="POST">
+                                <button type="submit" class="dropdown-item text-danger">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            {{else}}
+                <!-- Show the Login button if the user is not logged in -->
                 <a class="btn btn-outline-dark btn-sm" href="/login">Login</a>
-                {{!-- <div>
+
+            {{/if}}
+            </div>
+
+                          
                     <a class="btn btn-sm btn-primary" href="/login" role="button">
                         <i class="bi bi-hand-index"> Login </i>
                 </div> --}}
