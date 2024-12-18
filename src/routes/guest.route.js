@@ -4,6 +4,7 @@ const guestController = require('../controllers/guest.controller');
 const bcrypt = require('bcryptjs'); 
 const userService = require('../services/user.service');
 const app = express();
+const articleController = require('../controllers/article.controller');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,13 +32,8 @@ router.post('/login', async function (req, res) {
       });
     }
   
-
-    req.session.isAuthenticated = true;
-    req.session.authUser = {
-        email: user.email,
-        avatar: user.avatar || '/static/img/default.png' // Use default avatar if none provided
-    };
-
+    // req.session.isAuthenticated = true;
+    // req.session.authUser = user;
     res.redirect('/');
   });
 
@@ -47,41 +43,20 @@ router.get('/signup', async(req, res)=>{
     })
 })
 
-router.post('/signup', async (req, res) => {
-  const { email, password } = req.body;
+router.post('/signup', async(req, res)=>{
+    const hash_password = bcrypt.hashSync(req.body.password, 8)
+    const entity = {
+        email: req.body.email, 
+        password: hash_password,
+    }
+    console.log(entity);
+    const ret = await userService.add(entity);
+    res.redirect('/');
 
-  // Check if email already exists in the database
-  const existingUser = await userService.findByUsername(email);
-  if (existingUser) {
-      // If email already exists, show an alert and re-render the signup page
-      return res.render('signup', {
-          layout: 'login-layout',
-          showErrors: true,
-          errorMessage: 'This email is already registered.',
-      });
-  }
+})
 
-  // Hash password before storing it
-  const hash_password = bcrypt.hashSync(password, 8);
-  const entity = {
-      email,
-      password: hash_password,
-  };
+router.get('/article/:id', articleController.getArticleDetail);
 
-  // Insert new user into the database
-  await userService.add(entity);
-  res.redirect('/login');
-});
-
-router.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
-      if (err) {
-          console.error('Logout failed:', err);
-          return res.redirect('/');
-      }
-      res.redirect('/');
-  });
-});
-
+router.get('/category/:id', articleController.getCategoryArticles);
 
 module.exports = router;

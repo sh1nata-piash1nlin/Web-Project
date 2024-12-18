@@ -1,11 +1,17 @@
 {
   "development": {
     "username": "root",
-    "password": "Hoanghoahong789",
-    "database": "oauth",
+    "password": "duong",
+    "database": "mysql_webnews_db",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "logging": false
+    "logging": false,
+    "pool": {
+      "max": 5,
+      "min": 0,
+      "acquire": 30000,
+      "idle": 10000
+    }
   },
   "test": {
     "username": "root",

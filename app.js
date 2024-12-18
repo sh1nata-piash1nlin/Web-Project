@@ -6,35 +6,18 @@ const connectDB = require('./src/config/connectDB'); // Database connection
 const authRouter = require('./src/routes/auth.route'); // Authentication routes
 const guestRoutes = require('./src/routes/guest.route');
 const { engine } = require('express-handlebars'); // Import express-handlebars
-const session = require('express-session');
 
 require('./passport'); // Passport setup
 
 const app = express();
 
-app.use(session({
-    secret: 'secretKey',           // Replace with your own secret
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }      // Use secure: true in production with HTTPS
-  }));
-
-// Middleware to pass session variables to all views
-app.use((req, res, next) => {
-    res.locals.isAuthenticated = req.session.isAuthenticated || false;
-    res.locals.authUser = req.session.authUser || null;
-    next();
-});
-
 // Enable CORS
 app.use(cors({
     origin: process.env.URL_CLIENT, // Allow client URL specified in environment variables
 }));
-app.use('/static', express.static('src/static'));
-app.use('/public', express.static(path.join(__dirname, 'src', 'public')));
+app.use('/public', express.static(path.join(__dirname, 'src', 'public')));// Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 // Configure Handlebars as the view engine
 app.engine('hbs', engine({
@@ -43,8 +26,6 @@ app.engine('hbs', engine({
 }));
 app.set('view engine', 'hbs'); // Set the view engine to Handlebars
 app.set('views', './src/views'); // Set the views directory
-
-
 
 // Connect to the database
 connectDB();

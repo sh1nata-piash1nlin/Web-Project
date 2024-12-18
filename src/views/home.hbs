@@ -4,7 +4,7 @@
     <img src="/public/images/{{featuredArticles.[0].featured_image}}" alt="{{featuredArticles.[0].title}}"
         class="img-fluid mb-3">
     <h1 class="article-title">
-        <a href="#" class="text-dark text-decoration-none">
+        <a href="/article/{{featuredArticles.[0].id}}" class="text-dark text-decoration-none">
             {{featuredArticles.[0].title}}
         </a>
     </h1>
@@ -31,7 +31,7 @@
             <img src="/public/images/{{this.featured_image}}" class="card-img-top" alt="{{this.title}}">
             <div class="card-body">
                 <h3 class="card-title" style="font-size: 1.2rem;">
-                    <a href="#" class="text-dark text-decoration-none">
+                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
                         {{this.title}}
                     </a>
                 </h3>
