@@ -277,4 +277,36 @@ router.post('/profile/changepwd', async (req, res) => {
   }
 });
 
+router.get('/register-role', (req, res) => {
+  if (!req.session.isAuthenticated) {
+      return res.redirect('/login');
+  }
+
+  // Render the register-role view (register-role.hbs)
+  res.render('register-role',{
+    layout: 'login-layout'
+  });
+});
+
+// Route to handle the role registration logic
+router.post('/register-role', async (req, res) => {
+  if (!req.session.isAuthenticated) {
+      return res.redirect('/login');
+  }
+
+  const { role } = req.body;
+  const userId = req.session.authUser.id; // Access user ID from session data
+
+  try {
+      // Update the user's role in the database
+      await userService.updateUser(userId, { role });
+
+      // Redirect to the profile page after successful role change
+      res.redirect('/profile');
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('An error occurred while updating the user role.');
+  }
+});
+
 module.exports = router;
