@@ -17,7 +17,11 @@ module.exports = (sequelize, DataTypes) => {
     typeLogin: {
         type: DataTypes.STRING,
         allowNull: true, // Có thể để null, sẽ chứa giá trị provider (vd: "google")
-    }
+    }, 
+    avatar: {  // Ensure 'avatar' is part of the model definition
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
 }, {
     timestamps: true // Nếu bạn muốn thêm cột `createdAt` và `updatedAt`
 });

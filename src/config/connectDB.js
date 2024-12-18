@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('mysql_webnews_db', 'root', 'duong', {
+const sequelize = new Sequelize('oauth', 'root', 'duong', {
     host: 'localhost',
     dialect: 'mysql',
     logging: false,

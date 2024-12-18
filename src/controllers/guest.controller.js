@@ -34,11 +34,16 @@ async function renderHomepage(req, res) {
         // Lấy danh mục và bài báo nổi bật
         const categories = await getCategories();
         const featuredArticles = await articleController.getFeaturedArticles();
+        const mostViewedArticles = await articleController.getMostViewedArticles();
 
         // Render view và truyền dữ liệu cho view
         res.render('home', {
             categories,
             featuredArticles,
+            mostViewedArticles,
+            debug: {
+                hasMostViewed: mostViewedArticles && mostViewedArticles.length > 0
+            }
         });
     } catch (error) {
         console.error('Lỗi khi render homepage:', error);

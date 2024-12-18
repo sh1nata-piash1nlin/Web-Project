@@ -93,6 +93,16 @@
       .gap-sm {
         gap: 10px;
       }
+
+      .error {
+        color: red;
+        font-size: 12px;
+      }
+
+      .alert-danger {
+        font-size: 14px;
+        margin-bottom: 20px;
+      }
     </style>
   </head>
   <body>
@@ -102,16 +112,15 @@
       <p class="text-center">
         Already have an account? <a href="/login"><u>Sign in</u></a>
       </p>
-      <form method="post">
-        {{!-- <div class="mb-3">
-          <!-- Full Name Input Field -->
-          <input
-            type="text"
-            class="form-control"
-            id="full_name"
-            placeholder="Full Name"
-          />
-        </div> --}}
+
+      <!-- Show error alert if email already exists -->
+      {{#if errorMessage}}
+        <div class="alert alert-danger" role="alert">
+          {{errorMessage}}
+        </div>
+      {{/if}}
+
+      <form method="post" id="signup-form">
         <div class="mb-3">
           <!-- Email Input Field -->
           <input
@@ -150,8 +159,9 @@
               <i class="bi bi-eye-slash" id="confirm-password-icon"></i>
             </span>
           </div>
+          <div id="error-message" class="error" style="display: none;">Passwords do not match.</div>
         </div>
-            <button type="submit" formaction="/signup" class="btn btn-dark w-100 mb-3 text-center submit">Sign up</button>
+        <button type="submit" class="btn btn-dark w-100 mb-3 text-center submit">Sign up</button>
       </form>
       <p class="text-center mt-2 small">
         By signing up or signing in, you agree to our
@@ -164,7 +174,7 @@
         <a href="api/auth/google" class="btn btn-outline-secondary">
           <i class="bi bi-google"></i> Continue with Google
         </a>
-        <!-- Apple Button -->
+        <!-- Facebook Button -->
         <a href="api/auth/facebook" class="btn btn-outline-secondary">
           <i class="bi bi-facebook"></i> Continue with Facebook
         </a>
@@ -208,6 +218,19 @@
           confirmPasswordInput.type = "password";
           confirmPasswordIcon.classList.remove("bi-eye");
           confirmPasswordIcon.classList.add("bi-eye-slash");
+        }
+      });
+
+      // Password and Confirm Password validation
+      const signupForm = document.getElementById('signup-form');
+      const errorMessage = document.getElementById('error-message');
+
+      signupForm.addEventListener('submit', function(event) {
+        if (passwordInput.value !== confirmPasswordInput.value) {
+          event.preventDefault(); // Prevent form submission
+          errorMessage.style.display = 'block'; // Show error message
+        } else {
+          errorMessage.style.display = 'none'; // Hide error message
         }
       });
     </script>
