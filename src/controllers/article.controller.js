@@ -108,6 +108,13 @@ async function getArticleDetail(req, res) {
     try {
         const articleId = req.params.id;
         
+        // Tăng lượt xem
+        await db.execute(`
+            UPDATE Articles 
+            SET view_count = COALESCE(view_count, 0) + 1 
+            WHERE id = ?
+        `, [articleId]);
+
         // Lấy thông tin chi tiết bài viết
         const [articles] = await db.execute(`
             SELECT 
@@ -170,7 +177,7 @@ async function getArticleDetail(req, res) {
         // Thêm các bài viết cho sidebar
         const featuredArticles = await getFeaturedArticles();
         const latestArticles = await getLatestArticles();
-        const mostCommentedArticles = await getMostCommentedArticles();
+        const mostViewedArticles = await getMostViewedArticles();
 
         res.render('article-detail', {
             layout: 'main',
@@ -180,7 +187,10 @@ async function getArticleDetail(req, res) {
             categories,
             featuredArticles,
             latestArticles,
-            mostCommentedArticles
+            mostViewedArticles,
+            debug: {
+                hasMostViewed: mostViewedArticles && mostViewedArticles.length > 0
+            }
         });
 
     } catch (error) {
@@ -196,19 +206,18 @@ async function getCategoryArticles(req, res) {
     try {
         const categoryId = req.params.id;
         const page = parseInt(req.query.page) || 1;
-        const limit = 4;
+        const limit = 10;
         const offset = (page - 1) * limit;
 
-        // Lấy tổng số bài viết của category và các sub-category
+        // Lấy tổng số bài viết
         const [countResult] = await db.execute(`
             SELECT COUNT(*) as total
             FROM Articles a
-            WHERE (a.category_id = ? OR a.category_id IN 
-                (SELECT id FROM Categories WHERE parent_id = ?))
+            WHERE a.category_id = ?
             AND a.status = 'published'
-        `, [categoryId, categoryId]);
+        `, [categoryId]);
 
-        // Lấy danh sách bài viết của cả category chính và sub-category
+        // Lấy danh sách bài viết - Đơn giản hóa câu query
         const [articles] = await db.execute(`
             SELECT 
                 a.id,
@@ -216,18 +225,21 @@ async function getCategoryArticles(req, res) {
                 a.abstract,
                 a.featured_image,
                 DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date,
-                u.full_name as author_name
+                u.full_name as author_name,
+                a.view_count
             FROM Articles a
             JOIN Users u ON a.author_id = u.id
-            WHERE (a.category_id = ? OR a.category_id IN 
-                (SELECT id FROM Categories WHERE parent_id = ?))
+            WHERE a.category_id = ?
             AND a.status = 'published'
             ORDER BY a.publish_date DESC
             LIMIT ? OFFSET ?
-        `, [categoryId, categoryId, limit, offset]);
+        `, [categoryId, limit, offset]);
 
-        console.log('Total articles found:', countResult[0].total);
-        console.log('Articles in current page:', articles.length);
+        console.log('Total articles:', countResult[0].total);
+        console.log('Current page articles:', articles.length);
+        console.log('Page:', page);
+        console.log('Limit:', limit);
+        console.log('Offset:', offset);
 
         const totalArticles = countResult[0].total;
         const totalPages = Math.ceil(totalArticles / limit);
@@ -280,9 +292,9 @@ async function getCategoryArticles(req, res) {
             });
         }
 
-        // Lấy danh mục cho menu và các bài viết khác
+        // Lấy các dữ liệu khác
         const categories_menu = await getCategories();
-        const mostCommentedArticles = await getMostCommentedArticles();
+        const mostViewedArticles = await getMostViewedArticles();
         const featuredArticles = await getFeaturedArticles();
         const latestArticles = await getLatestArticles();
 
@@ -292,15 +304,24 @@ async function getCategoryArticles(req, res) {
             parentCategory,
             articles,
             pagination,
-            mostCommentedArticles,
+            mostViewedArticles,
             featuredArticles,
             latestArticles,
-            categories: categories_menu
+            categories: categories_menu,
+            debug: {
+                hasMostViewed: mostViewedArticles && mostViewedArticles.length > 0,
+                totalArticles: totalArticles,
+                currentPage: page,
+                articlesPerPage: limit
+            }
         });
 
     } catch (error) {
         console.error('Error in getCategoryArticles:', error);
-        throw error;
+        res.status(500).render('error', {
+            layout: 'main',
+            message: 'Có lỗi xảy ra khi tải danh mục'
+        });
     }
 }
 async function getAllArticles() {
@@ -322,53 +343,42 @@ async function getAllArticles() {
     }
 }
 
-async function getMostCommentedArticles() {
+
+
+async function getMostViewedArticles() {
     try {
-        console.log('Starting getMostCommentedArticles...');
+        console.log('Starting getMostViewedArticles...');
         
         const [articles] = await db.execute(`
             SELECT 
                 a.id,
                 a.title,
-                COUNT(c.id) as comment_count
-            FROM comments c
-            INNER JOIN articles a ON c.article_id = a.id
+                a.view_count
+            FROM articles a
             WHERE a.status = 'published'
-            GROUP BY a.id, a.title
-            ORDER BY comment_count DESC
+            ORDER BY a.view_count DESC
             LIMIT 4
         `);
         
         console.log('Query executed successfully');
-        console.log('Articles found:', articles);
-        
-        if (!articles || articles.length === 0) {
-            console.log('No articles found');
-        }
+        console.log('Most viewed articles found:', articles);
         
         return articles;
     } catch (error) {
-        console.error('Error in getMostCommentedArticles:', error);
+        console.error('Error in getMostViewedArticles:', error);
         throw error;
     }
 }
-
 
 async function renderHomepage(req, res) {
     try {
         const categories = await getCategories();
         const featuredArticles = await getFeaturedArticles();
-        const healthArticles = await getArticlesByCategory(8);  // Sức khỏe
-        const lifeArticles = await getArticlesByCategory(9);    // Đời sống
-        const techArticles = await getArticlesByCategory(11);   // Công nghệ
-        const carArticles = await getArticlesByCategory(12);    // Xe
-        const mostCommentedArticles = await getMostCommentedArticles();
-        
-
-        console.log('Health Articles:', healthArticles);
-        console.log('Life Articles:', lifeArticles);
-        console.log('Tech Articles:', techArticles);
-        console.log('Car Articles:', carArticles);
+        const healthArticles = await getArticlesByCategory(8);
+        const lifeArticles = await getArticlesByCategory(9);
+        const techArticles = await getArticlesByCategory(11);
+        const carArticles = await getArticlesByCategory(12);
+        const mostViewedArticles = await getMostViewedArticles();
 
         res.render('home', {
             layout: 'main',
@@ -378,14 +388,16 @@ async function renderHomepage(req, res) {
             lifeArticles,
             techArticles,
             carArticles,
-            mostCommentedArticles
+            mostViewedArticles,
+            debug: {
+                hasMostViewed: mostViewedArticles && mostViewedArticles.length > 0
+            }
         });
     } catch (error) {
         console.error('Error in renderHomepage:', error);
         res.status(500).render('error', { message: 'Có lỗi xảy ra khi tải trang chủ' });
     }
 }
-
 
 module.exports = {
     getFeaturedArticles,
@@ -394,5 +406,6 @@ module.exports = {
     getArticleDetail,
     getCategories,
     getCategoryArticles,
-    renderHomepage
+    renderHomepage,
+    getMostViewedArticles
 };
