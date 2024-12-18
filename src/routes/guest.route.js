@@ -178,8 +178,6 @@ router.post('/login/forgotpwd', async (req, res) => {
 });
 
 
-
-
 // Render OTP Page
 router.get('/login/forgotpwd/otp', (req, res) => {
   res.render('otp.hbs', { email: req.session.resetEmail, layout:'login-layout', });
@@ -228,5 +226,55 @@ router.get('/article/:id', articleController.getArticleDetail);
 //Duong
 router.get('/category/:id', articleController.getCategoryArticles);
 
+router.get('/profile/changepwd', (req, res) => {
+  if (!req.session.isAuthenticated) {
+      return res.redirect('/login');
+  }
+
+  res.render('changepwd.hbs', {
+      layout: 'login-layout',
+      user: req.session.authUser, // Pass user info if needed
+  });
+});
+
+
+router.post('/profile/changepwd', async (req, res) => {
+  try {
+      const userId = req.session.authUser.id; // Get user ID from session
+      const { currentPassword, newPassword, confirmPassword } = req.body;
+
+      // Validate if new passwords match
+      if (newPassword !== confirmPassword) {
+          return res.render('changepwd.hbs', {
+              layout: 'login-layout',
+              errorMessage: 'New passwords do not match.',
+          });
+      }
+
+      // Fetch the current user from the database
+      const user = await userService.findOne({ id: userId });
+
+      // Verify the current password
+      const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+      if (!passwordMatch) {
+          return res.render('changepwd.hbs', {
+              layout: 'login-layout',
+              errorMessage: 'Current password is incorrect.',
+          });
+      }
+
+      // Hash the new password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      // Update the password in the database
+      await userService.updateUser(userId, { password: hashedPassword });
+
+      // Redirect with a success message
+      res.redirect('/profile');
+  } catch (error) {
+      console.error('Error updating password:', error.message);
+      res.status(500).send('Internal Server Error');
+  }
+});
 
 module.exports = router;
