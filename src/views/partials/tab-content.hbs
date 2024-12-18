@@ -1,0 +1,23 @@
+<div class="tab-pane fade" id="{{id}}" role="tabpanel">
+    <div class="row">
+        {{#each articles}}
+        <div class="col-lg-6">
+            {{#if @first}}
+            <div class="main-article mb-4">
+                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded" alt="{{this.title}}">
+                <h3 class="mt-3">
+                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
+                </h3>
+                <p class="text-muted">{{this.abstract}}</p>
+            </div>
+            {{else}}
+            <div class="related-article mb-3">
+                <h4>
+                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
+                </h4>
+            </div>
+            {{/if}}
+        </div>
+        {{/each}}
+    </div>
+</div> 

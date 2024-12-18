@@ -275,70 +275,165 @@
                 <div class="col-lg-7 mb-4">
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-header bg-dark text-white d-flex justify-content-between">
-                            <h3 class="mb-0">Entertainment</h3>
+                            <h3 class="mb-0">Tin vắn</h3>
                             <a href="category-01.html" class="btn btn-outline-light btn-sm">
                                 View All
                                 <i class="fas fa-caret-right ml-2"></i>
                             </a>
                         </div>
                         <div class="card-body">
-                            <ul class="nav nav-tabs" id="entertainmentTabs" role="tablist">
+                            <ul class="nav nav-tabs" id="categoryTabs" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link active text-dark" id="tab-all" data-toggle="tab" href="#tab1-1"
-                                        role="tab">All</a>
+                                    <a class="nav-link active" id="all-tab" data-bs-toggle="tab" href="#tab-all-content" role="tab">
+                                        Tất cả
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" id="tab-celebrity" data-toggle="tab" href="#tab1-2"
-                                        role="tab">Celebrity</a>
+                                    <a class="nav-link" id="health-tab" data-bs-toggle="tab" href="#tab-health-content" role="tab">
+                                        Sức khỏe
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" id="tab-movies" data-toggle="tab" href="#tab1-3"
-                                        role="tab">Movies</a>
+                                    <a class="nav-link" id="life-tab" data-bs-toggle="tab" href="#tab-life-content" role="tab">
+                                        Đời sống
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" id="tab-music" data-toggle="tab" href="#tab1-4"
-                                        role="tab">Music</a>
+                                    <a class="nav-link" id="tech-tab" data-bs-toggle="tab" href="#tab-tech-content" role="tab">
+                                        Công nghệ
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" id="tab-games" data-toggle="tab" href="#tab1-5"
-                                        role="tab">Games</a>
+                                    <a class="nav-link" id="car-tab" data-bs-toggle="tab" href="#tab-car-content" role="tab">
+                                        Xe
+                                    </a>
                                 </li>
                             </ul>
-                            <div class="tab-content mt-4">
-                                <div class="tab-pane fade show active" id="tab1-1" role="tabpanel">
-                                    <div class="row mb-4">
+
+                            <div class="tab-content mt-3">
+                                <!-- Tab Tất cả -->
+                                <div class="tab-pane fade show active" id="tab-all-content" role="tabpanel">
+                                    <div class="row">
                                         {{#each featuredArticles}}
-                                        <div class="col-lg-6 d-flex align-items-start">
+                                        <div class="col-lg-6">
                                             {{#if @first}}
-                                            <!-- Cột đầu tiên: Ảnh, tiêu đề và thông tin bài viết đầu tiên -->
-                                            <div class="card-body">
-                                                <img src="/public/images/{{this.featured_image}}"
-                                                    class="img-fluid rounded"
-                                                    style="width: 100%; height: auto; border-radius: 10px; margin-top: 0px; margin-bottom:  20px;">
-                                                <h3 class="mb-2">
-                                                    <a href="/article/{{this.id}}"
-                                                        class="text-dark text-decoration-none">{{this.title}}</a>
+                                            <div class="main-article mb-4">
+                                                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded" alt="{{this.title}}">
+                                                <h3 class="mt-3">
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
                                                 </h3>
-                                                <div class="comment-count mb-2">
-                                                    <i class="bi bi-chat-dots"></i> {{this.comments}} Comments
-                                                </div>
                                                 <p class="text-muted">{{this.abstract}}</p>
                                             </div>
                                             {{else}}
-                                            <!-- Cột thứ hai: Chỉ hiển thị tên của các bài viết còn lại -->
-                                            <div class="mb-3">
+                                            <div class="related-article mb-3">
                                                 <h4>
-                                                    <a href="/article/{{this.id}}"
-                                                        class="text-dark text-decoration-none">{{this.title}}</a>
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
                                                 </h4>
                                             </div>
                                             {{/if}}
                                         </div>
                                         {{/each}}
                                     </div>
+                                </div>
 
+                                <!-- Tab Sức khỏe -->
+                                <div class="tab-pane fade" id="tab-health-content" role="tabpanel">
+                                    <div class="row">
+                                        {{#each featuredArticles}}
+                                        <div class="col-lg-6">
+                                            {{#if @first}}
+                                            <div class="main-article mb-4">
+                                                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded" alt="{{this.title}}">
+                                                <h3 class="mt-3">
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
+                                                </h3>
+                                                <p class="text-muted">{{this.abstract}}</p>
+                                            </div>
+                                            {{else}}
+                                            <div class="related-article mb-3">
+                                                <h4>
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
+                                                </h4>
+                                            </div>
+                                            {{/if}}
+                                        </div>
+                                        {{/each}}
+                                    </div>
+                                </div>
 
+                                <!-- Tab Đời sống -->
+                                <div class="tab-pane fade" id="tab-life-content" role="tabpanel">
+                                    <div class="row">
+                                        {{#each featuredArticles}}
+                                        <div class="col-lg-6">
+                                            {{#if @first}}
+                                            <div class="main-article mb-4">
+                                                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded" alt="{{this.title}}">
+                                                <h3 class="mt-3">
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
+                                                </h3>
+                                                <p class="text-muted">{{this.abstract}}</p>
+                                            </div>
+                                            {{else}}
+                                            <div class="related-article mb-3">
+                                                <h4>
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
+                                                </h4>
+                                            </div>
+                                            {{/if}}
+                                        </div>
+                                        {{/each}}
+                                    </div>
+                                </div>
 
+                                <!-- Tab Công nghệ -->
+                                <div class="tab-pane fade" id="tab-tech-content" role="tabpanel">
+                                    <div class="row">
+                                        {{#each featuredArticles}}
+                                        <div class="col-lg-6">
+                                            {{#if @first}}
+                                            <div class="main-article mb-4">
+                                                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded" alt="{{this.title}}">
+                                                <h3 class="mt-3">
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
+                                                </h3>
+                                                <p class="text-muted">{{this.abstract}}</p>
+                                            </div>
+                                            {{else}}
+                                            <div class="related-article mb-3">
+                                                <h4>
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
+                                                </h4>
+                                            </div>
+                                            {{/if}}
+                                        </div>
+                                        {{/each}}
+                                    </div>
+                                </div>
+
+                                <!-- Tab Xe -->
+                                <div class="tab-pane fade" id="tab-car-content" role="tabpanel">
+                                    <div class="row">
+                                        {{#each featuredArticles}}
+                                        <div class="col-lg-6">
+                                            {{#if @first}}
+                                            <div class="main-article mb-4">
+                                                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded" alt="{{this.title}}">
+                                                <h3 class="mt-3">
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
+                                                </h3>
+                                                <p class="text-muted">{{this.abstract}}</p>
+                                            </div>
+                                            {{else}}
+                                            <div class="related-article mb-3">
+                                                <h4>
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
+                                                </h4>
+                                            </div>
+                                            {{/if}}
+                                        </div>
+                                        {{/each}}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -349,30 +444,25 @@
                 <div class="col-lg-5">
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body bg-white text-black">
-                            <h5 class="card-title">Related Topics</h5>
+                            <h5 class="card-title">Bài viết được thảo luận nhiều nhất</h5>
+                            <!-- Debug info -->
+                            {{#if debug.hasMostCommented}}
+                                <p class="text-muted">Có dữ liệu</p>
+                            {{else}}
+                                <p class="text-muted">Không có dữ liệu</p>
+                            {{/if}}
+                            
                             <ul class="list-unstyled">
+                                {{#each mostCommentedArticles}}
                                 <li class="mb-3">
-                                    <a href="#" class="text-dark">
-                                        <i class="fas fa-chevron-right mr-2"></i> Topic 1
+                                    <a href="/article/{{this.id}}" class="text-dark">
+                                        <i class="fas fa-chevron-right mr-2"></i>
+                                        {{this.title}}
+                                        <small class="text-muted">({{this.comment_count}})</small>
                                     </a>
                                 </li>
-                                <li class="mb-3">
-                                    <a href="#" class="text-dark">
-                                        <i class="fas fa-chevron-right mr-2"></i> Topic 2
-                                    </a>
-                                </li>
-                                <li class="mb-3">
-                                    <a href="#" class="text-dark">
-                                        <i class="fas fa-chevron-right mr-2"></i> Topic 3
-                                    </a>
-                                </li>
-                                <li class="mb-3">
-                                    <a href="#" class="text-dark">
-                                        <i class="fas fa-chevron-right mr-2"></i> Topic 4
-                                    </a>
-                                </li>
+                                {{/each}}
                             </ul>
-                            <a href="#" class="btn btn-outline-dark btn-sm">See More</a>
                         </div>
                     </div>
                 </div>
@@ -403,6 +493,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/public/js/tabs.js"></script>
 </body>
 
 </html>
