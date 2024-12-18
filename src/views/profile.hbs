@@ -1,0 +1,36 @@
+<div class="container mt-4">
+    <h2 class="mb-4">User Profile</h2>
+    <form action="/profile" method="POST" enctype="multipart/form-data">
+        <!-- Avatar Upload -->
+        <div class="mb-3">
+            <label for="avatar" class="form-label">Avatar</label>
+            <br>
+            {{#if user.avatar}}
+                <img src="{{user.avatar}}" alt="User Avatar" class="rounded-circle mb-2" style="width: 100px; height: 100px;">
+            {{/if}}
+            <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{user.email}}">
+        </div>
+
+        <!-- Full Name -->
+        <div class="mb-3">
+            <label for="full_name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="full_name" name="full_name" value="{{user.full_name}}">
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-start">
+            <!-- Save Changes Button -->
+            <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+            
+            <!-- Return to Main Page Button -->
+            <a href="/" class="btn btn-secondary">Return to Main Page</a>
+        </div>
+    </form>
+</div>
+
