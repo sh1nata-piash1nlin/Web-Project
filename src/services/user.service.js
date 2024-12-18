@@ -18,5 +18,9 @@ module.exports = {
     }, 
     findOne(filter) {
         return db('users').where(filter).first();
+    }, 
+    updateUser(id, updates) {
+        return db('users').where('id', id).update(updates);
     }
+    
 };
