@@ -8,7 +8,6 @@ const guestRoutes = require('./src/routes/guest.route');
 const { engine } = require('express-handlebars'); // Import express-handlebars
 const session = require('express-session');
 const adminRoutes = require('./src/routes/admin.route');
-
 require('./passport'); // Passport setup
 const app = express();
 
@@ -41,6 +40,30 @@ app.use(express.urlencoded({ extended: true }));
 app.engine('hbs', engine({
     extname: '.hbs', // Use '.hbs' as the file extension for templates
     //defaultLayout: 'main',
+    helpers: {
+        truncate: function (str, len) {
+            if (str && str.length > len) {
+                return str.substring(0, len) + '...';
+            }
+            return str;
+        },
+        formatDate: function (date) {
+            if (!date) return '';
+            return new Date(date).toLocaleDateString('vi-VN');
+        },
+        statusColor: function (status) {
+            switch (status) {
+                case 'published':
+                    return 'success';
+                case 'draft':
+                    return 'warning';
+                case 'archived':
+                    return 'secondary';
+                default:
+                    return 'primary';
+            }
+        }
+    }
 }));
 app.set('view engine', 'hbs'); // Set the view engine to Handlebars
 app.set('views', './src/views'); // Set the views directory
