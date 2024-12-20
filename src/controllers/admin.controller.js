@@ -94,6 +94,71 @@ const adminController = {
             console.error('Error in deleteCategory:', error);
             res.status(500).json({ message: 'Internal Server Error' });
         }
+    },
+    async getTags(req, res) {
+        try {
+            const [tags] = await db.execute('SELECT * FROM Tags ORDER BY name');
+            res.render('admin/tags', {
+                layout: 'admin',
+                tags
+            });
+        } catch (error) {
+            console.error('Error in getTags:', error);
+            res.status(500).render('error', { message: 'Internal Server Error' });
+        }
+    },
+    async addTag(req, res) {
+        try {
+            const { name } = req.body;
+            const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            await db.execute(
+                'INSERT INTO Tags (name, created_at, updated_at) VALUES (?, ?, ?)',
+                [name, now, now]
+            );
+            res.redirect('/admin/tags');
+        } catch (error) {
+            console.error('Error in addTag:', error);
+            res.status(500).render('error', { message: 'Internal Server Error' });
+        }
+    },
+    async getTagById(req, res) {
+        try {
+            const [tags] = await db.execute(
+                'SELECT * FROM Tags WHERE id = ?',
+                [req.params.id]
+            );
+            if (tags.length > 0) {
+                res.json(tags[0]);
+            } else {
+                res.status(404).json({ message: 'Tag not found' });
+            }
+        } catch (error) {
+            console.error('Error in getTagById:', error);
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
+    },
+    async updateTag(req, res) {
+        try {
+            const { name } = req.body;
+            const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            await db.execute(
+                'UPDATE Tags SET name = ?, updated_at = ? WHERE id = ?',
+                [name, now, req.params.id]
+            );
+            res.json({ success: true });
+        } catch (error) {
+            console.error('Error in updateTag:', error);
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
+    },
+    async deleteTag(req, res) {
+        try {
+            await db.execute('DELETE FROM Tags WHERE id = ?', [req.params.id]);
+            res.json({ success: true });
+        } catch (error) {
+            console.error('Error in deleteTag:', error);
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
     }
 };
 
