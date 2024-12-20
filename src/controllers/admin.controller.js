@@ -43,10 +43,10 @@ const adminController = {
     },
     async addCategory(req, res) {
         try {
-            const { name, parent_id, description } = req.body;
+            const { name, parent_id } = req.body;
             await db.execute(
-                'INSERT INTO Categories (name, parent_id, description) VALUES (?, ?, ?)',
-                [name, parent_id || null, description]
+                'INSERT INTO Categories (name, parent_id) VALUES (?, ?)',
+                [name, parent_id || null]
             );
             res.redirect('/admin/categories');
         } catch (error) {
@@ -55,6 +55,46 @@ const adminController = {
         }
     },
     // Các phương thức khác sẽ được thêm vào sau
+    async getCategoryById(req, res) {
+        try {
+            const [category] = await db.execute(
+                'SELECT * FROM Categories WHERE id = ?',
+                [req.params.id]
+            );
+            if (category.length > 0) {
+                res.json(category[0]);
+            } else {
+                res.status(404).json({ message: 'Category not found' });
+            }
+        } catch (error) {
+            console.error('Error in getCategoryById:', error);
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
+    },
+    // Cập nhật category
+    async updateCategory(req, res) {
+        try {
+            const { name, parent_id } = req.body;
+            await db.execute(
+                'UPDATE Categories SET name = ?, parent_id = ? WHERE id = ?',
+                [name, parent_id || null, req.params.id]
+            );
+            res.json({ success: true });
+        } catch (error) {
+            console.error('Error in updateCategory:', error);
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
+    },
+    // Xóa category
+    async deleteCategory(req, res) {
+        try {
+            await db.execute('DELETE FROM Categories WHERE id = ?', [req.params.id]);
+            res.json({ success: true });
+        } catch (error) {
+            console.error('Error in deleteCategory:', error);
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
+    }
 };
 
 module.exports = adminController;
