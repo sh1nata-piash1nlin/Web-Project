@@ -7,6 +7,7 @@ const authRouter = require('./src/routes/auth.route'); // Authentication routes
 const guestRoutes = require('./src/routes/guest.route');
 const { engine } = require('express-handlebars'); // Import express-handlebars
 const session = require('express-session');
+const adminRoutes = require('./src/routes/admin.route');
 
 require('./passport'); // Passport setup
 const app = express();
@@ -16,7 +17,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false }      // Use secure: true in production with HTTPS
-  }));
+}));
 
 // Middleware to pass session variables to all views
 app.use((req, res, next) => {
@@ -28,7 +29,7 @@ app.use((req, res, next) => {
 // Enable CORS
 app.use(cors({
     origin: process.env.URL_CLIENT, // Allow client URL specified in environment variables
-})); 
+}));
 app.use('/static', express.static('src/static'));
 app.use('/public', express.static(path.join(__dirname, 'src', 'public')));
 
@@ -51,7 +52,7 @@ connectDB();
 
 
 app.use('/', guestRoutes);
-
+app.use('/admin', adminRoutes);
 
 // Routes
 app.use('/api/auth', authRouter); // Authentication routes (e.g., Google login)

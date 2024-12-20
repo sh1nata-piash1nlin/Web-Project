@@ -1,0 +1,75 @@
+<div class="container mt-4"></div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Categories Management</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+        <i class="fas fa-plus"></i> Add Category
+    </button>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Parent Category</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each categories}}
+        <tr>
+            <td>{{this.id}}</td>
+            <td>{{this.name}}</td>
+            <td>{{this.parent_name}}</td>
+            <td>{{this.description}}</td>
+            <td>
+                <button class="btn btn-sm btn-warning" onclick="editCategory({{this.id}})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deleteCategory({{this.id}})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</div>
+<!-- Add Category Modal -->
+div class="modal fade" id="addCategoryModal" tabindex="-1">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Add New Category</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form action="/admin/categories/add" method="POST">
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Category Name</label>
+                    <input type="text" class="form-control" name="name" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Parent Category</label>
+                    <select class="form-select" name="parent_id">
+                        <option value="">None</option>
+                        {{#each categories}}
+                        {{#unless this.parent_id}}
+                        <option value="{{this.id}}">{{this.name}}</option>
+                        {{/unless}}
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="description"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save Category</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
