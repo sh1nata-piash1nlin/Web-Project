@@ -1,0 +1,51 @@
+<div class="container mt-4">
+    <h1>Kết quả tìm kiếm cho "{{searchTerm}}"</h1>
+    <div class="row">
+        {{#if articles.length}}
+            {{#each articles}}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="/public/images/{{this.featured_image}}" class="card-img-top" alt="{{this.title}}">
+                    <div class="card-body">
+                        <h3 class="card-title h5">
+                            <a href="/article/{{this.id}}" class="text-decoration-none text-dark">
+                                {{this.title}}
+                            </a>
+                        </h3>
+                        <p class="card-text">{{this.abstract}}</p>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        {{else}}
+            <p>Không tìm thấy bài viết nào.</p>
+        {{/if}}
+    </div>
+    {{#if pagination}}
+    <nav aria-label="Search results navigation">
+        <ul class="pagination justify-content-center">
+            {{#if pagination.hasPrevPage}}
+            <li class="page-item">
+                <a class="page-link" href="?q={{searchTerm}}&page={{pagination.prevPage}}" aria-label="Previous">
+                    <span aria-hidden="true">Trang trước;</span>
+                </a>
+            </li>
+            {{/if}}
+
+            {{#each pagination.pages}}
+            <li class="page-item {{#if isCurrentPage}}active{{/if}}">
+                <a class="page-link" href="?q={{../searchTerm}}&page={{pageNumber}}">{{pageNumber}}</a>
+            </li>
+            {{/each}}
+
+            {{#if pagination.hasNextPage}}
+            <li class="page-item">
+                <a class="page-link" href="?q={{searchTerm}}&page={{pagination.nextPage}}" aria-label="Next">
+                    <span aria-hidden="true">Trang sau</span>
+                </a>
+            </li>
+            {{/if}}
+        </ul>
+    </nav>
+    {{/if}}
+</div> 
