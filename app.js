@@ -5,6 +5,7 @@ const connectDB = require('./src/config/connectDB'); // Database connection
 const authRouter = require('./src/routes/auth.route'); // Authentication routes
 const guestRoutes = require('./src/routes/guest.route');
 const { engine } = require('express-handlebars'); // Import express-handlebars
+var express_handlebars_sections = require('express-handlebars-sections');//import hbs sections
 
 require('./passport'); // Passport setup
 
@@ -21,7 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Configure Handlebars as the view engine
 app.engine('hbs', engine({
-    extname: '.hbs', // Use '.hbs' as the file extension for templates
+    extname: '.hbs',
+     // Use '.hbs' as the file extension for templates
     //defaultLayout: 'main',
 }));
 app.set('view engine', 'hbs'); // Set the view engine to Handlebars

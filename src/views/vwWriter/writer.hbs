@@ -1,0 +1,37 @@
+{{#section 'css'}}
+ <!-- Include Froala CSS -->
+    <link rel="stylesheet" href="/froala/css/froala_editor.pkgd.min.css">
+    <link rel="stylesheet" href="/froala/css/froala_style.min.css">
+    <!-- Include jQuery (required by Froala Editor) -->
+    {{!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+    
+
+{{/section}}
+
+{{#section 'js'}}
+ <!-- Include your custom JS file to initialize the Froala editor -->
+ <script type="text/javascript" src="/froala/js/froala_editor.pkgd.min.js"></script>
+    <script src="/js/froala.js"></script>
+
+    <!-- Optional: This is to update the hidden input with the editor's content before submitting -->
+    <script>
+        $('form').on('submit', function() {
+            var content = $('#froala-editor').froalaEditor('html.get');
+            $('#editor-content').val(content);
+        });
+    </script>
+{{/section}}
+
+
+
+<div class="container mt-4">
+    <h1>Write Your Content</h1>
+        <!-- Textarea for Froala Editor -->
+        <textarea id="froala-editor" name="editorContent"></textarea>
+        
+        <!-- Optional: A form for saving content -->
+        <form action="/save" method="POST">
+            <input type="hidden" id="editor-content" name="editorContent">
+            <button type="submit">Save Content</button>
+        </form>
+</div>
