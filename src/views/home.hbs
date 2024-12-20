@@ -46,20 +46,27 @@
     {{/each}}
 </div>
 
-
-
-<!-- Latest News List -->
-<div class="latest-news mt-4">
-    <h4 class="border-bottom pb-2">Tin theo chuyên mục</h4>
-    <div class="list-group list-group-flush">
-        {{#each latestNews}}
-        <a href="#" class="list-group-item list-group-item-action">
-            <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{{this.title}}</h5>
-                <small>{{this.publish_date}}</small>
-            </div>
-            <p class="mb-1">{{this.abstract}}</p>
-        </a>
+<!-- Pagination -->
+{{#if pagination}}
+<nav aria-label="Featured articles pagination" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {{#if pagination.hasPrevPage}}
+        <li class="page-item">
+            <a class="page-link" href="/?page={{pagination.prevPage}}">Trang trước</a>
+        </li>
+        {{/if}}
+        
+        {{#each pagination.pages}}
+        <li class="page-item {{#if this.isCurrentPage}}active{{/if}}">
+            <a class="page-link" href="/?page={{this.pageNumber}}">{{this.pageNumber}}</a>
+        </li>
         {{/each}}
-    </div>
-</div>
+
+        {{#if pagination.hasNextPage}}
+        <li class="page-item">
+            <a class="page-link" href="/?page={{pagination.nextPage}}">Trang sau</a>
+        </li>
+        {{/if}}
+    </ul>
+</nav>
+{{/if}}

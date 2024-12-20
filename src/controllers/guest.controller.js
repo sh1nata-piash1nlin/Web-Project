@@ -31,23 +31,40 @@ async function getCategories() {
 // Định nghĩa hàm renderHomepage
 async function renderHomepage(req, res) {
     try {
-        // Lấy danh mục và bài báo nổi bật
+        const page = parseInt(req.query.page) || 1;
         const categories = await getCategories();
-        const featuredArticles = await articleController.getFeaturedArticles();
+        const { articles: featuredArticles, pagination } = await articleController.getFeaturedArticles(page);
+        const sidebarFeaturedArticles = await articleController.getSidebarFeaturedArticles();
+        const healthArticles = await articleController.getHealthArticles();
+        const lifeArticles = await articleController.getLifeArticles();
+        const techArticles = await articleController.getTechArticles();
+        const carArticles = await articleController.getCarArticles();
         const mostViewedArticles = await articleController.getMostViewedArticles();
+        const latestArticles = await articleController.getLatestArticles();
+        
 
-        // Render view và truyền dữ liệu cho view
         res.render('home', {
+            layout: 'main',
             categories,
             featuredArticles,
+            sidebarFeaturedArticles,
+            pagination,
+            healthArticles,
+            lifeArticles,
+            techArticles,
+            carArticles,
             mostViewedArticles,
+            latestArticles,
             debug: {
                 hasMostViewed: mostViewedArticles && mostViewedArticles.length > 0
             }
         });
     } catch (error) {
-        console.error('Lỗi khi render homepage:', error);
-        res.status(500).send('Internal Server Error');
+        console.error('Error in renderHomepage:', error);
+        res.status(500).render('error', { 
+            layout: 'main',
+            message: 'Có lỗi xảy ra khi tải trang chủ' 
+        });
     }
 }
 

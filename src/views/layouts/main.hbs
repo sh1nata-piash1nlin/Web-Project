@@ -142,6 +142,12 @@
                 <div class="me-3">VnExpress</div>
             </a>
 
+            <!-- Centered Search Form -->
+            <form class="d-flex mx-auto" action="/search" method="get" style="max-width: 400px;">
+                <input class="form-control me-2" type="search" name="q" placeholder="Tìm kiếm" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Tìm kiếm</button>
+            </form>
+
             <div class="d-flex align-items-center">
                 <div class="me-3">Mới nhất</div>
                 <div class="me-3">International</div>
@@ -244,7 +250,7 @@
                             <h5 class="mb-0">Tin mới nhất</h5>
                         </div>
                         <div class="card-body">
-                            {{#each featuredArticles}}
+                            {{#each latestArticles}}
                             <div class="related-news mb-3">
                                 <h3><a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
                                 </h3>
@@ -264,44 +270,81 @@
                 <div class="col-lg-7 mb-4">
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-header bg-dark text-white d-flex justify-content-between">
-                            <h3 class="mb-0">Tin vắn</h3>
-                            <a href="category-01.html" class="btn btn-outline-light btn-sm">
-                                View All
+                            <h3 class="mb-0">Tin theo chuyên mục</h3>
+                            <a href="/" class="btn btn-outline-light btn-sm">
+                                Tất cả tin
                                 <i class="fas fa-caret-right ml-2"></i>
                             </a>
                         </div>
                         <div class="card-body">
                             <ul class="nav nav-tabs" id="categoryTabs" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" id="all-tab" data-bs-toggle="tab" href="#tab-all-content" role="tab">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" 
+                                            id="all-tab" 
+                                            data-bs-toggle="tab" 
+                                            data-bs-target="#tab-all-content" 
+                                            type="button" 
+                                            role="tab" 
+                                            aria-controls="tab-all-content" 
+                                            aria-selected="true">
                                         Tất cả
-                                    </a>
+                                    </button>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="health-tab" data-bs-toggle="tab" href="#tab-health-content" role="tab">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" 
+                                            id="health-tab" 
+                                            data-bs-toggle="tab" 
+                                            data-bs-target="#tab-health-content" 
+                                            type="button" 
+                                            role="tab" 
+                                            aria-controls="tab-health-content" 
+                                            aria-selected="false">
                                         Sức khỏe
-                                    </a>
+                                    </button>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="life-tab" data-bs-toggle="tab" href="#tab-life-content" role="tab">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" 
+                                            id="life-tab" 
+                                            data-bs-toggle="tab" 
+                                            data-bs-target="#tab-life-content" 
+                                            type="button" 
+                                            role="tab" 
+                                            aria-controls="tab-life-content" 
+                                            aria-selected="false">
                                         Đời sống
-                                    </a>
+                                    </button>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="tech-tab" data-bs-toggle="tab" href="#tab-tech-content" role="tab">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" 
+                                            id="tech-tab" 
+                                            data-bs-toggle="tab" 
+                                            data-bs-target="#tab-tech-content" 
+                                            type="button" 
+                                            role="tab" 
+                                            aria-controls="tab-tech-content" 
+                                            aria-selected="false">
                                         Công nghệ
-                                    </a>
+                                    </button>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="car-tab" data-bs-toggle="tab" href="#tab-car-content" role="tab">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" 
+                                            id="car-tab" 
+                                            data-bs-toggle="tab" 
+                                            data-bs-target="#tab-car-content" 
+                                            type="button" 
+                                            role="tab" 
+                                            aria-controls="tab-car-content" 
+                                            aria-selected="false">
                                         Xe
-                                    </a>
+                                    </button>
                                 </li>
                             </ul>
 
                             <div class="tab-content mt-3">
-                                <!-- Tab Tất cả -->
-                                <div class="tab-pane fade show active" id="tab-all-content" role="tabpanel">
+                                <div class="tab-pane fade show active" 
+                                     id="tab-all-content" 
+                                     role="tabpanel" 
+                                     aria-labelledby="all-tab">
                                     <div class="row">
                                         {{#each featuredArticles}}
                                         <div class="col-lg-6">
@@ -325,10 +368,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Tab Sức khỏe -->
-                                <div class="tab-pane fade" id="tab-health-content" role="tabpanel">
+                                <div class="tab-pane fade" 
+                                     id="tab-health-content" 
+                                     role="tabpanel" 
+                                     aria-labelledby="health-tab">
                                     <div class="row">
-                                        {{#each featuredArticles}}
+                                        {{#each healthArticles}}
                                         <div class="col-lg-6">
                                             {{#if @first}}
                                             <div class="main-article mb-4">
@@ -350,10 +395,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Tab Đời sống -->
-                                <div class="tab-pane fade" id="tab-life-content" role="tabpanel">
+                                <div class="tab-pane fade" 
+                                     id="tab-life-content" 
+                                     role="tabpanel" 
+                                     aria-labelledby="life-tab">
                                     <div class="row">
-                                        {{#each featuredArticles}}
+                                        {{#each lifeArticles}}
                                         <div class="col-lg-6">
                                             {{#if @first}}
                                             <div class="main-article mb-4">
@@ -375,10 +422,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Tab Công nghệ -->
-                                <div class="tab-pane fade" id="tab-tech-content" role="tabpanel">
+                                <div class="tab-pane fade" 
+                                     id="tab-tech-content" 
+                                     role="tabpanel" 
+                                     aria-labelledby="tech-tab">
                                     <div class="row">
-                                        {{#each featuredArticles}}
+                                        {{#each techArticles}}
                                         <div class="col-lg-6">
                                             {{#if @first}}
                                             <div class="main-article mb-4">
@@ -400,10 +449,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Tab Xe -->
-                                <div class="tab-pane fade" id="tab-car-content" role="tabpanel">
+                                <div class="tab-pane fade" 
+                                     id="tab-car-content" 
+                                     role="tabpanel" 
+                                     aria-labelledby="car-tab">
                                     <div class="row">
-                                        {{#each featuredArticles}}
+                                        {{#each carArticles}}
                                         <div class="col-lg-6">
                                             {{#if @first}}
                                             <div class="main-article mb-4">

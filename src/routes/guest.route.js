@@ -227,6 +227,7 @@ router.post('/login/forgotpwd/resetpwd', async (req, res) => {
 router.get('/article/:id', articleController.getArticleDetail);
 //Duong
 router.get('/category/:id', articleController.getCategoryArticles);
-
+//Duong
+router.get('/search', articleController.searchArticles);
 
 module.exports = router;

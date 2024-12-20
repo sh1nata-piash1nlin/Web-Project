@@ -26,15 +26,27 @@ async function getCategories() {
     }
 }
 
-async function getFeaturedArticles() {
+async function getFeaturedArticles(page = 1) {
     try {
+        const limit = 10;
+        const offset = (page - 1) * limit;
+
+        // Get total count
+        const [countResult] = await db.execute(`
+            SELECT COUNT(*) as total
+            FROM Articles
+            WHERE status = 'published' 
+            AND featured = 1
+        `);
+
+        // Get paginated articles
         const [articles] = await db.execute(`
             SELECT 
                 a.id, 
                 a.title, 
                 a.abstract, 
                 a.featured_image, 
-                a.publish_date, 
+                DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date, 
                 c.name AS category_name,
                 u.full_name AS author_name
             FROM Articles a
@@ -43,12 +55,53 @@ async function getFeaturedArticles() {
             WHERE a.status = 'published' 
             AND a.featured = 1
             ORDER BY a.publish_date DESC
+            LIMIT ? OFFSET ?
+        `, [limit, offset]);
+
+        const totalArticles = countResult[0].total;
+        const totalPages = Math.ceil(totalArticles / limit);
+
+        return {
+            articles,
+            pagination: {
+                pages: Array.from({ length: totalPages }, (_, i) => ({
+                    pageNumber: i + 1,
+                    isCurrentPage: i + 1 === page
+                })),
+                currentPage: page,
+                hasPrevPage: page > 1,
+                hasNextPage: page < totalPages,
+                prevPage: page - 1,
+                nextPage: page + 1,
+                totalPages
+            }
+        };
+    } catch (error) {
+        console.error('Error fetching featured articles:', error);
+        throw new Error('Failed to retrieve featured articles');
+    }
+}
+
+async function getSidebarFeaturedArticles() {
+    try {
+        const [articles] = await db.execute(`
+            SELECT 
+                a.id, 
+                a.title, 
+                a.featured_image, 
+                DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date, 
+                c.name AS category_name
+            FROM Articles a
+            JOIN Categories c ON a.category_id = c.id
+            WHERE a.status = 'published' 
+            AND a.featured = 1
+            ORDER BY a.publish_date DESC
             LIMIT 5
         `);
         return articles;
     } catch (error) {
-        console.error('Error fetching featured articles:', error);
-        throw new Error('Failed to retrieve featured articles');
+        console.error('Error fetching sidebar featured articles:', error);
+        throw new Error('Failed to retrieve sidebar featured articles');
     }
 }
 
@@ -76,33 +129,6 @@ async function getLatestArticles() {
     }
 }
 
-async function getArticlesByCategory(categoryId) {
-    try {
-        console.log('Fetching articles for category:', categoryId);
-        
-        const [articles] = await db.execute(`
-            SELECT 
-                a.id,
-                a.title,
-                a.abstract,
-                a.featured_image,
-                DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date,
-                c.name as category_name
-            FROM Articles a
-            JOIN Categories c ON a.category_id = c.id
-            WHERE a.category_id = ?
-            AND a.status = 'published'
-            ORDER BY a.publish_date DESC
-            LIMIT 5
-        `, [categoryId]);
-        
-        console.log('Found articles:', articles);
-        return articles;
-    } catch (error) {
-        console.error('Error fetching articles by category:', error);
-        throw error;
-    }
-}
 
 async function getArticleDetail(req, res) {
     try {
@@ -141,7 +167,7 @@ async function getArticleDetail(req, res) {
 
         const article = articles[0];
 
-        // Lấy comments của bài viết
+        // Lấy comments c���a bài viết
         const [comments] = await db.execute(`
             SELECT 
                 c.id,
@@ -174,10 +200,14 @@ async function getArticleDetail(req, res) {
         // Lấy danh mục để hiển thị menu
         const categories = await getCategories();
         
-        // Thêm các bài viết cho sidebar
-        const featuredArticles = await getFeaturedArticles();
+        // Sử dụng hàm mới cho sidebar
+        const featuredArticles = await getSidebarFeaturedArticles();
         const latestArticles = await getLatestArticles();
         const mostViewedArticles = await getMostViewedArticles();
+        const healthArticles = await getHealthArticles();
+        const lifeArticles = await getLifeArticles();
+        const techArticles = await getTechArticles();
+        const carArticles = await getCarArticles();
 
         res.render('article-detail', {
             layout: 'main',
@@ -186,6 +216,10 @@ async function getArticleDetail(req, res) {
             relatedArticles,
             categories,
             featuredArticles,
+            healthArticles,
+            lifeArticles,
+            carArticles,
+            techArticles,
             latestArticles,
             mostViewedArticles,
             debug: {
@@ -217,7 +251,10 @@ async function getCategoryArticles(req, res) {
             AND a.status = 'published'
         `, [categoryId]);
 
-        // Lấy danh sách bài viết - Đơn giản hóa câu query
+        const totalArticles = countResult[0].total;
+        const totalPages = Math.ceil(totalArticles / limit);
+
+        // Lấy danh sách bài viết có phân trang
         const [articles] = await db.execute(`
             SELECT 
                 a.id,
@@ -235,15 +272,6 @@ async function getCategoryArticles(req, res) {
             LIMIT ? OFFSET ?
         `, [categoryId, limit, offset]);
 
-        console.log('Total articles:', countResult[0].total);
-        console.log('Current page articles:', articles.length);
-        console.log('Page:', page);
-        console.log('Limit:', limit);
-        console.log('Offset:', offset);
-
-        const totalArticles = countResult[0].total;
-        const totalPages = Math.ceil(totalArticles / limit);
-
         // Lấy thông tin category hiện tại
         const [categories] = await db.execute(`
             SELECT id, name, parent_id
@@ -260,7 +288,7 @@ async function getCategoryArticles(req, res) {
 
         const category = categories[0];
 
-        // Lấy thông tin category cha nếu có
+        // L��y thông tin category cha nếu có
         let parentCategory = null;
         if (category.parent_id) {
             const [parents] = await db.execute(`
@@ -273,30 +301,29 @@ async function getCategoryArticles(req, res) {
             }
         }
 
-        // Tạo object phân trang
+        // Tạo đối tượng phân trang
         const pagination = {
-            pages: [],
+            pages: Array.from({ length: totalPages }, (_, i) => ({
+                pageNumber: i + 1,
+                isCurrentPage: i + 1 === page
+            })),
             currentPage: page,
             hasPrevPage: page > 1,
             hasNextPage: page < totalPages,
             prevPage: page - 1,
             nextPage: page + 1,
-            totalPages: totalPages
+            totalPages
         };
-
-        // Tạo mảng các trang
-        for (let i = 1; i <= totalPages; i++) {
-            pagination.pages.push({
-                pageNumber: i,
-                isCurrentPage: i === page
-            });
-        }
 
         // Lấy các dữ liệu khác
         const categories_menu = await getCategories();
         const mostViewedArticles = await getMostViewedArticles();
-        const featuredArticles = await getFeaturedArticles();
+        const featuredArticles = await getSidebarFeaturedArticles();
         const latestArticles = await getLatestArticles();
+        const healthArticles = await getHealthArticles();
+        const lifeArticles = await getLifeArticles();
+        const techArticles = await getTechArticles();
+        const carArticles = await getCarArticles();
 
         res.render('category-articles', {
             layout: 'main',
@@ -307,6 +334,10 @@ async function getCategoryArticles(req, res) {
             mostViewedArticles,
             featuredArticles,
             latestArticles,
+            healthArticles,
+            lifeArticles,
+            techArticles,
+            carArticles,
             categories: categories_menu,
             debug: {
                 hasMostViewed: mostViewedArticles && mostViewedArticles.length > 0,
@@ -374,10 +405,10 @@ async function renderHomepage(req, res) {
     try {
         const categories = await getCategories();
         const featuredArticles = await getFeaturedArticles();
-        const healthArticles = await getArticlesByCategory(8);
-        const lifeArticles = await getArticlesByCategory(9);
-        const techArticles = await getArticlesByCategory(11);
-        const carArticles = await getArticlesByCategory(12);
+        const healthArticles = await getHealthArticles();
+        const lifeArticles = await getLifeArticles();
+        const techArticles = await getTechArticles();
+        const carArticles = await getCarArticles();
         const mostViewedArticles = await getMostViewedArticles();
 
         res.render('home', {
@@ -395,17 +426,232 @@ async function renderHomepage(req, res) {
         });
     } catch (error) {
         console.error('Error in renderHomepage:', error);
-        res.status(500).render('error', { message: 'Có lỗi xảy ra khi tải trang chủ' });
+        res.status(500).render('error', { 
+            layout: 'main',
+            message: 'Có lỗi xảy ra khi tải trang chủ' 
+        });
     }
 }
 
+async function searchArticles(req, res) {
+    try {
+        const searchTerm = req.query.q;
+        const page = parseInt(req.query.page) || 1;
+        const limit = 10;
+        const offset = (page - 1) * limit;
+
+        // Đếm tổng số kết quả
+        const [countResult] = await db.execute(`
+            SELECT COUNT(*) as total
+            FROM Articles a
+            WHERE MATCH(title, abstract, content) AGAINST(? IN NATURAL LANGUAGE MODE)
+            AND status = 'published'
+        `, [searchTerm]);
+
+        const totalArticles = countResult[0].total;
+        const totalPages = Math.ceil(totalArticles / limit);
+
+        // Lấy kết quả tìm kiếm có phân trang
+        const [articles] = await db.execute(`
+            SELECT 
+                a.id,
+                a.title,
+                a.abstract,
+                a.featured_image,
+                DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date,
+                c.name as category_name,
+                c.id as category_id,
+                u.full_name as author_name,
+                MATCH(title, abstract, content) AGAINST(? IN NATURAL LANGUAGE MODE) as relevance
+            FROM Articles a
+            JOIN Categories c ON a.category_id = c.id
+            JOIN Users u ON a.author_id = u.id
+            WHERE MATCH(title, abstract, content) AGAINST(? IN NATURAL LANGUAGE MODE)
+            AND status = 'published'
+            ORDER BY relevance DESC
+            LIMIT ? OFFSET ?
+        `, [searchTerm, searchTerm, limit, offset]);
+
+        // Tạo đối tượng phân trang
+        const pagination = {
+            pages: Array.from({ length: totalPages }, (_, i) => ({
+                pageNumber: i + 1,
+                isCurrentPage: i + 1 === page
+            })),
+            currentPage: page,
+            hasPrevPage: page > 1,
+            hasNextPage: page < totalPages,
+            prevPage: page - 1,
+            nextPage: page + 1,
+            totalPages
+        };
+
+        // Lấy dữ liệu cho sidebar và menu
+        const categories = await getCategories();
+        const mostViewedArticles = await getMostViewedArticles();
+        const featuredArticles = await getSidebarFeaturedArticles();
+        const latestArticles = await getLatestArticles();
+        const healthArticles = await getHealthArticles();
+        const lifeArticles = await getLifeArticles();
+        const techArticles = await getTechArticles();
+        const carArticles = await getCarArticles();
+
+        res.render('search-results', {
+            layout: 'main',
+            searchTerm,
+            articles,
+            pagination,
+            categories,
+            mostViewedArticles,
+            featuredArticles,
+            latestArticles,
+            healthArticles,
+            lifeArticles,
+            techArticles,
+            carArticles,
+            debug: {
+                totalResults: totalArticles,
+                currentPage: page,
+                resultsPerPage: limit
+            }
+        });
+
+    } catch (error) {
+        console.error('Error in searchArticles:', error);
+        res.status(500).render('error', {
+            layout: 'main',
+            message: 'Có lỗi xảy ra khi tìm kiếm'
+        });
+    }
+}
+
+async function getHealthArticles() {
+    try {
+        const healthCategoryId = 8;
+        const [articles] = await db.execute(`
+            SELECT 
+                a.id, 
+                a.title, 
+                a.abstract, 
+                a.featured_image, 
+                DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date, 
+                c.name AS category_name,
+                u.full_name AS author_name
+            FROM Articles a
+            JOIN Categories c ON a.category_id = c.id
+            JOIN Users u ON a.author_id = u.id
+            WHERE a.status = 'published' 
+            AND a.category_id = ?
+            ORDER BY a.publish_date DESC
+            LIMIT 5
+        `, [healthCategoryId]);
+        
+        return articles;
+    } catch (error) {
+        console.error('Error fetching health articles:', error);
+        throw new Error('Failed to retrieve health articles');
+    }
+}
+
+async function getLifeArticles() {
+    try {
+        const lifeCategoryId = 9;
+        const [articles] = await db.execute(`
+            SELECT 
+                a.id, 
+                a.title, 
+                a.abstract, 
+                a.featured_image, 
+                DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date, 
+                c.name AS category_name,
+                u.full_name AS author_name
+            FROM Articles a
+            JOIN Categories c ON a.category_id = c.id
+            JOIN Users u ON a.author_id = u.id
+            WHERE a.status = 'published' 
+            AND a.category_id = ?
+            ORDER BY a.publish_date DESC
+            LIMIT 5
+        `, [lifeCategoryId]);
+        
+        return articles;
+    } catch (error) {
+        console.error('Error fetching life articles:', error);
+        throw new Error('Failed to retrieve life articles');
+    }
+}
+
+async function getTechArticles() {
+    try {
+        const techCategoryId = 11;
+        const [articles] = await db.execute(`
+            SELECT 
+                a.id, 
+                a.title, 
+                a.abstract, 
+                a.featured_image, 
+                DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date, 
+                c.name AS category_name,
+                u.full_name AS author_name
+            FROM Articles a
+            JOIN Categories c ON a.category_id = c.id
+            JOIN Users u ON a.author_id = u.id
+            WHERE a.status = 'published' 
+            AND a.category_id = ?
+            ORDER BY a.publish_date DESC
+            LIMIT 5
+        `, [techCategoryId]);
+        
+        return articles;
+    } catch (error) {
+        console.error('Error fetching tech articles:', error);
+        throw new Error('Failed to retrieve tech articles');
+    }
+}
+
+async function getCarArticles() {
+    try {
+        const carCategoryId = 12;
+        const [articles] = await db.execute(`
+            SELECT 
+                a.id, 
+                a.title, 
+                a.abstract, 
+                a.featured_image, 
+                DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date, 
+                c.name AS category_name,
+                u.full_name AS author_name
+            FROM Articles a
+            JOIN Categories c ON a.category_id = c.id
+            JOIN Users u ON a.author_id = u.id
+            WHERE a.status = 'published' 
+            AND a.category_id = ?
+            ORDER BY a.publish_date DESC
+            LIMIT 5
+        `, [carCategoryId]);
+        
+        return articles;
+    } catch (error) {
+        console.error('Error fetching car articles:', error);
+        throw new Error('Failed to retrieve car articles');
+    }
+}
+
+
 module.exports = {
     getFeaturedArticles,
+    getSidebarFeaturedArticles,
     getLatestArticles,
-    getArticlesByCategory,
+    getCategoryArticles,
     getArticleDetail,
     getCategories,
-    getCategoryArticles,
     renderHomepage,
-    getMostViewedArticles
+    getMostViewedArticles,
+    searchArticles,
+    getHealthArticles,
+    getLifeArticles,
+    getTechArticles,
+    getCarArticles,
+    getAllArticles,
+
 };
