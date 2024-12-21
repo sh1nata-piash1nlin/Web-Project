@@ -54,6 +54,7 @@ async function getFeaturedArticles(page = 1) {
             JOIN Users u ON a.author_id = u.id
             WHERE a.status = 'published' 
             AND a.featured = 1
+            AND a.is_premium = 0
             ORDER BY a.publish_date DESC
             LIMIT ? OFFSET ?
         `, [limit, offset]);
@@ -82,19 +83,21 @@ async function getFeaturedArticles(page = 1) {
     }
 }
 
-async function getSidebarFeaturedArticles() {
+async function getSidebarFeaturedArticles(isSubscriber = false) {
     try {
         const [articles] = await db.execute(`
             SELECT 
                 a.id, 
                 a.title, 
-                a.featured_image, 
-                DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date, 
-                c.name AS category_name
+                a.featured_image,
+                DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date,
+                c.name AS category_name,
+                a.is_premium
             FROM Articles a
             JOIN Categories c ON a.category_id = c.id
             WHERE a.status = 'published' 
             AND a.featured = 1
+            ${isSubscriber ? '' : 'AND a.is_premium = 0'}
             ORDER BY a.publish_date DESC
             LIMIT 5
         `);
@@ -133,6 +136,7 @@ async function getLatestArticles() {
 async function getArticleDetail(req, res) {
     try {
         const articleId = req.params.id;
+        const isSubscriber = req.session.authUser?.role === 'subscriber';
         
         // Tăng lượt xem
         await db.execute(`
@@ -167,13 +171,15 @@ async function getArticleDetail(req, res) {
 
         const article = articles[0];
 
-        // Lấy comments c���a bài viết
+        // Lấy comments của bài viết kèm thông tin người dùng
         const [comments] = await db.execute(`
             SELECT 
                 c.id,
                 c.comment_text,
                 DATE_FORMAT(c.comment_date, '%d/%m/%Y %H:%i') as comment_date,
-                u.full_name AS user_name
+                u.full_name AS user_name,
+                u.username,
+                u.role
             FROM Comments c
             JOIN Users u ON c.user_id = u.id
             WHERE c.article_id = ?
@@ -201,13 +207,13 @@ async function getArticleDetail(req, res) {
         const categories = await getCategories();
         
         // Sử dụng hàm mới cho sidebar
-        const featuredArticles = await getSidebarFeaturedArticles();
-        const latestArticles = await getLatestArticles();
-        const mostViewedArticles = await getMostViewedArticles();
-        const healthArticles = await getHealthArticles();
-        const lifeArticles = await getLifeArticles();
-        const techArticles = await getTechArticles();
-        const carArticles = await getCarArticles();
+        const featuredArticles = await getSidebarFeaturedArticles(isSubscriber);
+        const latestArticles = await getLatestArticles(isSubscriber);
+        const mostViewedArticles = await getMostViewedArticles(isSubscriber);
+        const healthArticles = await getHealthArticles(isSubscriber);
+        const lifeArticles = await getLifeArticles(isSubscriber);
+        const techArticles = await getTechArticles(isSubscriber);
+        const carArticles = await getCarArticles(isSubscriber);
 
         res.render('article-detail', {
             layout: 'main',
@@ -224,7 +230,9 @@ async function getArticleDetail(req, res) {
             mostViewedArticles,
             debug: {
                 hasMostViewed: mostViewedArticles && mostViewedArticles.length > 0
-            }
+            },
+            currentUrl: req.originalUrl,
+            authUser: req.session.authUser
         });
 
     } catch (error) {
@@ -242,6 +250,7 @@ async function getCategoryArticles(req, res) {
         const page = parseInt(req.query.page) || 1;
         const limit = 10;
         const offset = (page - 1) * limit;
+        const isSubscriber = req.session.authUser?.role === 'subscriber';
 
         // Lấy tổng số bài viết
         const [countResult] = await db.execute(`
@@ -249,6 +258,7 @@ async function getCategoryArticles(req, res) {
             FROM Articles a
             WHERE a.category_id = ?
             AND a.status = 'published'
+            ${!isSubscriber ? 'AND a.is_premium = 0' : ''}
         `, [categoryId]);
 
         const totalArticles = countResult[0].total;
@@ -268,6 +278,7 @@ async function getCategoryArticles(req, res) {
             JOIN Users u ON a.author_id = u.id
             WHERE a.category_id = ?
             AND a.status = 'published'
+            ${!isSubscriber ? 'AND a.is_premium = 0' : ''}
             ORDER BY a.publish_date DESC
             LIMIT ? OFFSET ?
         `, [categoryId, limit, offset]);
@@ -288,7 +299,7 @@ async function getCategoryArticles(req, res) {
 
         const category = categories[0];
 
-        // L��y thông tin category cha nếu có
+        // Lấy thông tin category cha nếu có
         let parentCategory = null;
         if (category.parent_id) {
             const [parents] = await db.execute(`
@@ -315,15 +326,15 @@ async function getCategoryArticles(req, res) {
             totalPages
         };
 
-        // Lấy các dữ liệu khác
+        // Lấy các dữ liệu khác và thêm isSubscriber
         const categories_menu = await getCategories();
-        const mostViewedArticles = await getMostViewedArticles();
-        const featuredArticles = await getSidebarFeaturedArticles();
-        const latestArticles = await getLatestArticles();
-        const healthArticles = await getHealthArticles();
-        const lifeArticles = await getLifeArticles();
-        const techArticles = await getTechArticles();
-        const carArticles = await getCarArticles();
+        const mostViewedArticles = await getMostViewedArticles(isSubscriber);
+        const featuredArticles = await getSidebarFeaturedArticles(isSubscriber);
+        const latestArticles = await getLatestArticles(isSubscriber);
+        const healthArticles = await getHealthArticles(isSubscriber);
+        const lifeArticles = await getLifeArticles(isSubscriber);
+        const techArticles = await getTechArticles(isSubscriber);
+        const carArticles = await getCarArticles(isSubscriber);
 
         res.render('category-articles', {
             layout: 'main',
@@ -376,24 +387,20 @@ async function getAllArticles() {
 
 
 
-async function getMostViewedArticles() {
+async function getMostViewedArticles(isSubscriber = false) {
     try {
-        console.log('Starting getMostViewedArticles...');
-        
         const [articles] = await db.execute(`
             SELECT 
-                a.id,
-                a.title,
-                a.view_count
-            FROM articles a
+                a.id, 
+                a.title, 
+                a.view_count,
+                a.is_premium
+            FROM Articles a
             WHERE a.status = 'published'
+            ${isSubscriber ? '' : 'AND a.is_premium = 0'}
             ORDER BY a.view_count DESC
             LIMIT 4
         `);
-        
-        console.log('Query executed successfully');
-        console.log('Most viewed articles found:', articles);
-        
         return articles;
     } catch (error) {
         console.error('Error in getMostViewedArticles:', error);
@@ -403,13 +410,14 @@ async function getMostViewedArticles() {
 
 async function renderHomepage(req, res) {
     try {
+        const isSubscriber = req.session.authUser?.role === 'subscriber';
         const categories = await getCategories();
-        const featuredArticles = await getFeaturedArticles();
-        const healthArticles = await getHealthArticles();
-        const lifeArticles = await getLifeArticles();
-        const techArticles = await getTechArticles();
-        const carArticles = await getCarArticles();
-        const mostViewedArticles = await getMostViewedArticles();
+        const featuredArticles = await getSidebarFeaturedArticles(isSubscriber);
+        const healthArticles = await getHealthArticles(isSubscriber);
+        const lifeArticles = await getLifeArticles(isSubscriber);
+        const techArticles = await getTechArticles(isSubscriber);
+        const carArticles = await getCarArticles(isSubscriber);
+        const mostViewedArticles = await getMostViewedArticles(isSubscriber);
 
         res.render('home', {
             layout: 'main',
@@ -420,6 +428,7 @@ async function renderHomepage(req, res) {
             techArticles,
             carArticles,
             mostViewedArticles,
+            isSubscriber,
             debug: {
                 hasMostViewed: mostViewedArticles && mostViewedArticles.length > 0
             }
@@ -439,6 +448,7 @@ async function searchArticles(req, res) {
         const page = parseInt(req.query.page) || 1;
         const limit = 10;
         const offset = (page - 1) * limit;
+        const isSubscriber = req.session.authUser?.role === 'subscriber';
 
         // Đếm tổng số kết quả
         const [countResult] = await db.execute(`
@@ -446,6 +456,7 @@ async function searchArticles(req, res) {
             FROM Articles a
             WHERE MATCH(title, abstract, content) AGAINST(? IN NATURAL LANGUAGE MODE)
             AND status = 'published'
+            ${!isSubscriber ? 'AND a.is_premium = 0' : ''}
         `, [searchTerm]);
 
         const totalArticles = countResult[0].total;
@@ -468,6 +479,7 @@ async function searchArticles(req, res) {
             JOIN Users u ON a.author_id = u.id
             WHERE MATCH(title, abstract, content) AGAINST(? IN NATURAL LANGUAGE MODE)
             AND status = 'published'
+            ${!isSubscriber ? 'AND a.is_premium = 0' : ''}
             ORDER BY relevance DESC
             LIMIT ? OFFSET ?
         `, [searchTerm, searchTerm, limit, offset]);
@@ -488,13 +500,13 @@ async function searchArticles(req, res) {
 
         // Lấy dữ liệu cho sidebar và menu
         const categories = await getCategories();
-        const mostViewedArticles = await getMostViewedArticles();
-        const featuredArticles = await getSidebarFeaturedArticles();
-        const latestArticles = await getLatestArticles();
-        const healthArticles = await getHealthArticles();
-        const lifeArticles = await getLifeArticles();
-        const techArticles = await getTechArticles();
-        const carArticles = await getCarArticles();
+        const mostViewedArticles = await getMostViewedArticles(isSubscriber);
+        const featuredArticles = await getSidebarFeaturedArticles(isSubscriber);
+        const latestArticles = await getLatestArticles(isSubscriber);
+        const healthArticles = await getHealthArticles(isSubscriber);
+        const lifeArticles = await getLifeArticles(isSubscriber);
+        const techArticles = await getTechArticles(isSubscriber);
+        const carArticles = await getCarArticles(isSubscriber);
 
         res.render('search-results', {
             layout: 'main',
@@ -525,7 +537,7 @@ async function searchArticles(req, res) {
     }
 }
 
-async function getHealthArticles() {
+async function getHealthArticles(isSubscriber = false) {
     try {
         const healthCategoryId = 8;
         const [articles] = await db.execute(`
@@ -536,12 +548,14 @@ async function getHealthArticles() {
                 a.featured_image, 
                 DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date, 
                 c.name AS category_name,
-                u.full_name AS author_name
+                u.full_name AS author_name,
+                a.is_premium
             FROM Articles a
             JOIN Categories c ON a.category_id = c.id
             JOIN Users u ON a.author_id = u.id
             WHERE a.status = 'published' 
             AND a.category_id = ?
+            ${isSubscriber ? '' : 'AND a.is_premium = 0'}
             ORDER BY a.publish_date DESC
             LIMIT 5
         `, [healthCategoryId]);
@@ -553,7 +567,7 @@ async function getHealthArticles() {
     }
 }
 
-async function getLifeArticles() {
+async function getLifeArticles(isSubscriber = false) {
     try {
         const lifeCategoryId = 9;
         const [articles] = await db.execute(`
@@ -564,12 +578,14 @@ async function getLifeArticles() {
                 a.featured_image, 
                 DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date, 
                 c.name AS category_name,
-                u.full_name AS author_name
+                u.full_name AS author_name,
+                a.is_premium
             FROM Articles a
             JOIN Categories c ON a.category_id = c.id
             JOIN Users u ON a.author_id = u.id
             WHERE a.status = 'published' 
             AND a.category_id = ?
+            ${isSubscriber ? '' : 'AND a.is_premium = 0'}
             ORDER BY a.publish_date DESC
             LIMIT 5
         `, [lifeCategoryId]);
@@ -581,7 +597,7 @@ async function getLifeArticles() {
     }
 }
 
-async function getTechArticles() {
+async function getTechArticles(isSubscriber = false) {
     try {
         const techCategoryId = 11;
         const [articles] = await db.execute(`
@@ -592,12 +608,14 @@ async function getTechArticles() {
                 a.featured_image, 
                 DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date, 
                 c.name AS category_name,
-                u.full_name AS author_name
+                u.full_name AS author_name,
+                a.is_premium
             FROM Articles a
             JOIN Categories c ON a.category_id = c.id
             JOIN Users u ON a.author_id = u.id
             WHERE a.status = 'published' 
             AND a.category_id = ?
+            ${isSubscriber ? '' : 'AND a.is_premium = 0'}
             ORDER BY a.publish_date DESC
             LIMIT 5
         `, [techCategoryId]);
@@ -609,7 +627,7 @@ async function getTechArticles() {
     }
 }
 
-async function getCarArticles() {
+async function getCarArticles(isSubscriber = false) {
     try {
         const carCategoryId = 12;
         const [articles] = await db.execute(`
@@ -620,12 +638,14 @@ async function getCarArticles() {
                 a.featured_image, 
                 DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date, 
                 c.name AS category_name,
-                u.full_name AS author_name
+                u.full_name AS author_name,
+                a.is_premium
             FROM Articles a
             JOIN Categories c ON a.category_id = c.id
             JOIN Users u ON a.author_id = u.id
             WHERE a.status = 'published' 
             AND a.category_id = ?
+            ${isSubscriber ? '' : 'AND a.is_premium = 0'}
             ORDER BY a.publish_date DESC
             LIMIT 5
         `, [carCategoryId]);
@@ -637,6 +657,51 @@ async function getCarArticles() {
     }
 }
 
+async function addComment(req, res) {
+    try {
+        // Kiểm tra user đã đăng nhập chưa
+        if (!req.session.authUser) {
+            return res.status(401).json({ 
+                success: false, 
+                message: 'Bạn cần đăng nhập để bình luận' 
+            });
+        }
+
+        const { article_id, comment_text, returnUrl } = req.body;
+        const user_id = req.session.authUser.id;
+
+        // Validate input
+        if (!article_id || !comment_text || comment_text.trim() === '') {
+            return res.status(400).json({
+                success: false,
+                message: 'Nội dung bình luận không được để trống'
+            });
+        }
+
+        // Thêm comment vào database
+        await db.execute(`
+            INSERT INTO Comments (article_id, user_id, comment_text, comment_date)
+            VALUES (?, ?, ?, NOW())
+        `, [article_id, user_id, comment_text]);
+
+        // Redirect về trang trước đó
+        if (returnUrl) {
+            res.redirect(returnUrl);
+        } else {
+            // Fallback nếu không có returnUrl
+            const isSubscriber = req.session.authUser?.role === 'subscriber';
+            const baseUrl = isSubscriber ? '/subscriber/article/' : '/article/';
+            res.redirect(baseUrl + article_id);
+        }
+
+    } catch (error) {
+        console.error('Error in addComment:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Có lỗi xảy ra khi thêm bình luận'
+        });
+    }
+}
 
 module.exports = {
     getFeaturedArticles,
@@ -653,5 +718,5 @@ module.exports = {
     getTechArticles,
     getCarArticles,
     getAllArticles,
-
+    addComment
 };

@@ -7,6 +7,7 @@ const authRouter = require('./src/routes/auth.route'); // Authentication routes
 const guestRoutes = require('./src/routes/guest.route');
 const { engine } = require('express-handlebars'); // Import express-handlebars
 const session = require('express-session');
+const subscriberRouter = require('./src/routes/subscriber.route');
 
 require('./passport'); // Passport setup
 const app = express();
@@ -70,9 +71,18 @@ app.use('/api/auth', authRouter); // Authentication routes (e.g., Google login)
 //     res.render('dashboard'); // Render the dashboard.hbs file in the views directory
 // }); 
 
+app.use('/subscriber', subscriberRouter);
+
+// Error handling
+app.use((req, res, next) => {
+    res.status(404).render('404', { layout: 'main' });
+});
 
 // Start the server
 const port = process.env.PORT || 8888;
 app.listen(port, () => {
     console.log('Server is running on port ' + port);
 });
+
+
+module.exports = app;

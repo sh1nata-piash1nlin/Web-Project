@@ -27,6 +27,7 @@ router.post('/login', async function (req, res) {
           showErrors: true,
       });
   }
+
   if (!bcrypt.compareSync(req.body.password, user.password)) {
       return res.render('login', {
           layout: 'login-layout',
@@ -36,12 +37,25 @@ router.post('/login', async function (req, res) {
 
   req.session.isAuthenticated = true;
   req.session.authUser = {
-      id: user.id, // Store the user's ID in the session
+      id: user.id,
       email: user.email,
-      avatar: user.avatar || '/static/img/default.png' // Use default avatar if none provided
+      avatar: user.avatar || '/static/img/default.png',
+      role: user.role === null ? 'guest' : user.role
   };
 
-  res.redirect('/');
+  // Redirect based on role
+  if (user.role === 'subscriber') {
+      return res.redirect('/subscriber');
+  } else if (user.role === 'editor') {
+      return res.redirect('/editor');
+  } else if (user.role === 'writer') {
+      return res.redirect('/writer');
+  } else if (user.role === 'admin') {
+      return res.redirect('/admin');
+  } else {
+      // Default redirect for guest or undefined roles
+      return res.redirect('/');
+  }
 });
 
 router.get('/signup', async(req, res)=>{
@@ -229,5 +243,8 @@ router.get('/article/:id', articleController.getArticleDetail);
 router.get('/category/:id', articleController.getCategoryArticles);
 //Duong
 router.get('/search', articleController.searchArticles);
+
+// Route cho comments - có thể sử dụng bởi mọi user đã đăng nhập
+router.post('/articles/comments', articleController.addComment);
 
 module.exports = router;

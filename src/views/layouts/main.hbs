@@ -138,12 +138,12 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="/">
+            <a class="navbar-brand" href="{{#if isSubscriber}}/subscriber{{else}}/{{/if}}">
                 <div class="me-3">VnExpress</div>
             </a>
 
             <!-- Centered Search Form -->
-            <form class="d-flex mx-auto" action="/search" method="get" style="max-width: 400px;">
+            <form class="d-flex mx-auto" action="{{#if isSubscriber}}/subscriber/search{{else}}/search{{/if}}" method="get" style="max-width: 400px;">
                 <input class="form-control me-2" type="search" name="q" placeholder="Tìm kiếm" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Tìm kiếm</button>
             </form>
@@ -184,20 +184,29 @@
             <div class="navbar-collapse">
                 <ul class="navbar-nav main-nav d-flex justify-content-evenly w-100">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">
+                        <a class="nav-link" href="{{#if isSubscriber}}/subscriber{{else}}/{{/if}}">
                             <i class="bi bi-house-door home-icon"></i>
                         </a>
                     </li>
                     {{#each categories}}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="/category/{{this.id}}" id="navbarDropdown{{this.id}}"
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" 
+                           href="{{#if ../isSubscriber}}/subscriber/category/{{this.id}}{{else}}/category/{{this.id}}{{/if}}" 
+                           id="navbarDropdown{{this.id}}"
+                           role="button" 
+                           data-bs-toggle="dropdown" 
+                           aria-expanded="false">
                             {{this.name}}
                         </a>
                         {{#if this.subcategories.length}}
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown{{this.id}}">
                             {{#each this.subcategories}}
-                            <li><a class="dropdown-item" href="/category/{{this.id}}">{{this.name}}</a></li>
+                            <li>
+                                <a class="dropdown-item" 
+                                   href="{{#if ../../isSubscriber}}/subscriber/category/{{this.id}}{{else}}/category/{{this.id}}{{/if}}">
+                                    {{this.name}}
+                                </a>
+                            </li>
                             {{/each}}
                         </ul>
                         {{/if}}
@@ -219,45 +228,118 @@
             <!-- Sidebar -->
             <div class="col-lg-4">
                 <div class="sidebar">
+                    <!-- Featured Articles Sidebar -->
                     <div class="card mb-4">
                         <div class="card-header">
                             <h5 class="mb-0">Tin nổi bật</h5>
                         </div>
-                        <div class="row mb-4">
+                        <div class="card-body">
                             {{#each featuredArticles}}
-                            <div class="col-lg-6 d-flex align-items-center justify-content-center">
-                                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded"
-                                    style="width: 100%; max-width: 300px; height: auto; border-radius: 10px; margin-top: 20px; margin-bottom: 20px;">
-                            </div>
-                            <div class="col-lg-6 d-flex align-items-center">
-                                <div class="card-body">
-                                    <div class="related-news mb-3">
-                                        <h3>
-                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                        </h3>
-                                        <div class="comment-count">
-                                            <i class="bi bi-chat-dots"></i> {{this.comments}}
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="mb-3">
+                                <h6>
+                                    {{#if ../isSubscriber}}
+                                        {{#if this.is_premium}}
+                                            <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{else}}
+                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{/if}}
+                                    {{else}}
+                                        {{#if this.is_premium}}
+                                            <a href="/premium-notice" class="text-dark text-decoration-none">
+                                        {{else}}
+                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{/if}}
+                                    {{/if}}
+                                        {{this.title}}
+                                    </a>
+                                </h6>
                             </div>
                             {{/each}}
                         </div>
                     </div>
 
-                    <div class="card">
+                    <!-- Latest Articles -->
+                    <div class="card mb-4">
                         <div class="card-header">
                             <h5 class="mb-0">Tin mới nhất</h5>
                         </div>
                         <div class="card-body">
                             {{#each latestArticles}}
-                            <div class="related-news mb-3">
-                                <h3><a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                </h3>
+                            <div class="mb-3">
+                                <h6>
+                                    {{#if ../isSubscriber}}
+                                        {{#if this.is_premium}}
+                                            <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{else}}
+                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{/if}}
+                                    {{else}}
+                                        {{#if this.is_premium}}
+                                            <a href="/premium-notice" class="text-dark text-decoration-none">
+                                        {{else}}
+                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{/if}}
+                                    {{/if}}
+                                        {{this.title}}
+                                    </a>
+                                </h6>
                             </div>
                             {{/each}}
                         </div>
                     </div>
+
+                    <!-- Most Viewed Articles -->
+                    
+
+                    <!-- Tabs Content -->
+                    <div class="tab-content mt-3">
+                        {{#each [healthArticles, lifeArticles, techArticles, carArticles]}}
+                        <div class="tab-pane fade {{#if @first}}show active{{/if}}" 
+                             id="tab-{{@key}}-content" 
+                             role="tabpanel">
+                            {{#each this}}
+                            <div class="mb-3">
+                                <h6>
+                                    {{#if ../../isSubscriber}}
+                                        {{#if this.is_premium}}
+                                            <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{else}}
+                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{/if}}
+                                    {{else}}
+                                        {{#if this.is_premium}}
+                                            <a href="/premium-notice" class="text-dark text-decoration-none">
+                                        {{else}}
+                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{/if}}
+                                    {{/if}}
+                                        {{this.title}}
+                                    </a>
+                                </h6>
+                            </div>
+                            {{/each}}
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subscribe Modal -->
+    <div class="modal fade" id="subscribeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nội dung Premium</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn cần đăng ký tài khoản Premium để đọc bài viết này.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <a href="/register" class="btn btn-primary">Đăng ký ngay</a>
                 </div>
             </div>
         </div>
@@ -485,19 +567,25 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body bg-white text-black">
                             <h5 class="card-title">Bài viết được xem nhiều nhất</h5>
-                            <!-- Debug info -->
-                            {{#if debug.hasMostViewed}}
-                                
-                            
-                            {{/if}}
-                            
                             <ul class="list-unstyled">
                                 {{#each mostViewedArticles}}
                                 <li class="mb-3">
-                                    <a href="/article/{{this.id}}" class="text-dark">
-                                        <i class="fas fa-eye mr-2"></i>
-                                        {{this.title}}
-                                        <small class="text-muted">({{this.view_count}} lượt xem)</small>
+                                    {{#if ../isSubscriber}}
+                                        {{#if this.is_premium}}
+                                            <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{else}}
+                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{/if}}
+                                    {{else}}
+                                        {{#if this.is_premium}}
+                                            <a href="/premium-notice" class="text-dark text-decoration-none">
+                                        {{else}}
+                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{/if}}
+                                    {{/if}}
+                                    <i class="fas fa-eye mr-2"></i>
+                                    {{this.title}}
+                                    <small class="text-muted">({{this.view_count}} lượt xem)</small>
                                     </a>
                                 </li>
                                 {{/each}}
