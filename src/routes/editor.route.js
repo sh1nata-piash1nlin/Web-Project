@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const editorService = require('../services/editor.service');
 const dayjs = require('dayjs');
-const guestController = require('../controllers/guest.controller');
 
 const ensureAuthenticated = (req, res, next) => {
   if (!req.session.isAuthenticated) {
@@ -154,38 +153,29 @@ router.get('/editor/editorPOV', ensureAuthenticated, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     
-    // Get all different types of articles
-    const featuredArticles = await editorService.getFeaturedArticles(page);
-    const sidebarFeaturedArticles = await editorService.getSidebarFeaturedArticles();
-    const healthArticles = await editorService.getHealthArticles();
-    const lifeArticles = await editorService.getLifeArticles();
-    const techArticles = await editorService.getTechArticles();
-    const carArticles = await editorService.getCarArticles();
+    // Get featured articles with pagination
+    const { articles: featuredArticles, pagination } = await editorService.getFeaturedArticles(page);
+    
+    // Get other article types
     const mostViewedArticles = await editorService.getMostViewedArticles();
     const latestArticles = await editorService.getLatestArticles();
     const categories = await editorService.getCategories();
 
     res.render('main-editorPOV', {
-      categories,
       featuredArticles,
-      sidebarFeaturedArticles,
-      healthArticles,
-      lifeArticles,
-      techArticles,
-      carArticles,
+      pagination, // Add pagination to the template data
       mostViewedArticles,
       latestArticles,
+      categories,
       isAuthenticated: req.session.isAuthenticated,
       authUser: req.session.authUser,
-      layout: 'editor-layout',
-      debug: {
-        hasMostViewed: mostViewedArticles && mostViewedArticles.length > 0
-      }
+      layout: 'editor-layout'
     });
   } catch (err) {
     console.error(err);
     res.status(500).send('Error fetching articles.');
   }
 });
+
 
 module.exports = router;
