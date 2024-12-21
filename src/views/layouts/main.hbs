@@ -4,132 +4,451 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title> 
+    <title>{{title}}</title> <!-- Dynamic Title -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+        {{{_sections.css}}}
+
     <style>
-    .navbar-brand img {
-        height: 40px;
-    }
+        /* Color Variables */
+        :root {
+            --gold: #FFD700;
+            --gold-hover: #FFA500;
+            --black: #1a1a1a;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #4a4a4a;
+        }
 
-    .main-nav .nav-link {
-        color: #222;
-        padding: 0.5rem 1rem;
-        font-size: 14px;
-        white-space: nowrap;
-    }
+        /* General Styling */
+        body {
+            background-color: var(--light-gray);
+        }
 
-    .sidebar {
-        position: sticky;
-        top: 20px;
-    }
+        /* Enhanced Navbar */
+        .navbar {
+            background: var(--white) !important;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
 
-    .article-title {
-        font-size: 1.8rem;
-        font-weight: bold;
-        margin-bottom: 1rem;
-    }
+        .navbar .nav-link:hover {
+            color: var(--gold) !important;
+        }
 
-    .article-meta {
-        color: #666;
-        font-size: 0.9rem;
-    }
+        /* Enhanced Logo */
+        .logo-text {
+            background: linear-gradient(45deg, var(--black), var(--dark-gray));
+            border-color: var(--black);
+        }
 
-    .comment-count {
-        color: #666;
-        font-size: 0.8rem;
-    }
+        .logo-text:hover {
+            background: linear-gradient(45deg, var(--gold), var(--gold-hover));
+        }
 
-    .related-news {
-        border-left: 3px solid #e5e5e5;
-        padding-left: 15px;
-    }   
+        /* Enhanced Search Bar */
+        .search-input {
+            border: 2px solid var(--light-gray);
+        }
 
-    .related-news h3 {
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
-    }
+        .search-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
 
-    .dropdown-menu {
+        .search-button:hover {
+            background-color: var(--gold);
+            color: var(--black);
+        }
+
+        /* Enhanced Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: var(--black);
+            color: var(--white);
+        }
+
+        /* Enhanced Premium Elements */
+        a[href="/premium"]:hover {
+            color: var(--gold) !important;
+        }
+
+        .premium-avatar {
+            border: 2px solid var(--gold) !important;
+            position: relative !important;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+        }
+
+        .premium-avatar::after {
+            content: '👑';
+            position: absolute !important;
+            top: -10px !important;
+            right: -5px !important;
+            font-size: 14px !important;
+            z-index: 1000 !important;
+        }
+
+        /* Make sure no other styles are interfering */
+        .rounded-circle.premium-avatar {
+            border: 2px solid var(--gold) !important;
+        }
+
+        /* Premium Link Enhancement */
+        a[href="/premium"] {
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+
+        a[href="/premium"]:hover {
+            color: var(--gold) !important;
+            text-decoration: none;
+        }
+
+        /* Enhanced Article Sections */
+        .article-title a:hover {
+            color: var(--gold) !important;
+        }
+
+        .featured-article img {
+            transition: transform 0.3s ease;
+        }
+
+        .featured-article:hover img {
+            transform: scale(1.02);
+        }
+
+        /* Enhanced Buttons */
+        .btn-outline-dark:hover {
+            background-color: var(--gold);
+            border-color: var(--gold);
+            color: var(--black);
+        }
+
+        /* Enhanced Footer */
+        footer {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        footer h5 {
+            color: var(--gold);
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 10px;
+        }
+
+        /* Enhanced Navigation Tabs */
+        .nav-tabs .nav-link {
+            color: var(--black);
+            border: none;
+            padding: 10px 20px;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--gold);
+            border-bottom: 2px solid var(--gold);
+            background: transparent;
+        }
+
+        .nav-tabs .nav-link:hover:not(.active) {
+            color: var(--gold-hover);
+            border-bottom: 2px solid var(--gold-hover);
+        }
+
+        /* Enhanced Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar .card {
+            border-left: 3px solid var(--gold);
+        }
+
+        /* Enhanced Links */
+        a.text-dark:hover {
+            color: var(--gold) !important;
+            text-decoration: none;
+        }
+
+        .navbar-brand img {
+            height: 40px;
+        }
+
+        .main-nav .nav-link {
+            color: #222;
+            padding: 0.5rem 1rem;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .article-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .article-meta {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .comment-count {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .related-news {
+            border-left: 3px solid #e5e5e5;
+            padding-left: 15px;
+        }   
+
+        .related-news h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dropdown-menu {
         border-radius: 0;
         margin-top: 10;
         border-top: none;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         padding: 0%;
-    }
+        }
 
-    .dropdown-item {
-        font-size: 14px;
-        padding: 0.5rem 1rem;
-    }
+        .dropdown-item {
+            font-size: 14px;
+            padding: 0.5rem 1rem;
+        }
 
 
-    .nav-item.dropdown:hover .nav-link {
-        background-color: #f8f9fa;
-    }
+        .nav-item.dropdown:hover .nav-link {
+            background-color: #f8f9fa;
+        }
 
-    .home-icon {
-        font-size: 18px;
-        transition: transform 0.3s, color 0.3s;
-    }
+        .home-icon {
+            font-size: 18px;
+            transition: transform 0.3s, color 0.3s;
+        }
 
-    .home-icon:hover {
-        color: #007bff;
-    }
+        .home-icon:hover {
+            color: #007bff;
+        }
 
-    .featured-article img {
-        max-width: 200%;
-        height: auto;
-        width: 750px;
-        border-radius: 5px;
-    }
 
-    .col-lg-6 img {
-        margin-top: 20px;
-        margin-bottom: 20px;
-        margin-left: 35px;
-        display: block;
-        max-width: 300px;
-        height: auto;
-        border-radius: 10px;
-    }
+        .featured-article img {
+            max-width: 200%;
+            height: auto;
+            width: 750px;
+            border-radius: 5px;
+        }
 
-    .card {
-        display: flex;
-        flex-direction: column;
-    }
+        .col-lg-6 img {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            margin-left: 35px;
+            display: block;
+            max-width: 300px;
+            height: auto;
+            border-radius: 10px;
+        }
 
-    .row .col-lg-6 .card-body {
-        padding-left: 0;
-        padding-right: 0;
-    }
+        .row .col-lg-6 .card-body {
+            padding-left: 0;
+            padding-right: 0;
+        }
 
-    .row .col-lg-6 img {
-        width: 100%;
-        height: auto;
-        border-radius: 10px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
+        .row .col-lg-6 img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
 
-    .row .col-lg-6 h4 {
-        font-size: 1.1rem;
-        line-height: 1.5;
-        margin-bottom: 10px;
-        word-wrap: break-word;
-    }
+        .row .col-lg-6 h4 {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+        }
 
-    .row .col-lg-6 a {
-        color: #343a40;
-        font-weight: bold;
-        text-decoration: none;
-    }
+        .row .col-lg-6 a {
+            color: #343a40;
+            font-weight: bold;
+            text-decoration: none;
+        }
 
-    .row .col-lg-6 a:hover {
-        color: #007bff;
-    }
+        .row .col-lg-6 a:hover {
+            color: #007bff;
+        }
 
-    /* Improved Dropdown Styling */
+        .editor-container {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        a[href="/premium"] {
+            transition: color 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+        a[href="/premium"]:hover {
+            color: #FFD700 !important;
+            text-decoration: none;
+        }
+
+        a[href="/premium"]::after {
+            content: '✨';
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        a[href="/premium"]:hover::after {
+            opacity: 1;
+        }
+
+        /* Logo Styling */
+        .logo-text {
+            font-family: 'Arial Black', Helvetica, sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #1a1a1a, #4a4a4a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 5px 10px;
+            border: 3px solid #1a1a1a;
+            border-radius: 8px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .logo-text::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+            border-radius: 5px;
+        }
+
+        .logo-text:hover {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            background-clip: text;
+            -webkit-background-clip: text;
+            transform: scale(1.05);
+        }
+
+        .logo-text:hover::before {
+            opacity: 0.1;
+        }
+
+        @media (max-width: 768px) {
+            .logo-text {
+                font-size: 24px;
+                padding: 3px 8px;
+            }
+        }
+
+        /* Search Styling */
+        .search-form {
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+            background-color: #fff;
+        }
+
+        .search-button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-button:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .search-button i {
+            font-size: 16px;
+        }
+
+        /* Hover effect for the entire search container */
+        .search-container:hover .search-input {
+            border-color: #007bff;
+        }
+
+        @media (max-width: 768px) {
+            .search-form {
+                max-width: 300px;
+            }
+            
+            .search-input {
+                padding: 8px 35px 8px 12px;
+                font-size: 13px;
+            }
+            
+            .search-button i {
+                font-size: 14px;
+            }
+        }
+
+        /* Improved Dropdown Styling */
     #navbarDropdownAvatar {
         border: 2px solid #ddd;
         transition: transform 0.2s ease-in-out, border-color 0.2s;
@@ -187,59 +506,30 @@
         background-color: #fceaea;
         color: #c0392b !important;
     }
-
-    .btn-outline-dark {
-        transition: all 0.3s ease-in-out;
-    }
-
-    .btn-outline-dark:hover {
-        background-color: #007bff;
-        color: #fff;
-        border-color: #007bff;
-    }
-
-    .premium-avatar {
-        border: 2px solid #FFD700 !important;
-        position: relative !important;
-    }
-
-    .premium-avatar::after {
-        content: '👑';
-        position: absolute !important;
-        top: -10px !important;
-        right: -5px !important;
-        font-size: 14px !important;
-        z-index: 1000 !important;
-    }
-
-    /* Make sure no other styles are interfering */
-    .rounded-circle.premium-avatar {
-        border: 2px solid #FFD700 !important;
-    }
-
-    a[href="/premium"] {
-        transition: color 0.3s ease;
-    }
-
-    a[href="/premium"]:hover {
-        color: #FFD700 !important;
-    }
     </style>
-
 </head>
 
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="/">
-                <div class="me-3">NNN</div>
+            <a class="navbar-brand" href="{{#if isSubscriber}}/subscriber{{else}}/{{/if}}">
+                <div class="logo-text">NNN</div>
             </a>
+
+            <!-- Centered Search Form -->
+            <form class="d-flex mx-auto search-form" action="{{#if isSubscriber}}/subscriber/search{{else}}/search{{/if}}" method="get">
+                <div class="search-container">
+                    <input class="search-input" type="search" name="q" placeholder="Tìm kiếm..." aria-label="Search">
+                    <button class="search-button" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
 
             <div class="d-flex align-items-center">
                 <a href="/premium" class="me-3 text-dark text-decoration-none">Premium</a>
-                <div class="me-3">Mới nhất</div>
-                <div class="me-3">Thế giới</div>
+                <a href="{{#if isSubscriber}}/subscriber{{else}}/{{/if}}" class="me-3 text-dark text-decoration-none">Mới nhất</a>
 
                 {{#if isAuthenticated}}
                     <div class="dropdown">
@@ -259,7 +549,9 @@
 
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAvatar">
                             <li><a class="dropdown-item" href="/profile">Trang cá nhân</a></li>
-                            <li><a class="dropdown-item" href="/register-role">Đăng ký vai trò</a></li> 
+                            {{#unless (eq authUser.role 'subscriber')}}
+                                <li><a class="dropdown-item" href="/register-role">Đăng ký vai trò</a></li> 
+                            {{/unless}}
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="/logout" method="POST">
@@ -281,20 +573,29 @@
             <div class="navbar-collapse">
                 <ul class="navbar-nav main-nav d-flex justify-content-evenly w-100">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">
+                        <a class="nav-link" href="{{#if isSubscriber}}/subscriber{{else}}/{{/if}}">
                             <i class="bi bi-house-door home-icon"></i>
                         </a>
                     </li>
                     {{#each categories}}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="/category/{{this.id}}" id="navbarDropdown{{this.id}}"
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" 
+                           href="{{#if ../isSubscriber}}/subscriber/category/{{this.id}}{{else}}/category/{{this.id}}{{/if}}" 
+                           id="navbarDropdown{{this.id}}"
+                           role="button" 
+                           data-bs-toggle="dropdown" 
+                           aria-expanded="false">
                             {{this.name}}
                         </a>
                         {{#if this.subcategories.length}}
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown{{this.id}}">
                             {{#each this.subcategories}}
-                            <li><a class="dropdown-item" href="/category/{{this.id}}">{{this.name}}</a></li>
+                            <li>
+                                <a class="dropdown-item" 
+                                   href="{{#if ../../isSubscriber}}/subscriber/category/{{this.id}}{{else}}/category/{{this.id}}{{/if}}">
+                                    {{this.name}}
+                                </a>
+                            </li>
                             {{/each}}
                         </ul>
                         {{/if}}
@@ -307,54 +608,135 @@
 
     <!-- Main Content -->
     <div class="container mt-4">
-        <div class="row">
-            <!-- Main Content Column -->
-            <div class="col-lg-8">
+        {{#if isEditor}}
+            <!-- Special container for editor layout -->
+            <div class="editor-container">
                 {{{body}}}
             </div>
-
-            <!-- Sidebar -->
-            <div class="col-lg-4">
-                <div class="sidebar">
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5 class="mb-0">Tin nổi bật</h5>
-                        </div>
-                        <div class="row mb-4">
-                            {{#each featuredArticles}}
-                            <div class="col-lg-6 d-flex align-items-center justify-content-center">
-                                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded"
-                                    style="width: 100%; max-width: 300px; height: auto; border-radius: 10px; margin-top: 20px; margin-bottom: 20px;">
+        {{else}}
+            <!-- Your existing layout structure -->
+            <div class="row">
+                <div class="col-lg-8">
+                    {{{body}}}
+                </div>
+                <!-- Sidebar -->
+                {{#unless hideDefaultSidebar}}
+                <div class="col-lg-4">
+                    <div class="sidebar">
+                        <!-- Featured Articles Sidebar -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Tin nổi bật</h5>
                             </div>
-                            <div class="col-lg-6 d-flex align-items-center">
-                                <div class="card-body">
-                                    <div class="related-news mb-3">
-                                        <h3>
-                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                        </h3>
-                                        <div class="comment-count">
-                                            <i class="bi bi-chat-dots"></i> {{this.comments}}
-                                        </div>
-                                    </div>
+                            <div class="card-body">
+                                {{#each featuredArticles}}
+                                <div class="mb-3">
+                                    <h6>
+                                        {{#if ../isSubscriber}}
+                                            {{#if this.is_premium}}
+                                                <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{else}}
+                                                <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{/if}}
+                                        {{else}}
+                                            {{#if this.is_premium}}
+                                                <a href="/premium-notice" class="text-dark text-decoration-none">
+                                            {{else}}
+                                                <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{/if}}
+                                        {{/if}}
+                                            {{this.title}}
+                                        </a>
+                                    </h6>
                                 </div>
+                                {{/each}}
                             </div>
-                            {{/each}}
                         </div>
-                    </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">Tin mới nhất</h5>
+                        <!-- Latest Articles -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Tin mới nhất</h5>
+                            </div>
+                            <div class="card-body">
+                                {{#each latestArticles}}
+                                <div class="mb-3">
+                                    <h6>
+                                        {{#if ../isSubscriber}}
+                                            {{#if this.is_premium}}
+                                                <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{else}}
+                                                <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{/if}}
+                                        {{else}}
+                                            {{#if this.is_premium}}
+                                                <a href="/premium-notice" class="text-dark text-decoration-none">
+                                            {{else}}
+                                                <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{/if}}
+                                        {{/if}}
+                                            {{this.title}}
+                                        </a>
+                                    </h6>
+                                </div>
+                                {{/each}}
+                            </div>
                         </div>
-                        <div class="card-body">
-                            {{#each latestArticles}}
-                            <div class="related-news mb-3">
-                                <h3><a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                </h3>
+
+                        <!-- Most Viewed Articles -->
+                        
+
+                        <!-- Tabs Content -->
+                        <div class="tab-content mt-3">
+                            {{#each [healthArticles, lifeArticles, techArticles, carArticles]}}
+                            <div class="tab-pane fade {{#if @first}}show active{{/if}}" 
+                                 id="tab-{{@key}}-content" 
+                                 role="tabpanel">
+                                {{#each this}}
+                                <div class="mb-3">
+                                    <h6>
+                                        {{#if ../../isSubscriber}}
+                                            {{#if this.is_premium}}
+                                                <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{else}}
+                                                <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{/if}}
+                                        {{else}}
+                                            {{#if this.is_premium}}
+                                                <a href="/premium-notice" class="text-dark text-decoration-none">
+                                            {{else}}
+                                                <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{/if}}
+                                        {{/if}}
+                                            {{this.title}}
+                                        </a>
+                                    </h6>
+                                </div>
+                                {{/each}}
                             </div>
                             {{/each}}
                         </div>
                     </div>
+                </div>
+                {{/unless}}
+            </div>
+        {{/if}}
+    </div>
+
+    <!-- Subscribe Modal -->
+    <div class="modal fade" id="subscribeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nội dung Premium</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn cần đăng ký tài khoản Premium để đọc bài viết này.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <a href="/register" class="btn btn-primary">Đăng ký ngay</a>
                 </div>
             </div>
         </div>
@@ -576,24 +958,31 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Right Section: 40% -->
                 <div class="col-lg-5">
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body bg-white text-black">
                             <h5 class="card-title">Bài viết được xem nhiều nhất</h5>
-                            <!-- Debug info -->
-                            {{#if debug.hasMostViewed}}
-                                
-                            
-                            {{/if}}
-                            
                             <ul class="list-unstyled">
                                 {{#each mostViewedArticles}}
                                 <li class="mb-3">
-                                    <a href="/article/{{this.id}}" class="text-dark">
-                                        <i class="fas fa-eye mr-2"></i>
-                                        {{this.title}}
-                                        <small class="text-muted">({{this.view_count}} lượt xem)</small>
+                                    {{#if ../isSubscriber}}
+                                        {{#if this.is_premium}}
+                                            <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{else}}
+                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{/if}}
+                                    {{else}}
+                                        {{#if this.is_premium}}
+                                            <a href="/premium-notice" class="text-dark text-decoration-none">
+                                        {{else}}
+                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                        {{/if}}
+                                    {{/if}}
+                                    <i class="fas fa-eye mr-2"></i>
+                                    {{this.title}}
+                                    <small class="text-muted">({{this.view_count}} lượt xem)</small>
                                     </a>
                                 </li>
                                 {{/each}}
@@ -604,7 +993,6 @@
             </div>
         </div>
     </section>
-
 
     <!-- Footer -->
     <footer class="bg-dark text-light mt-5">
@@ -624,9 +1012,10 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </footer>   
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/public/js/tabs.js"></script>
+    {{{_sections.js}}}
 </body>
 </html>
