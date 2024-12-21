@@ -1,5 +1,18 @@
 const db = require('../utils/db.js');
 const dayjs = require('dayjs');
+const mysql = require('mysql2/promise');
+const config = require('../config/config');
+
+const pool = mysql.createPool({
+  host: 'localhost',       
+  user: 'root',            
+  password: '', 
+  database: 'sql_webnews_db',  
+  waitForConnections: true, 
+  connectionLimit: 10,      
+  queueLimit: 0             
+});
+
 
   // Get all draft articles
   exports.getDraftArticles = async () => {
@@ -202,24 +215,73 @@ exports.getAllArticles = async () => {
   }));
 };
 
-exports.getFeaturedArticles = async (page) => {
-  const limit = 10;
-  const offset = (page - 1) * limit;
-  
-  const articles = await db('Articles')
-    .select(
-      'Articles.*',
-      'Users.full_name AS author_name',
-      'Categories.name AS category_name'
-    )
-    .join('Users', 'Articles.author_id', 'Users.id')
-    .join('Categories', 'Articles.category_id', 'Categories.id')
-    .where('Articles.status', 'published')
-    .orderBy('Articles.publish_date', 'desc')
-    .limit(limit)
-    .offset(offset);
+exports.getFeaturedArticles = async (page = 1) => {
+  try {
+    const limit = 5;
+    const offset = (page - 1) * limit;
 
-  return articles;
+    // Use pool.execute instead of db.execute
+    const [articles] = await pool.execute(`
+      SELECT 
+        a.id,
+        a.title,
+        a.abstract,
+        a.featured_image,
+        a.is_premium,
+        a.featured,
+        DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date,
+        c.name AS category_name,
+        u.full_name AS author_name,
+        COUNT(cm.id) as comments
+      FROM Articles a
+      LEFT JOIN Categories c ON a.category_id = c.id
+      LEFT JOIN Users u ON a.author_id = u.id
+      LEFT JOIN Comments cm ON a.id = cm.article_id
+      WHERE a.featured = 1 
+      AND a.status = 'published'
+      GROUP BY a.id
+      ORDER BY a.publish_date DESC
+      LIMIT ? OFFSET ?
+    `, [limit, offset]);
+
+    // Get total count for pagination
+    const [countResult] = await pool.execute(`
+      SELECT COUNT(*) as total 
+      FROM Articles 
+      WHERE featured = 1 
+      AND status = 'published'
+    `);
+
+    const total = countResult[0].total;
+    const totalPages = Math.ceil(total / limit);
+
+    // Create pagination object
+    const pagination = {
+      pages: [],
+      hasPrevPage: page > 1,
+      hasNextPage: page < totalPages,
+      prevPage: page - 1,
+      nextPage: page + 1,
+      currentPage: page,
+      totalPages: totalPages
+    };
+
+    // Generate page numbers
+    for (let i = 1; i <= totalPages; i++) {
+      pagination.pages.push({
+        pageNumber: i,
+        isCurrentPage: i === page
+      });
+    }
+
+    return {
+      articles,
+      pagination
+    };
+  } catch (error) {
+    console.error('Error in getFeaturedArticles:', error);
+    throw error;
+  }
 };
 
 exports.getSidebarFeaturedArticles = async () => {
