@@ -18,6 +18,20 @@
         border-radius: 10px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       }
+      .password-container {
+        position: relative;
+      }
+      .password-container input {
+        padding-right: 40px;
+      }
+      .password-container i {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 1.2em;
+      }
     </style>
   </head>
   <body>
@@ -26,11 +40,30 @@
       <p class="text-center">Enter your new password below</p>
 
       <form method="post" action="/login/forgotpwd/resetpwd">
-        <div class="mb-3">
-          <input type="password" name="password" class="form-control" placeholder="New password" required />
+        <div class="mb-3 password-container">
+          <input type="password" id="password-input" name="password" class="form-control" placeholder="New password" required />
+          <i class="bi bi-eye-slash" id="password-icon"></i>
         </div>
         <button type="submit" class="btn btn-dark w-100">Reset Password</button>
       </form>
     </div>
+
+    <script>
+      // Script to toggle password visibility
+      const passwordInput = document.getElementById("password-input");
+      const passwordIcon = document.getElementById("password-icon");
+
+      passwordIcon.addEventListener("click", () => {
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          passwordIcon.classList.remove("bi-eye-slash");
+          passwordIcon.classList.add("bi-eye");
+        } else {
+          passwordInput.type = "password";
+          passwordIcon.classList.remove("bi-eye");
+          passwordIcon.classList.add("bi-eye-slash");
+        }
+      });
+    </script>
   </body>
 </html>

@@ -1,23 +1,26 @@
 const express = require('express');
-const path = require('path'); // Thêm dòng này
+const path = require('path');
 const cors = require('cors');
-require('dotenv').config(); // Load environment variables
-const connectDB = require('./src/config/connectDB'); // Database connection
-const authRouter = require('./src/routes/auth.route'); // Authentication routes
+require('dotenv').config();
+const connectDB = require('./src/config/connectDB');
+const authRouter = require('./src/routes/auth.route');
 const guestRoutes = require('./src/routes/guest.route');
-const { engine } = require('express-handlebars'); // Import express-handlebars
+const editorRoutes = require('./src/routes/editor.route');
+const { engine } = require('express-handlebars');
 const session = require('express-session');
 const subscriberRouter = require('./src/routes/subscriber.route');
+const dayjs = require('dayjs');
 
-require('./passport'); // Passport setup
+require('./passport');
+
 const app = express();
 
 app.use(session({
-    secret: 'secretKey',           // Replace with your own secret
+    secret: 'secretKey',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }      // Use secure: true in production with HTTPS
-  }));
+    cookie: { secure: false }
+}));
 
 // Middleware to pass session variables to all views
 app.use((req, res, next) => {
@@ -28,49 +31,38 @@ app.use((req, res, next) => {
 
 // Enable CORS
 app.use(cors({
-    origin: process.env.URL_CLIENT, // Allow client URL specified in environment variables
-})); 
+    origin: process.env.URL_CLIENT,
+}));
+
+// Handlebars helpers
+const helpers = {
+    eq: (a, b) => a === b,
+    includes: (array, value) => Array.isArray(array) && array.includes(value),
+    formatDate: (date, format) => dayjs(date).format(format),
+};
+
+// Static files
 app.use('/static', express.static('src/static'));
 app.use('/public', express.static(path.join(__dirname, 'src', 'public')));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-// Configure Handlebars as the view engine
+// Configure Handlebars
 app.engine('hbs', engine({
-    extname: '.hbs', // Use '.hbs' as the file extension for templates
-    //defaultLayout: 'main',
+    extname: '.hbs',
+    helpers
 }));
-app.set('view engine', 'hbs'); // Set the view engine to Handlebars
-app.set('views', './src/views'); // Set the views directory
+app.set('view engine', 'hbs');
+app.set('views', './src/views');
 
-
-
-// Connect to the database
+// Connect to database
 connectDB();
 
-
-app.use('/', guestRoutes);
-
-
 // Routes
-app.use('/api/auth', authRouter); // Authentication routes (e.g., Google login)
-
-// Debugging Google OAuth setup
-// console.log('Google Client ID:', process.env.GOOGLE_CLIENT_ID);
-// console.log('Google Client Secret:', process.env.GOOGLE_CLIENT_SECRET);
-
-// Render the login page
-// app.get('/login', (req, res) => {
-//     res.render('login',{layout: false}); // Render the login.hbs file in the views directory
-// });
-
-// Render the dashboard page
-// app.get('/dashboard', (req, res) => {
-//     res.render('dashboard'); // Render the dashboard.hbs file in the views directory
-// }); 
-
+app.use('/', guestRoutes);
+app.use('/', editorRoutes);
+app.use('/api/auth', authRouter);
 app.use('/subscriber', subscriberRouter);
 
 // Error handling
@@ -78,11 +70,10 @@ app.use((req, res, next) => {
     res.status(404).render('404', { layout: 'main' });
 });
 
-// Start the server
+// Start server
 const port = process.env.PORT || 8888;
 app.listen(port, () => {
     console.log('Server is running on port ' + port);
 });
-
 
 module.exports = app;
