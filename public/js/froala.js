@@ -1,38 +1,49 @@
-// public/js/froala.js
 
-// $(document).ready(function() {
-//     // Initialize the Froala editor on a textarea
-//     $('#froala-editor').froalaEditor({
-//         heightMin: 300, // Set the minimum height of the editor
-//         placeholderText: 'Start writing your content...',
-//         toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'formatOL', 'formatUL', 'align', 'undo', 'redo', 'html'],
-//     });
-// });
-// Or using window.onload (loads after all resources are loaded, but DOMContentLoaded is usually preferred)
-window.onload = function() {
-   var editor = new FroalaEditor('#froala-editor',{
+document.addEventListener('DOMContentLoaded', function() {
+    var editor = new FroalaEditor('#froala-editor', {
         heightMin: 300, // Set the minimum height of the editor
         placeholderText: 'Start writing your content...',
+        
         toolbarButtons: [
             'bold', 'italic', 'underline', 'strikeThrough', 'heading',
             'fontFamily', 'fontSize', 'color', 'emoticons',
-            'inlineStyle', 'paragraphFormat', 'paragraphStyle',
-            'align', 'formatOL', 'formatUL', 'outdent', 'indent',
-            'undo', 'redo', 'clear', 'insertTable', 'link',
-            'image', 'video', 'audio', 'file', 'insertHR',
-            'fullscreen', 'quote', 'specialCharacters', 'html', 'codeView',
-            'print', 'spellChecker', 'help'
+            'inlineStyle', 'paragraphFormat', 'paragraphStyle', 'align', 
+            'formatOL', 'formatUL', 'outdent', 'indent', 'undo', 'redo', 
+            'clear', 'insertTable', 'link', 'image', 'video', 'audio', 
+            'file', 'insertHR', 'fullscreen', 'quote', 'specialCharacters', 
+            'html', 'codeView', 'print', 'spellChecker', 'help'
         ],
-        toolbarButtonsMD: [ // For medium-sized devices
-            'bold', 'italic', 'underline', 'strikeThrough',
-            'formatOL', 'formatUL', 'align', 'undo', 'redo'
+        toolbarButtonsMD: [
+            'bold', 'italic', 'underline', 'strikeThrough', 'heading',
+            'fontFamily', 'fontSize', 'color', 'emoticons',
+            'inlineStyle', 'paragraphFormat', 'paragraphStyle', 'align',
+            'formatOL', 'formatUL', 'outdent', 'indent', 'undo', 'redo',
+            'clear', 'insertTable', 'link', 'image', 'video', 'audio',
+            'file', 'insertHR', 'fullscreen', 'quote', 'specialCharacters',
+            'html', 'codeView', 'print', 'spellChecker', 'help'
         ],
-        toolbarButtonsSM: [ // For small devices
-            'bold', 'italic', 'undo', 'redo'
+        
+        toolbarButtonsSM: [
+            'bold', 'italic', 'underline', 'strikeThrough', 'heading',
+            'fontFamily', 'fontSize', 'color', 'emoticons',
+            'inlineStyle', 'paragraphFormat', 'paragraphStyle', 'align',
+            'formatOL', 'formatUL', 'outdent', 'indent', 'undo', 'redo',
+            'clear', 'insertTable', 'link', 'image', 'video', 'audio',
+            'file', 'insertHR', 'fullscreen', 'quote', 'specialCharacters',
+            'html', 'codeView', 'print', 'spellChecker', 'help'
         ],
-        toolbarButtonsXS: [ // For extra-small devices
-            'bold', 'italic'
+        
+        toolbarButtonsXS: [
+            'bold', 'italic', 'underline', 'strikeThrough', 'heading',
+            'fontFamily', 'fontSize', 'color', 'emoticons',
+            'inlineStyle', 'paragraphFormat', 'paragraphStyle', 'align',
+            'formatOL', 'formatUL', 'outdent', 'indent', 'undo', 'redo',
+            'clear', 'insertTable', 'link', 'image', 'video', 'audio',
+            'file', 'insertHR', 'fullscreen', 'quote', 'specialCharacters',
+            'html', 'codeView', 'print', 'spellChecker', 'help'
         ],
+        
+    
         // Configuration for heading dropdown
         headingTags: ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'], // Optional: defines the heading options
         headingStyle: {
@@ -43,10 +54,9 @@ window.onload = function() {
             'H5': 'font-size: 18px; font-weight: bold;',
             'H6': 'font-size: 16px; font-weight: bold;',
         },
-        // Optional: Enable the dropdown for selecting headings
-        headingDropdown: true ,// This will make a dropdown of headings available in the toolbar
-
         
+        headingDropdown: true, // Dropdown for selecting headings in the toolbar
+    
         // Custom fonts and font size
         fontFamily: ['Arial', 'Courier', 'Georgia', 'Impact', 'Times New Roman'],
         fontSize: ['8', '10', '12', '14', '18', '24', '36'],
@@ -57,17 +67,14 @@ window.onload = function() {
     
         // Special buttons in toolbar
         emoticonsButtons: ['smile', 'heart', 'thumbs-up', 'angry'],
-        
+    
         // Paragraph format and alignment
         paragraphDefaultSelection: 'Paragraph',
-        // paragraphFormat: ['Normal', 'H1', 'H2', 'H3', 'H4', 'H5'],
         paragraphStyle: {
             'font-weight': 'bold',
             'font-style': 'italic'
         },
         align: ['left', 'center', 'right', 'justify'],
-        paragraphFormatSelection: false,
-        // Allow custom styles (inline)
         inlineStyle: ['bold', 'italic', 'underline', 'strikeThrough'],
     
         // List formatting
@@ -169,19 +176,57 @@ window.onload = function() {
         events: {
             'froalaEditor.initialized': function(e, editor) {
                 console.log('Froala Editor initialized');
-            },
-            'froalaEditor.contentChanged': function(e, editor) {
-                console.log('Editor content changed');
-            },
-            'froalaEditor.focus': function(e, editor) {
-                console.log('Editor is focused');
-            },
-            'froalaEditor.blur': function(e, editor) {
-                console.log('Editor lost focus');
-            },
-            'froalaEditor.image.inserted': function(e, editor, $img) {
-                console.log('Image inserted: ', $img);
             }
-        },
+        }
     });
-};
+    
+
+// Function to prepare data and send it to the server
+function prepareDataAndSend() {
+    if (!editor) {
+        console.error('Froala editor is not initialized.');
+        return;
+    }
+
+    // Get the content from the Froala editor
+    const editorContent = editor.html.get(); // This returns the HTML content
+    const title = document.getElementById('article-title').value;  // Get title from the input field
+    const abstract = document.querySelector('input[name="abstract"]').value;  // Get abstract from the input field
+
+    // Log the content to check if it's correct
+    console.log('Editor content:', editorContent);
+    console.log('Title:', title);
+    console.log('Abstract:', abstract);
+
+
+    const articleData = {
+        title: title,             // Title from the form
+        abstract: abstract,       // Abstract from the form
+        editorContent: editorContent, // Content from the Froala editor
+        category_id: 1,           // Example category ID
+        author_id: 1,             // Example author ID
+        status: 'draft',          // Default status
+        featured_image: null     // Optional featured image, can be null or added as needed
+    };
+
+    // Send the data to the server via a POST request
+    fetch('/writer/save', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(articleData),  // Send the article data as JSON
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log('Data saved successfully:', data);
+        })
+        .catch((error) => {
+            console.error('Error saving data:', error);
+        });
+}
+
+// Event listener to trigger the send function (example: on button click)
+document.getElementById('save-button').addEventListener('click', prepareDataAndSend);
+
+});

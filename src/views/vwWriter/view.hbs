@@ -1,0 +1,25 @@
+<!-- writer/view.hbs -->
+<div class="container mt-4">
+    <h1>Saved Articles</h1>
+
+    <!-- Check if there are articles to display -->
+    {{#if articles.length}}
+        <div class="list-group">
+            {{#each articles}}
+                <div class="list-group-item">
+                    <h4 class="mb-3">{{this.title}}</h4>
+                    <p><strong>Abstract:</strong> {{this.abstract}}</p>
+                    <div>
+                        <strong>Content:</strong>
+                        <div>{{{this.content}}}</div> <!-- Using triple braces to render HTML content -->
+                    </div>
+                    <p><strong>Status:</strong> {{this.status}}</p>
+                    <p><strong>Category ID:</strong> {{this.category_id}}</p>
+                    <p><strong>Author ID:</strong> {{this.author_id}}</p>
+                </div>
+            {{/each}}
+        </div>
+    {{else}}
+        <p>No articles found.</p>
+    {{/if}}
+</div>
