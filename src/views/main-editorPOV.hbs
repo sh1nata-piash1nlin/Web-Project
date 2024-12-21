@@ -12,128 +12,445 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     >
     <style>
-    .navbar-brand img {
-        height: 40px;
-    }
+        /* Color Variables */
+        :root {
+            --gold: #FFD700;
+            --gold-hover: #FFA500;
+            --black: #1a1a1a;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #4a4a4a;
+        }
 
-    .main-nav .nav-link {
-        color: #222;
-        padding: 0.5rem 1rem;
-        font-size: 14px;
-        white-space: nowrap;
-    }
+        /* General Styling */
+        body {
+            background-color: var(--light-gray);
+        }
 
-    .sidebar {
-        position: sticky;
-        top: 20px;
-    }
+        /* Enhanced Navbar */
+        .navbar {
+            background: var(--white) !important;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
 
-    .article-title {
-        font-size: 1.8rem;
-        font-weight: bold;
-        margin-bottom: 1rem;
-    }
+        .navbar .nav-link:hover {
+            color: var(--gold) !important;
+        }
 
-    .article-meta {
-        color: #666;
-        font-size: 0.9rem;
-    }
+        /* Enhanced Logo */
+        .logo-text {
+            background: linear-gradient(45deg, var(--black), var(--dark-gray));
+            border-color: var(--black);
+        }
 
-    .comment-count {
-        color: #666;
-        font-size: 0.8rem;
-    }
+        .logo-text:hover {
+            background: linear-gradient(45deg, var(--gold), var(--gold-hover));
+        }
 
-    .related-news {
-        border-left: 3px solid #e5e5e5;
-        padding-left: 15px;
-    }   
+        /* Enhanced Search Bar */
+        .search-input {
+            border: 2px solid var(--light-gray);
+        }
 
-    .related-news h3 {
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
-    }
+        .search-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
 
-    .dropdown-menu {
+        .search-button:hover {
+            background-color: var(--gold);
+            color: var(--black);
+        }
+
+        /* Enhanced Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: var(--black);
+            color: var(--white);
+        }
+
+        /* Enhanced Premium Elements */
+        a[href="/premium"]:hover {
+            color: var(--gold) !important;
+        }
+
+        .premium-avatar {
+            border: 2px solid var(--gold) !important;
+            position: relative !important;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+        }
+
+        .premium-avatar::after {
+            content: '👑';
+            position: absolute !important;
+            top: -10px !important;
+            right: -5px !important;
+            font-size: 14px !important;
+            z-index: 1000 !important;
+        }
+
+        /* Make sure no other styles are interfering */
+        .rounded-circle.premium-avatar {
+            border: 2px solid var(--gold) !important;
+        }
+
+        /* Premium Link Enhancement */
+        a[href="/premium"] {
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+
+        a[href="/premium"]:hover {
+            color: var(--gold) !important;
+            text-decoration: none;
+        }
+
+        /* Enhanced Article Sections */
+        .article-title a:hover {
+            color: var(--gold) !important;
+        }
+
+        .featured-article img {
+            transition: transform 0.3s ease;
+        }
+
+        .featured-article:hover img {
+            transform: scale(1.02);
+        }
+
+        /* Enhanced Buttons */
+        .btn-outline-dark:hover {
+            background-color: var(--gold);
+            border-color: var(--gold);
+            color: var(--black);
+        }
+
+        /* Enhanced Footer */
+        footer {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        footer h5 {
+            color: var(--gold);
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 10px;
+        }
+
+        /* Enhanced Navigation Tabs */
+        .nav-tabs .nav-link {
+            color: var(--black);
+            border: none;
+            padding: 10px 20px;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--gold);
+            border-bottom: 2px solid var(--gold);
+            background: transparent;
+        }
+
+        .nav-tabs .nav-link:hover:not(.active) {
+            color: var(--gold-hover);
+            border-bottom: 2px solid var(--gold-hover);
+        }
+
+        /* Enhanced Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar .card {
+            border-left: 3px solid var(--gold);
+        }
+
+        /* Enhanced Links */
+        a.text-dark:hover {
+            color: var(--gold) !important;
+            text-decoration: none;
+        }
+
+        .navbar-brand img {
+            height: 40px;
+        }
+
+        .main-nav .nav-link {
+            color: #222;
+            padding: 0.5rem 1rem;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .article-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .article-meta {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .comment-count {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .related-news {
+            border-left: 3px solid #e5e5e5;
+            padding-left: 15px;
+        }   
+
+        .related-news h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dropdown-menu {
         border-radius: 0;
         margin-top: 10;
         border-top: none;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         padding: 0%;
-    }
+        }
 
-    .dropdown-item {
-        font-size: 14px;
-        padding: 0.5rem 1rem;
-    }
+        .dropdown-item {
+            font-size: 14px;
+            padding: 0.5rem 1rem;
+        }
 
 
-    .nav-item.dropdown:hover .nav-link {
-        background-color: #f8f9fa;
-    }
+        .nav-item.dropdown:hover .nav-link {
+            background-color: #f8f9fa;
+        }
 
-    .home-icon {
-        font-size: 18px;
-        transition: transform 0.3s, color 0.3s;
-    }
+        .home-icon {
+            font-size: 18px;
+            transition: transform 0.3s, color 0.3s;
+        }
 
-    .home-icon:hover {
-        color: #007bff;
-    }
+        .home-icon:hover {
+            color: #007bff;
+        }
 
-    .featured-article img {
-        max-width: 200%;
-        height: auto;
-        width: 750px;
-        border-radius: 5px;
-    }
 
-    .col-lg-6 img {
-        margin-top: 20px;
-        margin-bottom: 20px;
-        margin-left: 35px;
-        display: block;
-        max-width: 300px;
-        height: auto;
-        border-radius: 10px;
-    }
+        .featured-article img {
+            max-width: 200%;
+            height: auto;
+            width: 750px;
+            border-radius: 5px;
+        }
 
-    .card {
-        display: flex;
-        flex-direction: column;
-    }
+        .col-lg-6 img {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            margin-left: 35px;
+            display: block;
+            max-width: 300px;
+            height: auto;
+            border-radius: 10px;
+        }
 
-    .row .col-lg-6 .card-body {
-        padding-left: 0;
-        padding-right: 0;
-    }
+        .row .col-lg-6 .card-body {
+            padding-left: 0;
+            padding-right: 0;
+        }
 
-    .row .col-lg-6 img {
-        width: 100%;
-        height: auto;
-        border-radius: 10px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
+        .row .col-lg-6 img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
 
-    .row .col-lg-6 h4 {
-        font-size: 1.1rem;
-        line-height: 1.5;
-        margin-bottom: 10px;
-        word-wrap: break-word;
-    }
+        .row .col-lg-6 h4 {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+        }
 
-    .row .col-lg-6 a {
-        color: #343a40;
-        font-weight: bold;
-        text-decoration: none;
-    }
+        .row .col-lg-6 a {
+            color: #343a40;
+            font-weight: bold;
+            text-decoration: none;
+        }
 
-    .row .col-lg-6 a:hover {
-        color: #007bff;
-    }
+        .row .col-lg-6 a:hover {
+            color: #007bff;
+        }
 
-    /* Improved Dropdown Styling */
+        .editor-container {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        a[href="/premium"] {
+            transition: color 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+        a[href="/premium"]:hover {
+            color: #FFD700 !important;
+            text-decoration: none;
+        }
+
+        a[href="/premium"]::after {
+            content: '✨';
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        a[href="/premium"]:hover::after {
+            opacity: 1;
+        }
+
+        /* Logo Styling */
+        .logo-text {
+            font-family: 'Arial Black', Helvetica, sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #1a1a1a, #4a4a4a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 5px 10px;
+            border: 3px solid #1a1a1a;
+            border-radius: 8px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .logo-text::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+            border-radius: 5px;
+        }
+
+        .logo-text:hover {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            background-clip: text;
+            -webkit-background-clip: text;
+            transform: scale(1.05);
+        }
+
+        .logo-text:hover::before {
+            opacity: 0.1;
+        }
+
+        @media (max-width: 768px) {
+            .logo-text {
+                font-size: 24px;
+                padding: 3px 8px;
+            }
+        }
+
+        /* Search Styling */
+        .search-form {
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+            background-color: #fff;
+        }
+
+        .search-button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-button:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .search-button i {
+            font-size: 16px;
+        }
+
+        /* Hover effect for the entire search container */
+        .search-container:hover .search-input {
+            border-color: #007bff;
+        }
+
+        @media (max-width: 768px) {
+            .search-form {
+                max-width: 300px;
+            }
+            
+            .search-input {
+                padding: 8px 35px 8px 12px;
+                font-size: 13px;
+            }
+            
+            .search-button i {
+                font-size: 14px;
+            }
+        }
+
+        /* Improved Dropdown Styling */
     #navbarDropdownAvatar {
         border: 2px solid #ddd;
         transition: transform 0.2s ease-in-out, border-color 0.2s;
@@ -192,71 +509,141 @@
         color: #c0392b !important;
     }
 
-    .btn-outline-dark {
-        transition: all 0.3s ease-in-out;
+    /* Add these styles to your existing CSS */
+    .navbar {
+        padding-left: 0;
+        padding-right: 0;
+        width: 100%;
     }
 
-    .btn-outline-dark:hover {
-        background-color: #007bff;
-        color: #fff;
-        border-color: #007bff;
+    .container-fluid {
+        margin: 0;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
 
+    /* Adjust the main nav spacing */
+    .main-nav {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
 
+    .premium-article, .regular-article {
+        position: relative;
+        margin-bottom: 30px; /* Increased bottom margin */
+        padding: 20px;      /* Increased padding */
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: adds subtle shadow */
+    }
+
+    .premium-article {
+        border: 2px solid #ffd700;
+        background: linear-gradient(to right, #fff, #fffdf0);
+    }
+
+    .regular-article {
+        border: 1px solid #eee;
+    }
+
+    /* Add gap between articles */
+    .row > div {
+        margin-bottom: 20px;
+    }
+
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background-color: #28a745;
+        border-radius: 20px;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 1px solid #218838;
+        font-size: 16px;
+    }
+
+    .back-button i {
+        font-size: 18px;
+    }
+
+    .back-button span {
+        font-weight: 500;
+    }
+
+    .back-button:hover {
+        background-color: #218838;
+        color: white;
+        transform: translateX(-3px);
+        text-decoration: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
     </style>
 
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <div class="font-weight-bold text-primary">NNN</div>
+    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand">
+                <div class="logo-text">NNN</div>
             </a>
-            <a href="/editor" class="text-secondary mr-2" style="font-size: 24px;">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <div class="d-flex align-items-center">
-                <div class="me-3">Mới nhất</div>
-                <div class="me-3">Thế giới</div>
+            <!-- Centered Search Form -->
+            <form class="d-flex mx-auto search-form">
+                <div class="search-container">
+                    <input class="search-input" type="search" name="q" placeholder="Tìm kiếm..." aria-label="Search">
+                    <button class="search-button" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
 
-                {{#if isAuthenticated}}
-            <div class="dropdown">
-                <img 
-                src="{{authUser.avatar}}"
-                onerror="this.onerror=null; this.src='/static/img/default.png';"
-                alt="User Avatar"
-                class="rounded-circle"
-                style="width: 40px; height: 40px; cursor: pointer;"
-                id="navbarDropdownAvatar"
-                role="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-                >
-                <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="/profile-editor">Trang cá nhân</a>
-                <div class="dropdown-divider"></div>
-                <form action="/logout" method="POST">
-                    <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
-                </form>
+            <div class="d-flex align-items-center">
+                <a href="/editor" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Editor Dashboard</span>
+                </a>
+
+                <div class="ms-3">
+                    {{#if isAuthenticated}}
+                        <div class="dropdown">
+                            <img src="{{authUser.avatar}}"
+                                onerror="this.onerror=null; this.src='/src/static/img/default.png';"
+                                alt="User Avatar" 
+                                class="rounded-circle" 
+                                style="width: 40px; height: 40px; cursor: pointer; border: 2px solid #FFD700 !important;"
+                                id="navbarDropdownAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAvatar">
+                                <li><a class="dropdown-item" href="/profile-editor">Trang cá nhân</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="/logout" method="POST">
+                                        <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    {{else}}
+                        <a class="btn btn-outline-dark btn-sm" href="/login">Đăng nhập</a>
+                    {{/if}}
                 </div>
-                </div>
-                {{else}}
-                <a class="btn btn-outline-dark btn-sm" href="/login">Đăng nhập</a>
-                {{/if}}
             </div>
         </div>
     </nav>
 
     <!-- Secondary Navbar -->
     <nav class="navbar navbar-expand-lg bg-white border-bottom py-0">
-        <div class="container">
+        <div class="container-fluid px-4">
             <div class="navbar-collapse">
                 <ul class="navbar-nav main-nav d-flex justify-content-evenly w-100">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">
+                        <a class="nav-link">
                             <i class="bi bi-house-door home-icon"></i>
                         </a>
                     </li>
@@ -285,7 +672,100 @@
         <div class="row">
             <!-- Main Content Column -->
             <div class="col-lg-8">
-                {{{body}}}
+                <!-- Featured Article -->
+                <div class="featured-article mb-4">
+                    {{#if featuredArticles.[0]}}
+                    <img src="/public/images/{{featuredArticles.[0].featured_image}}" alt="{{featuredArticles.[0].title}}"
+                        class="img-fluid mb-3">
+                    <h1 class="article-title">
+                        <a href="/article/{{featuredArticles.[0].id}}" class="text-dark text-decoration-none">
+                            {{featuredArticles.[0].title}}
+                        </a>
+                    </h1>
+                    <p class="lead">{{featuredArticles.[0].abstract}}</p>
+                    <div class="article-meta">
+                        <span>{{featuredArticles.[0].category_name}}</span> •
+                        <span>{{featuredArticles.[0].author_name}}</span> •
+                        <small>{{featuredArticles.[0].publish_date}}</small>
+                    </div>
+                    <div class="comment-count">
+                        <i class="bi bi-chat-dots"></i> {{featuredArticles.[0].comments}}
+                    </div>
+                    {{else}}
+                    <p>Không có bài báo nổi bật</p>
+                    {{/if}}
+                </div>
+
+                <!-- News Grid -->
+                <div class="row">
+                    {{#each featuredArticles}}
+                    <div class="{{#if is_premium}}premium-article{{else}}regular-article{{/if}}">
+                        {{#if is_premium}}
+                        <div class="premium-badge">
+                            <i class="bi bi-star-fill premium-star"></i>
+                            Premium
+                        </div>
+                        {{/if}}
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img src="/public/images/{{featured_image}}" 
+                                     class="img-fluid rounded" 
+                                     alt="{{title}}">
+                            </div>
+                            <div class="col-md-8">
+                                <h3 class="article-title">
+                                    <a href="/article/{{id}}" class="text-decoration-none">
+                                        {{title}}
+                                    </a>
+                                </h3>
+                                <p class="text-muted">{{abstract}}</p>
+                                <div class="article-meta">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar"></i> {{publish_date}}
+                                        <i class="bi bi-person ms-2"></i> {{author_name}}
+                                        <i class="bi bi-folder ms-2"></i> {{category_name}}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+
+                <!-- Pagination -->
+                {{#if pagination}}
+                <nav aria-label="Featured articles pagination" class="mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <small class="text-muted">
+                            Trang {{pagination.currentPage}} / {{pagination.totalPages}}
+                        </small>
+                    </div>
+                    <ul class="pagination justify-content-center">
+                        {{#if pagination.hasPrevPage}}
+                        <li class="page-item">
+                            <a class="page-link" href="/editor/editorPOV?page={{pagination.prevPage}}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        {{/if}}
+                        
+                        {{#each pagination.pages}}
+                        <li class="page-item {{#if this.isCurrentPage}}active{{/if}}">
+                            <a class="page-link" href="/editor/editorPOV?page={{this.pageNumber}}">{{this.pageNumber}}</a>
+                        </li>
+                        {{/each}}
+
+                        {{#if pagination.hasNextPage}}
+                        <li class="page-item">
+                            <a class="page-link" href="/editor/editorPOV?page={{pagination.nextPage}}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        {{/if}}
+                    </ul>
+                </nav>
+                {{/if}}
             </div>
 
             <!-- Sidebar -->
@@ -343,7 +823,7 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-header bg-dark text-white d-flex justify-content-between">
                             <h3 class="mb-0">Tin theo chuyên mục</h3>
-                            <a href="/" class="btn btn-outline-light btn-sm">
+                            <a href="/editor/editorPOV" class="btn btn-outline-light btn-sm">
                                 Tất cả tin
                                 <i class="fas fa-caret-right ml-2"></i>
                             </a>
