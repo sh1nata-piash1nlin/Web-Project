@@ -105,22 +105,30 @@ router.get('/editor/edit-article', ensureAuthenticated, async (req, res) => {
   }
 });
 
-router.post('/editor/edit-article', async (req, res) => {
-  const { id, category_id, tags, updated_at } = req.body;
+router.post('/editor/edit-article', express.urlencoded({ extended: true }), async function(req, res) {
+    try {
+        const { id, category_id, tags, updated_at } = req.body;
+        
+        // Handle tags properly without JSON.parse
+        let processedTags = [];
+        if (Array.isArray(tags)) {
+            processedTags = tags;
+        } else if (typeof tags === 'string' && tags.length > 0) {
+            processedTags = [tags];
+        }
 
-  try {
-    await editorService.updateArticle({
-      id,
-      category_id,
-      tags: JSON.parse(tags), 
-      updated_at,
-    });
+        const result = await editorService.updateArticle({
+            id: parseInt(id),
+            category_id: parseInt(category_id),
+            tags: processedTags,
+            updated_at
+        });
 
-    res.redirect('/editor');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error updating the article.');
-  }
+        res.redirect('/editor');
+    } catch (error) {
+        console.error('Route error:', error);
+        res.status(500).send('Error updating article');
+    }
 });
 
 router.get('/editor/article', ensureAuthenticated, async (req, res) => {
