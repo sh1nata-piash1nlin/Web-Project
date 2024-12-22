@@ -6,7 +6,7 @@ const path = require('path');
 
 async function getFeaturedArticlesPremium(page = 1) {
     try {
-        const limit = 10;
+        const limit = 5;
         const offset = (page - 1) * limit;
 
         // Get total count for pagination
@@ -74,7 +74,7 @@ async function getCategoryArticlesPremium(req, res) {
     try {
         const categoryId = req.params.id;
         const page = parseInt(req.query.page) || 1;
-        const limit = 10;
+        const limit = 5;
         const offset = (page - 1) * limit;
 
         // Lấy thông tin category hiện tại
@@ -185,7 +185,7 @@ async function searchArticlesPremium(req, res) {
     try {
         const searchTerm = req.query.q;
         const page = parseInt(req.query.page) || 1;
-        const limit = 10;
+        const limit = 5;
         const offset = (page - 1) * limit;
 
         // Đếm tổng số kết quả để phân trang

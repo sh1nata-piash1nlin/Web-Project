@@ -504,6 +504,304 @@
         background-color: #fceaea;
         color: #c0392b !important;
     }
+
+    /* Thêm hiệu ứng hover cho các bài viết trong sidebar */
+    .card-body .mb-3:hover {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .card-body .mb-3 {
+        padding: 8px;
+    }
+
+    .card-body h6 a:hover {
+        color: #007bff !important;
+        transition: color 0.3s ease;
+    }
+
+    /* Hiệu ứng cho badge Premium */
+    .badge.bg-warning {
+        font-size: 0.75rem;
+        padding: 0.25em 0.5em;
+    }
+
+    .hover-effect {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-effect:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+
+    .link-hover {
+        transition: color 0.3s ease;
+    }
+
+    .link-hover:hover {
+        color: #0d6efd !important;
+    }
+
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+
+    .main-article .card-img-top {
+        transition: transform 0.3s ease;
+    }
+
+    .main-article:hover .card-img-top {
+        transform: scale(1.05);
+    }
+
+    .badge {
+        font-weight: 500;
+        padding: 0.5em 0.8em;
+    }
+
+    .text-muted {
+        font-size: 0.875rem;
+    }
+
+    .btn-outline-primary {
+        border-radius: 20px;
+        padding: 0.25rem 1rem;
+    }
+
+    .related-article {
+        margin-bottom: 1rem;
+    }
+
+    .related-article img {
+        height: 100px;
+        width: 100%;
+    }
+
+    .tab-content {
+        padding: 20px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0,0,0,.05);
+    }
+
+    /* Thêm styles cho tab navigation */
+    .nav-tabs {
+        border-bottom: none;
+        margin-bottom: -1px;
+    }
+
+    .nav-tabs .nav-link {
+        border: none;
+        color: #6c757d;
+        font-weight: 500;
+        padding: 0.75rem 1.25rem;
+        transition: all 0.3s ease;
+    }
+
+    .nav-tabs .nav-link:hover {
+        color: #0d6efd;
+        border: none;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #0d6efd;
+        background: #fff;
+        border: none;
+        border-bottom: 2px solid #0d6efd;
+    }
+
+    .hover-link {
+        transition: color 0.3s ease;
+    }
+
+    .hover-link:hover {
+        color: #0d6efd !important;
+    }
+
+    footer .border-bottom {
+        border-color: rgba(255,255,255,0.1) !important;
+    }
+
+    footer li {
+        transition: transform 0.3s ease;
+    }
+
+    footer li:hover {
+        transform: translateX(5px);
+    }
+
+    footer .fab {
+        transition: transform 0.3s ease;
+    }
+
+    footer .fab:hover {
+        transform: scale(1.2);
+    }
+
+    /* Logo */
+    .logo-text {
+        font-size: 24px;
+        font-weight: 700;
+        color: #000;
+        letter-spacing: 2px;
+        transition: color 0.3s ease;
+    }
+
+    .logo-text:hover {
+        color: #FFD700;
+    }
+
+    /* Search Form */
+    .search-container {
+        position: relative;
+        width: 400px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 40px 10px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #FFD700;
+        box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+    }
+
+    .search-button {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: none;
+        color: #6c757d;
+        padding: 8px;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .search-button:hover {
+        color: #FFD700;
+    }
+
+    /* Navigation Links */
+    .nav-link-custom {
+        color: #000;
+        text-decoration: none;
+        padding: 8px 12px;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .nav-link-custom:hover {
+        background-color: rgba(255, 215, 0, 0.1);
+        color: #000;
+    }
+
+    /* Avatar */
+    .avatar-img {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .premium-avatar {
+        border: 2px solid #FFD700 !important;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .avatar-img:hover {
+        transform: scale(1.1);
+    }
+
+    /* Custom Dropdown */
+    .custom-dropdown {
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        border-radius: 10px;
+        padding: 8px;
+    }
+
+    .custom-dropdown .dropdown-item {
+        padding: 8px 16px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .custom-dropdown .dropdown-item:hover {
+        background-color: rgba(255, 215, 0, 0.1);
+    }
+
+    /* Category Navigation */
+    .category-nav {
+        padding: 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .category-link {
+        color: #000;
+        padding: 15px 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .category-link::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background-color: #FFD700;
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+
+    .category-link:hover::after {
+        width: 100%;
+    }
+
+    .home-link {
+        color: #000;
+        font-size: 1.2rem;
+        transition: color 0.3s ease;
+    }
+
+    .home-link:hover {
+        color: #FFD700;
+    }
+
+    /* Custom Button */
+    .btn-custom-outline {
+        border: 2px solid #000;
+        color: #000;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-custom-outline:hover {
+        background-color: #000;
+        color: #FFD700;
+    }
+
+    /* Dropdown Divider */
+    .dropdown-divider {
+        border-color: rgba(0,0,0,0.1);
+        margin: 8px 0;
+    }
     </style>
 </head>
 
@@ -526,56 +824,52 @@
             </form>
 
             <div class="d-flex align-items-center">
-                <a href="/premium" class="me-3 text-dark text-decoration-none">Premium</a>
-                <a href="{{#if isSubscriber}}/subscriber{{else}}/{{/if}}" class="me-3 text-dark text-decoration-none">Mới nhất</a>
+                <a href="/premium" class="nav-link-custom me-3">
+                    <i class="bi bi-star-fill text-warning"></i> Premium
+                </a>
+                <a href="{{#if isSubscriber}}/subscriber{{else}}/{{/if}}" class="nav-link-custom me-3">
+                    <i class="bi bi-clock-history"></i> Mới nhất
+                </a>
 
                 {{#if isAuthenticated}}
                     <div class="dropdown">
                         <img src="{{authUser.avatar}}"
                             onerror="this.onerror=null; this.src='/src/static/img/default.png';"
                             alt="User Avatar" 
-                            class="rounded-circle {{#if authUser.role}}{{#eq authUser.role 'subscriber'}}premium-avatar{{/eq}}{{/if}}" 
-                            style="width: 40px; height: 40px; cursor: pointer; {{#if authUser.role}}{{#eq authUser.role 'subscriber'}}border: 2px solid #FFD700 !important;{{/eq}}{{/if}}"
+                            class="rounded-circle avatar-img {{#if authUser.role}}{{#eq authUser.role 'subscriber'}}premium-avatar{{/eq}}{{/if}}" 
                             id="navbarDropdownAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
-                        <div style="display: none;">
-                            Role: {{authUser.role}}
-                            Has Role: {{#if authUser.role}}yes{{else}}no{{/if}}
-                            Is Subscriber: {{#eq authUser.role 'subscriber'}}yes{{else}}no{{/eq}}
-                            Classes: rounded-circle {{#if authUser.role}}{{#eq authUser.role 'subscriber'}}premium-avatar{{/eq}}{{/if}}
-                        </div>
-
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAvatar">
-                            <li><a class="dropdown-item" href="/profile">Trang cá nhân</a></li>
-                            <li><a class="dropdown-item" href="/register-role">Đăng ký vai trò</a></li> 
+                        <ul class="dropdown-menu dropdown-menu-end custom-dropdown" aria-labelledby="navbarDropdownAvatar">
+                            <li><a class="dropdown-item" href="/profile"><i class="bi bi-person me-2"></i>Trang cá nhân</a></li>
+                            <li><a class="dropdown-item" href="/register-role"><i class="bi bi-person-plus me-2"></i>Đăng ký vai trò</a></li> 
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="/logout" method="POST">
-                                    <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
+                                    <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</button>
                                 </form>
                             </li>
                         </ul>
                     </div>
                 {{else}}
-                    <a class="btn btn-outline-dark btn-sm" href="/login">Đăng nhập</a>
+                    <a class="btn btn-custom-outline" href="/login">Đăng nhập</a>
                 {{/if}}
             </div>
         </div>
     </nav>
 
     <!-- Secondary Navbar -->
-    <nav class="navbar navbar-expand-lg bg-white border-bottom py-0">
+    <nav class="navbar navbar-expand-lg bg-white border-bottom category-nav">
         <div class="container">
             <div class="navbar-collapse">
                 <ul class="navbar-nav main-nav d-flex justify-content-evenly w-100">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{#if isSubscriber}}/subscriber{{else}}/{{/if}}">
-                            <i class="bi bi-house-door home-icon"></i>
+                        <a class="nav-link home-link" href="{{#if isSubscriber}}/subscriber{{else}}/{{/if}}">
+                            <i class="bi bi-house-door"></i>
                         </a>
                     </li>
                     {{#each categories}}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" 
+                        <a class="nav-link category-link dropdown-toggle" 
                            href="{{#if ../isSubscriber}}/subscriber/category/{{this.id}}{{else}}/category/{{this.id}}{{/if}}" 
                            id="navbarDropdown{{this.id}}"
                            role="button" 
@@ -584,7 +878,7 @@
                             {{this.name}}
                         </a>
                         {{#if this.subcategories.length}}
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown{{this.id}}">
+                        <ul class="dropdown-menu custom-dropdown" aria-labelledby="navbarDropdown{{this.id}}">
                             {{#each this.subcategories}}
                             <li>
                                 <a class="dropdown-item" 
@@ -626,24 +920,42 @@
                             </div>
                             <div class="card-body">
                                 {{#each featuredArticles}}
-                                <div class="mb-3">
-                                    <h6>
-                                        {{#if ../isSubscriber}}
-                                            {{#if this.is_premium}}
-                                                <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                <div class="mb-3 d-flex align-items-start">
+                                    <!-- Thêm hình ảnh -->
+                                    <div class="flex-shrink-0 me-3" style="width: 100px;">
+                                        <img 
+                                            src="/public/images/{{this.featured_image}}" 
+                                            onerror="this.onerror=null; this.src='/static/img/default.png';"
+                                            alt="{{this.title}}"
+                                            class="img-fluid rounded"
+                                            style="width: 100px; height: 70px; object-fit: cover;"
+                                        >
+                                    </div>
+                                    <!-- Nội dung bài viết -->
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            {{#if ../isSubscriber}}
+                                                {{#if this.is_premium}}
+                                                    <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                                {{else}}
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                                {{/if}}
                                             {{else}}
-                                                <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                                {{#if this.is_premium}}
+                                                    <a href="/premium-notice" class="text-dark text-decoration-none">
+                                                {{else}}
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                                {{/if}}
                                             {{/if}}
-                                        {{else}}
-                                            {{#if this.is_premium}}
-                                                <a href="/premium-notice" class="text-dark text-decoration-none">
-                                            {{else}}
-                                                <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
-                                            {{/if}}
+                                                {{this.title}}
+                                            </a>
+                                        </h6>
+                                        <!-- Thêm ngày đăng -->
+                                        <small class="text-muted">{{this.publish_date}}</small>
+                                        {{#if this.is_premium}}
+                                            <span class="badge bg-warning text-dark ms-1">Premium</span>
                                         {{/if}}
-                                            {{this.title}}
-                                        </a>
-                                    </h6>
+                                    </div>
                                 </div>
                                 {{/each}}
                             </div>
@@ -820,22 +1132,69 @@
                                      id="tab-all-content" 
                                      role="tabpanel" 
                                      aria-labelledby="all-tab">
-                                    <div class="row">
+                                    <div class="row g-4">
                                         {{#each featuredArticles}}
                                         <div class="col-lg-6">
                                             {{#if @first}}
-                                            <div class="main-article mb-4">
-                                                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded" alt="{{this.title}}">
-                                                <h3 class="mt-3">
-                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                                </h3>
-                                                <p class="text-muted">{{this.abstract}}</p>
+                                            <div class="main-article card h-100 border-0 shadow-sm hover-effect">
+                                                <div class="position-relative">
+                                                    <img src="/public/images/{{this.featured_image}}" 
+                                                         class="card-img-top rounded-top" 
+                                                         alt="{{this.title}}"
+                                                         style="height: 250px; object-fit: cover;">
+                                                    {{#if this.is_premium}}
+                                                    <span class="position-absolute top-0 end-0 m-2 badge bg-warning">
+                                                        <i class="fas fa-crown"></i> Premium
+                                                    </span>
+                                                    {{/if}}
+                                                </div>
+                                                <div class="card-body">
+                                                    <h3 class="card-title h4">
+                                                        <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                           class="text-dark text-decoration-none link-hover">
+                                                            {{this.title}}
+                                                        </a>
+                                                    </h3>
+                                                    <p class="card-text text-muted">{{this.abstract}}</p>
+                                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                                        <small class="text-muted">
+                                                            <i class="far fa-clock"></i> {{this.publish_date}}
+                                                        </small>
+                                                        <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                           class="btn btn-outline-primary btn-sm">
+                                                            Đọc tiếp
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                             {{else}}
-                                            <div class="related-article mb-3">
-                                                <h4>
-                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                                </h4>
+                                            <div class="related-article card h-100 border-0 shadow-sm hover-effect">
+                                                <div class="row g-0">
+                                                    <div class="col-4">
+                                                        <img src="/public/images/{{this.featured_image}}" 
+                                                             class="img-fluid rounded-start h-100"
+                                                             alt="{{this.title}}"
+                                                             style="object-fit: cover;">
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <div class="card-body">
+                                                            <h4 class="card-title h6">
+                                                                <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                                   class="text-dark text-decoration-none link-hover">
+                                                                    {{this.title}}
+                                                                </a>
+                                                            </h4>
+                                                            <small class="text-muted">
+                                                                <i class="far fa-clock"></i> {{this.publish_date}}
+                                                            </small>
+                                                            {{#if this.is_premium}}
+                                                            <span class="badge bg-warning text-dark ms-2">
+                                                                <i class="fas fa-crown"></i> Premium
+                                                            </span>
+                                                            {{/if}}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             {{/if}}
                                         </div>
@@ -847,22 +1206,69 @@
                                      id="tab-health-content" 
                                      role="tabpanel" 
                                      aria-labelledby="health-tab">
-                                    <div class="row">
+                                    <div class="row g-4">
                                         {{#each healthArticles}}
                                         <div class="col-lg-6">
                                             {{#if @first}}
-                                            <div class="main-article mb-4">
-                                                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded" alt="{{this.title}}">
-                                                <h3 class="mt-3">
-                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                                </h3>
-                                                <p class="text-muted">{{this.abstract}}</p>
+                                            <div class="main-article card h-100 border-0 shadow-sm hover-effect">
+                                                <div class="position-relative">
+                                                    <img src="/public/images/{{this.featured_image}}" 
+                                                         class="card-img-top rounded-top" 
+                                                         alt="{{this.title}}"
+                                                         style="height: 250px; object-fit: cover;">
+                                                    {{#if this.is_premium}}
+                                                    <span class="position-absolute top-0 end-0 m-2 badge bg-warning">
+                                                        <i class="fas fa-crown"></i> Premium
+                                                    </span>
+                                                    {{/if}}
+                                                </div>
+                                                <div class="card-body">
+                                                    <h3 class="card-title h4">
+                                                        <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                           class="text-dark text-decoration-none link-hover">
+                                                            {{this.title}}
+                                                        </a>
+                                                    </h3>
+                                                    <p class="card-text text-muted">{{this.abstract}}</p>
+                                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                                        <small class="text-muted">
+                                                            <i class="far fa-clock"></i> {{this.publish_date}}
+                                                        </small>
+                                                        <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                           class="btn btn-outline-primary btn-sm">
+                                                            Đọc tiếp
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                             {{else}}
-                                            <div class="related-article mb-3">
-                                                <h4>
-                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                                </h4>
+                                            <div class="related-article card h-100 border-0 shadow-sm hover-effect">
+                                                <div class="row g-0">
+                                                    <div class="col-4">
+                                                        <img src="/public/images/{{this.featured_image}}" 
+                                                             class="img-fluid rounded-start h-100"
+                                                             alt="{{this.title}}"
+                                                             style="object-fit: cover;">
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <div class="card-body">
+                                                            <h4 class="card-title h6">
+                                                                <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                                   class="text-dark text-decoration-none link-hover">
+                                                                    {{this.title}}
+                                                                </a>
+                                                            </h4>
+                                                            <small class="text-muted">
+                                                                <i class="far fa-clock"></i> {{this.publish_date}}
+                                                            </small>
+                                                            {{#if this.is_premium}}
+                                                            <span class="badge bg-warning text-dark ms-2">
+                                                                <i class="fas fa-crown"></i> Premium
+                                                            </span>
+                                                            {{/if}}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             {{/if}}
                                         </div>
@@ -874,22 +1280,69 @@
                                      id="tab-life-content" 
                                      role="tabpanel" 
                                      aria-labelledby="life-tab">
-                                    <div class="row">
+                                    <div class="row g-4">
                                         {{#each lifeArticles}}
                                         <div class="col-lg-6">
                                             {{#if @first}}
-                                            <div class="main-article mb-4">
-                                                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded" alt="{{this.title}}">
-                                                <h3 class="mt-3">
-                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                                </h3>
-                                                <p class="text-muted">{{this.abstract}}</p>
+                                            <div class="main-article card h-100 border-0 shadow-sm hover-effect">
+                                                <div class="position-relative">
+                                                    <img src="/public/images/{{this.featured_image}}" 
+                                                         class="card-img-top rounded-top" 
+                                                         alt="{{this.title}}"
+                                                         style="height: 250px; object-fit: cover;">
+                                                    {{#if this.is_premium}}
+                                                    <span class="position-absolute top-0 end-0 m-2 badge bg-warning">
+                                                        <i class="fas fa-crown"></i> Premium
+                                                    </span>
+                                                    {{/if}}
+                                                </div>
+                                                <div class="card-body">
+                                                    <h3 class="card-title h4">
+                                                        <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                           class="text-dark text-decoration-none link-hover">
+                                                            {{this.title}}
+                                                        </a>
+                                                    </h3>
+                                                    <p class="card-text text-muted">{{this.abstract}}</p>
+                                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                                        <small class="text-muted">
+                                                            <i class="far fa-clock"></i> {{this.publish_date}}
+                                                        </small>
+                                                        <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                           class="btn btn-outline-primary btn-sm">
+                                                            Đọc tiếp
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                             {{else}}
-                                            <div class="related-article mb-3">
-                                                <h4>
-                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                                </h4>
+                                            <div class="related-article card h-100 border-0 shadow-sm hover-effect">
+                                                <div class="row g-0">
+                                                    <div class="col-4">
+                                                        <img src="/public/images/{{this.featured_image}}" 
+                                                             class="img-fluid rounded-start h-100"
+                                                             alt="{{this.title}}"
+                                                             style="object-fit: cover;">
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <div class="card-body">
+                                                            <h4 class="card-title h6">
+                                                                <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                                   class="text-dark text-decoration-none link-hover">
+                                                                    {{this.title}}
+                                                                </a>
+                                                            </h4>
+                                                            <small class="text-muted">
+                                                                <i class="far fa-clock"></i> {{this.publish_date}}
+                                                            </small>
+                                                            {{#if this.is_premium}}
+                                                            <span class="badge bg-warning text-dark ms-2">
+                                                                <i class="fas fa-crown"></i> Premium
+                                                            </span>
+                                                            {{/if}}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             {{/if}}
                                         </div>
@@ -901,22 +1354,69 @@
                                      id="tab-tech-content" 
                                      role="tabpanel" 
                                      aria-labelledby="tech-tab">
-                                    <div class="row">
+                                    <div class="row g-4">
                                         {{#each techArticles}}
                                         <div class="col-lg-6">
                                             {{#if @first}}
-                                            <div class="main-article mb-4">
-                                                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded" alt="{{this.title}}">
-                                                <h3 class="mt-3">
-                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                                </h3>
-                                                <p class="text-muted">{{this.abstract}}</p>
+                                            <div class="main-article card h-100 border-0 shadow-sm hover-effect">
+                                                <div class="position-relative">
+                                                    <img src="/public/images/{{this.featured_image}}" 
+                                                         class="card-img-top rounded-top" 
+                                                         alt="{{this.title}}"
+                                                         style="height: 250px; object-fit: cover;">
+                                                    {{#if this.is_premium}}
+                                                    <span class="position-absolute top-0 end-0 m-2 badge bg-warning">
+                                                        <i class="fas fa-crown"></i> Premium
+                                                    </span>
+                                                    {{/if}}
+                                                </div>
+                                                <div class="card-body">
+                                                    <h3 class="card-title h4">
+                                                        <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                           class="text-dark text-decoration-none link-hover">
+                                                            {{this.title}}
+                                                        </a>
+                                                    </h3>
+                                                    <p class="card-text text-muted">{{this.abstract}}</p>
+                                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                                        <small class="text-muted">
+                                                            <i class="far fa-clock"></i> {{this.publish_date}}
+                                                        </small>
+                                                        <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                           class="btn btn-outline-primary btn-sm">
+                                                            Đọc tiếp
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                             {{else}}
-                                            <div class="related-article mb-3">
-                                                <h4>
-                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                                </h4>
+                                            <div class="related-article card h-100 border-0 shadow-sm hover-effect">
+                                                <div class="row g-0">
+                                                    <div class="col-4">
+                                                        <img src="/public/images/{{this.featured_image}}" 
+                                                             class="img-fluid rounded-start h-100"
+                                                             alt="{{this.title}}"
+                                                             style="object-fit: cover;">
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <div class="card-body">
+                                                            <h4 class="card-title h6">
+                                                                <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                                   class="text-dark text-decoration-none link-hover">
+                                                                    {{this.title}}
+                                                                </a>
+                                                            </h4>
+                                                            <small class="text-muted">
+                                                                <i class="far fa-clock"></i> {{this.publish_date}}
+                                                            </small>
+                                                            {{#if this.is_premium}}
+                                                            <span class="badge bg-warning text-dark ms-2">
+                                                                <i class="fas fa-crown"></i> Premium
+                                                            </span>
+                                                            {{/if}}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             {{/if}}
                                         </div>
@@ -928,22 +1428,69 @@
                                      id="tab-car-content" 
                                      role="tabpanel" 
                                      aria-labelledby="car-tab">
-                                    <div class="row">
+                                    <div class="row g-4">
                                         {{#each carArticles}}
                                         <div class="col-lg-6">
                                             {{#if @first}}
-                                            <div class="main-article mb-4">
-                                                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded" alt="{{this.title}}">
-                                                <h3 class="mt-3">
-                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                                </h3>
-                                                <p class="text-muted">{{this.abstract}}</p>
+                                            <div class="main-article card h-100 border-0 shadow-sm hover-effect">
+                                                <div class="position-relative">
+                                                    <img src="/public/images/{{this.featured_image}}" 
+                                                         class="card-img-top rounded-top" 
+                                                         alt="{{this.title}}"
+                                                         style="height: 250px; object-fit: cover;">
+                                                    {{#if this.is_premium}}
+                                                    <span class="position-absolute top-0 end-0 m-2 badge bg-warning">
+                                                        <i class="fas fa-crown"></i> Premium
+                                                    </span>
+                                                    {{/if}}
+                                                </div>
+                                                <div class="card-body">
+                                                    <h3 class="card-title h4">
+                                                        <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                           class="text-dark text-decoration-none link-hover">
+                                                            {{this.title}}
+                                                        </a>
+                                                    </h3>
+                                                    <p class="card-text text-muted">{{this.abstract}}</p>
+                                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                                        <small class="text-muted">
+                                                            <i class="far fa-clock"></i> {{this.publish_date}}
+                                                        </small>
+                                                        <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                           class="btn btn-outline-primary btn-sm">
+                                                            Đọc tiếp
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                             {{else}}
-                                            <div class="related-article mb-3">
-                                                <h4>
-                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                                </h4>
+                                            <div class="related-article card h-100 border-0 shadow-sm hover-effect">
+                                                <div class="row g-0">
+                                                    <div class="col-4">
+                                                        <img src="/public/images/{{this.featured_image}}" 
+                                                             class="img-fluid rounded-start h-100"
+                                                             alt="{{this.title}}"
+                                                             style="object-fit: cover;">
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <div class="card-body">
+                                                            <h4 class="card-title h6">
+                                                                <a href="{{#if ../isSubscriber}}/subscriber/article/{{this.id}}{{else}}/article/{{this.id}}{{/if}}" 
+                                                                   class="text-dark text-decoration-none link-hover">
+                                                                    {{this.title}}
+                                                                </a>
+                                                            </h4>
+                                                            <small class="text-muted">
+                                                                <i class="far fa-clock"></i> {{this.publish_date}}
+                                                            </small>
+                                                            {{#if this.is_premium}}
+                                                            <span class="badge bg-warning text-dark ms-2">
+                                                                <i class="fas fa-crown"></i> Premium
+                                                            </span>
+                                                            {{/if}}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             {{/if}}
                                         </div>
@@ -995,17 +1542,106 @@
         <div class="container py-4">
             <div class="row">
                 <div class="col-md-4">
-                    <h5>Về chúng tôi</h5>
-                    <!-- Footer content -->
+                    <h5 class="mb-3 border-bottom pb-2">Về chúng tôi</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Nhà báo Huy
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Biên tập viên Trung
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Biên tập viên Hào
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Nhà báo Trí
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Biên tập viên Dương
+                        </li>
+                    </ul>
                 </div>
                 <div class="col-md-4">
-                    <h5>Chuyên mục</h5>
-                    <!-- Categories -->
+                    <h5 class="mb-3 border-bottom pb-2">Chuyên mục</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            {{#if isSubscriber}}
+                            <a href="/subscriber/category/8" class="text-light text-decoration-none hover-link">
+                            {{else}}
+                            <a href="/category/8" class="text-light text-decoration-none hover-link">
+                            {{/if}}
+                                <i class="fas fa-heartbeat me-2"></i>
+                                Sức khỏe
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            {{#if isSubscriber}}
+                            <a href="/subscriber/category/9" class="text-light text-decoration-none hover-link">
+                            {{else}}
+                            <a href="/category/9" class="text-light text-decoration-none hover-link">
+                            {{/if}}
+                                <i class="fas fa-hand-holding-heart me-2"></i>
+                                Đời sống
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            {{#if isSubscriber}}
+                            <a href="/subscriber/category/11" class="text-light text-decoration-none hover-link">
+                            {{else}}
+                            <a href="/category/11" class="text-light text-decoration-none hover-link">
+                            {{/if}}
+                                <i class="fas fa-laptop-code me-2"></i>
+                                Công nghệ
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            {{#if isSubscriber}}
+                            <a href="/subscriber/category/12" class="text-light text-decoration-none hover-link">
+                            {{else}}
+                            <a href="/category/12" class="text-light text-decoration-none hover-link">
+                            {{/if}}
+                                <i class="fas fa-car me-2"></i>
+                                Xe
+                            </a>
+                        </li>
+                    </ul>
                 </div>
                 <div class="col-md-4">
-                    <h5>Liên hệ</h5>
-                    <!-- Contact info -->
+                    <h5 class="mb-3 border-bottom pb-2">Liên hệ</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2"></i>
+                            Email: NNNnews@news.com
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            Địa chỉ: 227 Nguyễn Văn Cừ, Quận 5, TP.HCM
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone me-2"></i>
+                            Hotline: (028) 3835 4266
+                        </li>
+                    </ul>
+                    <div class="mt-3">
+                        <a href="#" class="text-light me-3 hover-link">
+                            <i class="fab fa-facebook-square fa-2x"></i>
+                        </a>
+                        <a href="#" class="text-light me-3 hover-link">
+                            <i class="fab fa-twitter-square fa-2x"></i>
+                        </a>
+                        <a href="#" class="text-light hover-link">
+                            <i class="fab fa-youtube-square fa-2x"></i>
+                        </a>
+                    </div>
                 </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top">
+                <small>&copy; 2024 NNN News. All rights reserved.</small>
             </div>
         </div>
     </footer>

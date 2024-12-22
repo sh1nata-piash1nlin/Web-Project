@@ -28,7 +28,7 @@ async function getCategories() {
 
 async function getFeaturedArticles(page = 1) {
     try {
-        const limit = 10;
+        const limit = 5;
         const offset = (page - 1) * limit;
 
         // Get total count
@@ -248,7 +248,7 @@ async function getCategoryArticles(req, res) {
     try {
         const categoryId = req.params.id;
         const page = parseInt(req.query.page) || 1;
-        const limit = 10;
+        const limit = 5;
         const offset = (page - 1) * limit;
         const isSubscriber = req.session.authUser?.role === 'subscriber';
 
@@ -446,7 +446,7 @@ async function searchArticles(req, res) {
     try {
         const searchTerm = req.query.q;
         const page = parseInt(req.query.page) || 1;
-        const limit = 10;
+        const limit = 5;
         const offset = (page - 1) * limit;
         const isSubscriber = req.session.authUser?.role === 'subscriber';
 
