@@ -11,6 +11,7 @@ const articleController = require('../controllers/article.controller');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Gọi hàm renderHomepage để hiển thị trang chủ
+
 router.get('/', guestController.renderHomepage);
 
 
@@ -66,30 +67,116 @@ router.get('/signup', async(req, res)=>{
     })
 })
 
+// Generate random captcha text with mixed case and numbers
+function generateCaptcha() {
+    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    const numbers = '0123456789';
+    const allChars = uppercase + lowercase + numbers;
+    
+    let captcha = '';
+    
+    // Ensure at least one of each type
+    captcha += uppercase.charAt(Math.floor(Math.random() * uppercase.length));
+    captcha += lowercase.charAt(Math.floor(Math.random() * lowercase.length));
+    captcha += numbers.charAt(Math.floor(Math.random() * numbers.length));
+    
+    // Fill the remaining 3 characters randomly from all possible characters
+    for (let i = 0; i < 3; i++) {
+        captcha += allChars.charAt(Math.floor(Math.random() * allChars.length));
+    }
+    
+    // Shuffle the captcha string
+    captcha = captcha.split('').sort(() => Math.random() - 0.5).join('');
+    
+    return captcha;
+}
+
+// Modify the signup route to redirect to captcha
 router.post('/signup', async (req, res) => {
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
-  // Check if email already exists in the database
-  const existingUser = await userService.findByUsername(email);
-  if (existingUser) {
-      // If email already exists, show an alert and re-render the signup page
-      return res.render('signup', {
-          layout: 'login-layout',
-          showErrors: true,
-          errorMessage: 'This email is already registered.',
-      });
-  }
+    // Check if email already exists
+    const existingUser = await userService.findByUsername(email);
+    if (existingUser) {
+        return res.render('signup', {
+            layout: 'login-layout',
+            showErrors: true,
+            errorMessage: 'This email is already registered.',
+        });
+    }
 
-  // Hash password before storing it
-  const hash_password = bcrypt.hashSync(password, 8);
-  const entity = {
-      email,
-      password: hash_password,
-  };
+    // Generate captcha and store in session
+    const captchaText = generateCaptcha();
+    req.session.captcha = {
+        text: captchaText,
+        email: email,
+        password: password
+    };
 
-  // Insert new user into the database
-  await userService.add(entity);
-  res.redirect('/login');
+    // Render captcha page
+    res.render('captcha', {
+        layout: 'login-layout',
+        captchaText: captchaText,
+        email: email,
+        password: password
+    });
+});
+
+// Add route for captcha verification
+router.post('/signup/verify-captcha', async (req, res) => {
+    const { userCaptcha, email, password } = req.body;
+    
+    // Verify captcha
+    if (!req.session.captcha || userCaptcha !== req.session.captcha.text) {
+        // Generate new captcha for the next attempt
+        const newCaptcha = generateCaptcha();
+        req.session.captcha = {
+            text: newCaptcha,
+            email: email,
+            password: password
+        };
+
+        return res.render('captcha', {
+            layout: 'login-layout',
+            captchaText: newCaptcha,
+            email: email,
+            password: password,
+            showErrors: true,
+            errorMessage: 'Invalid captcha. Please try again.'
+        });
+    }
+
+    // Hash password and create user
+    const hash_password = bcrypt.hashSync(password, 8);
+    const entity = {
+        email,
+        password: hash_password,
+    };
+
+    // Add user to database
+    await userService.add(entity);
+    
+    // Clear captcha session
+    delete req.session.captcha;
+    
+    // Redirect to login
+    res.redirect('/login');
+});
+
+// Add route for refreshing captcha
+router.get('/signup/refresh-captcha', (req, res) => {
+    const newCaptcha = generateCaptcha();
+    
+    // Initialize captcha session if it doesn't exist
+    if (!req.session.captcha) {
+        req.session.captcha = {};
+    }
+    
+    // Update the captcha text
+    req.session.captcha.text = newCaptcha;
+    
+    res.json({ captchaText: newCaptcha });
 });
 
 router.post('/logout', (req, res) => {
@@ -237,6 +324,8 @@ router.get('/article/:id', articleController.getArticleDetail);
 router.get('/category/:id', articleController.getCategoryArticles);
 //Duong  
 router.get('/search', articleController.searchArticles);
+// Route cho comments - có thể sử dụng bởi mọi user đã đăng nhập
+router.post('/articles/comments', articleController.addComment);
 
 router.get('/profile/changepwd', (req, res) => {
   if (!req.session.isAuthenticated) {
