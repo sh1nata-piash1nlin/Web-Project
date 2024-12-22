@@ -769,49 +769,122 @@
             </div>
 
             <!-- Sidebar -->
-            <div class="col-lg-4">
-                <div class="sidebar">
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5 class="mb-0">Tin nổi bật</h5>
-                        </div>
-                        <div class="row mb-4">
-                            {{#each featuredArticles}}
-                            <div class="col-lg-6 d-flex align-items-center justify-content-center">
-                                <img src="/public/images/{{this.featured_image}}" class="img-fluid rounded"
-                                    style="width: 100%; max-width: 300px; height: auto; border-radius: 10px; margin-top: 20px; margin-bottom: 20px;">
+            {{#unless hideDefaultSidebar}}
+                <div class="col-lg-4">
+                    <div class="sidebar">
+                        <!-- Featured Articles Sidebar -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Tin nổi bật</h5>
                             </div>
-                            <div class="col-lg-6 d-flex align-items-center">
-                                <div class="card-body">
-                                    <div class="related-news mb-3">
-                                        <h3>
-                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                        </h3>
-                                        <div class="comment-count">
-                                            <i class="bi bi-chat-dots"></i> {{this.comments}}
-                                        </div>
+                            <div class="card-body">
+                                {{#each featuredArticles}}
+                                <div class="mb-3 d-flex align-items-start">
+                                    <!-- Thêm hình ảnh -->
+                                    <div class="flex-shrink-0 me-3" style="width: 100px;">
+                                        <img 
+                                            src="/public/images/{{this.featured_image}}" 
+                                            onerror="this.onerror=null; this.src='/static/img/default.png';"
+                                            alt="{{this.title}}"
+                                            class="img-fluid rounded"
+                                            style="width: 100px; height: 70px; object-fit: cover;"
+                                        >
+                                    </div>
+                                    <!-- Nội dung bài viết -->
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            {{#if ../isSubscriber}}
+                                                {{#if this.is_premium}}
+                                                    <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                                {{else}}
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                                {{/if}}
+                                            {{else}}
+                                                {{#if this.is_premium}}
+                                                    <a href="/premium-notice" class="text-dark text-decoration-none">
+                                                {{else}}
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                                {{/if}}
+                                            {{/if}}
+                                                {{this.title}}
+                                            </a>
+                                        </h6>
+                                        <!-- Thêm ngày đăng -->
+                                        <small class="text-muted">{{this.publish_date}}</small>
+                                        {{#if this.is_premium}}
+                                            <span class="badge bg-warning text-dark ms-1">Premium</span>
+                                        {{/if}}
                                     </div>
                                 </div>
+                                {{/each}}
                             </div>
-                            {{/each}}
                         </div>
-                    </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">Tin mới nhất</h5>
+                        <!-- Latest Articles -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Tin mới nhất</h5>
+                            </div>
+                            <div class="card-body">
+                                {{#each latestArticles}}
+                                <div class="mb-3">
+                                    <h6>
+                                        {{#if ../isSubscriber}}
+                                            {{#if this.is_premium}}
+                                                <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{else}}
+                                                <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{/if}}
+                                        {{else}}
+                                            {{#if this.is_premium}}
+                                                <a href="/premium-notice" class="text-dark text-decoration-none">
+                                            {{else}}
+                                                <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{/if}}
+                                        {{/if}}
+                                            {{this.title}}
+                                        </a>
+                                    </h6>
+                                </div>
+                                {{/each}}
+                            </div>
                         </div>
-                        <div class="card-body">
-                            {{#each latestArticles}}
-                            <div class="related-news mb-3">
-                                <h3><a href="/article/{{this.id}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                </h3>
+
+                        <!-- Most Viewed Articles -->
+                        
+                        <!-- Tabs Content -->
+                        <div class="tab-content mt-3">
+                            {{#each [healthArticles, lifeArticles, techArticles, carArticles]}}
+                            <div class="tab-pane fade {{#if @first}}show active{{/if}}" 
+                                 id="tab-{{@key}}-content" 
+                                 role="tabpanel">
+                                {{#each this}}
+                                <div class="mb-3">
+                                    <h6>
+                                        {{#if ../../isSubscriber}}
+                                            {{#if this.is_premium}}
+                                                <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{else}}
+                                                <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{/if}}
+                                        {{else}}
+                                            {{#if this.is_premium}}
+                                                <a href="/premium-notice" class="text-dark text-decoration-none">
+                                            {{else}}
+                                                <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                            {{/if}}
+                                        {{/if}}
+                                            {{this.title}}
+                                        </a>
+                                    </h6>
+                                </div>
+                                {{/each}}
                             </div>
                             {{/each}}
                         </div>
                     </div>
                 </div>
-            </div>
+                {{/unless}}
         </div>
     </div>
 
@@ -1066,17 +1139,106 @@
         <div class="container py-4">
             <div class="row">
                 <div class="col-md-4">
-                    <h5>Về chúng tôi</h5>
-                    <!-- Footer content -->
+                    <h5 class="mb-3 border-bottom pb-2">Về chúng tôi</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Nhà báo Huy
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Biên tập viên Trung
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Biên tập viên Hào
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Nhà báo Trí
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Biên tập viên Dương
+                        </li>
+                    </ul>
                 </div>
                 <div class="col-md-4">
-                    <h5>Chuyên mục</h5>
-                    <!-- Categories -->
+                    <h5 class="mb-3 border-bottom pb-2">Chuyên mục</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            {{#if isSubscriber}}
+                            <a href="/subscriber/category/8" class="text-light text-decoration-none hover-link">
+                            {{else}}
+                            <a href="/category/8" class="text-light text-decoration-none hover-link">
+                            {{/if}}
+                                <i class="fas fa-heartbeat me-2"></i>
+                                Sức khỏe
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            {{#if isSubscriber}}
+                            <a href="/subscriber/category/9" class="text-light text-decoration-none hover-link">
+                            {{else}}
+                            <a href="/category/9" class="text-light text-decoration-none hover-link">
+                            {{/if}}
+                                <i class="fas fa-hand-holding-heart me-2"></i>
+                                Đời sống
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            {{#if isSubscriber}}
+                            <a href="/subscriber/category/11" class="text-light text-decoration-none hover-link">
+                            {{else}}
+                            <a href="/category/11" class="text-light text-decoration-none hover-link">
+                            {{/if}}
+                                <i class="fas fa-laptop-code me-2"></i>
+                                Công nghệ
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            {{#if isSubscriber}}
+                            <a href="/subscriber/category/12" class="text-light text-decoration-none hover-link">
+                            {{else}}
+                            <a href="/category/12" class="text-light text-decoration-none hover-link">
+                            {{/if}}
+                                <i class="fas fa-car me-2"></i>
+                                Xe
+                            </a>
+                        </li>
+                    </ul>
                 </div>
                 <div class="col-md-4">
-                    <h5>Liên hệ</h5>
-                    <!-- Contact info -->
+                    <h5 class="mb-3 border-bottom pb-2">Liên hệ</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2"></i>
+                            Email: NNNnews@news.com
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            Địa chỉ: 227 Nguyễn Văn Cừ, Quận 5, TP.HCM
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone me-2"></i>
+                            Hotline: (028) 3835 4266
+                        </li>
+                    </ul>
+                    <div class="mt-3">
+                        <a href="#" class="text-light me-3 hover-link">
+                            <i class="fab fa-facebook-square fa-2x"></i>
+                        </a>
+                        <a href="#" class="text-light me-3 hover-link">
+                            <i class="fab fa-twitter-square fa-2x"></i>
+                        </a>
+                        <a href="#" class="text-light hover-link">
+                            <i class="fab fa-youtube-square fa-2x"></i>
+                        </a>
+                    </div>
                 </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top">
+                <small>&copy; 2024 NNN News. All rights reserved.</small>
             </div>
         </div>
     </footer>
