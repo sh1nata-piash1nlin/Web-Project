@@ -176,13 +176,136 @@
                 padding: 3px 8px;
             }
         }
+
+    /* Premium Article Styling */
+    .premium-article {
+        position: relative;
+        border: 2px solid #ffd700;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(255, 215, 0, 0.1);
+        background: linear-gradient(to right, #fff, #fffdf0);
+    }
+
+    .premium-badge {
+        position: absolute;
+        top: -10px;
+        right: 10px;
+        background: #ffd700;
+        color: #000;
+        padding: 5px 15px;
+        border-radius: 15px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        z-index: 1;
+    }
+
+    .premium-star {
+        color: #000;
+    }
+
+    .regular-article {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        background: #fff;
+    }
+
+    /* Existing card styles */
+    .card {
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-img-top {
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px 8px 0 0;
+    }
+
+    /* Button styles */
+    .btn-accept, .btn-reject {
+        margin: 0 5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-accept:hover, .btn-reject:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Badge styles */
+    .badge-draft {
+        background-color: #ffc107;
+        color: #212529;
+        padding: 5px 10px;
+        border-radius: 12px;
+    }
+
+    /* Dashboard Header Styling */
+    .dashboard-header {
+        text-align: center;
+        padding: 30px 0;
+        background: linear-gradient(135deg, #1a73e8, #0d47a1);
+        border-radius: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-title {
+        color: white;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .dashboard-title i {
+        font-size: 2rem;
+    }
+
+    .dashboard-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+        margin: 0;
+        font-weight: 300;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .dashboard-title {
+            font-size: 2rem;
+        }
+        
+        .dashboard-title i {
+            font-size: 1.75rem;
+        }
+        
+        .dashboard-subtitle {
+            font-size: 1rem;
+        }
+    }
   </style>
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom sticky-top">
     <div class="container">
-      <a class="navbar-brand" href="/">
+      <a class="navbar-brand">
         <div class="logo-text">NNN</div>
       </a>
       <a href="/editor/editorPOV" class="text-primary mr-2" style="font-size: 24px;">
@@ -220,12 +343,26 @@
 
   <!-- Main Content -->
   <div class="container my-4">
-    <h1 class="text-center mb-4">Editor Dashboard</h1>
+    <div class="dashboard-header mb-4">
+        <h1 class="dashboard-title">
+            <i class="fas fa-edit"></i>
+            Editor Dashboard
+        </h1>
+        <p class="dashboard-subtitle"></p>
+    </div>
 
     <div class="row">
       {{#each articles}}
         <div class="col-md-4">
-          <div class="card">
+          <div class="card {{#if is_premium}}premium-article{{else}}regular-article{{/if}}">
+            <!-- Premium Badge -->
+            {{#if is_premium}}
+            <div class="premium-badge">
+                <i class="bi bi-star-fill premium-star"></i>
+                Premium
+            </div>
+            {{/if}}
+
             <!-- Article Image -->
             <img 
               src="/public/images/{{this.featured_image}}" 
