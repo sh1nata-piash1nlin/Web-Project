@@ -289,6 +289,12 @@ async function renderSubscriberHomepage(req, res) {
         const techArticles = await articleController.getTechArticles();
         const carArticles = await articleController.getCarArticles();
 
+        // Lấy thời gian premium còn lại
+        let premiumTimeLeft = null;
+        if (req.session.authUser && req.session.authUser.role === 'subscriber') {
+            premiumTimeLeft = await getRemainingPremiumTime(req.session.authUser.id);
+        }
+
         res.render('home', {
             layout: 'main',
             categories,
@@ -300,7 +306,8 @@ async function renderSubscriberHomepage(req, res) {
             lifeArticles,
             techArticles,
             carArticles,
-            isSubscriber: true
+            isSubscriber: true,
+            premiumTimeLeft
         });
     } catch (error) {
         console.error('Error in renderSubscriberHomepage:', error);
@@ -475,6 +482,48 @@ async function getSubscriberArticleDetail(req, res) {
     return articleController.getArticleDetail(req, res);
 }
 
+async function getRemainingPremiumTime(userId) {
+    try {
+        const [user] = await db.execute(`
+            SELECT subscription_expiry 
+            FROM Users 
+            WHERE id = ?
+        `, [userId]);
+
+        if (user.length === 0 || !user[0].subscription_expiry) {
+            return null;
+        }
+
+        const expiryDate = new Date(user[0].subscription_expiry);
+        const now = new Date();
+        const timeLeft = expiryDate - now;
+
+        // Nếu đã hết hạn
+        if (timeLeft <= 0) {
+            return 'Hết hạn';
+        }
+
+        // Tính toán thời gian còn lại
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+
+        let timeString = '';
+        if (days > 0) {
+            timeString += `${days} ngày `;
+        }
+        if (hours > 0) {
+            timeString += `${hours} giờ `;
+        }
+        timeString += `${minutes} phút`;
+
+        return `còn ${timeString}`;
+    } catch (error) {
+        console.error('Error getting remaining premium time:', error);
+        return null;
+    }
+}
+
 module.exports = {
     renderSubscriberHomepage,
     getFeaturedArticlesPremium,
@@ -482,5 +531,6 @@ module.exports = {
     searchArticlesPremium,
     getArticleDetailPremium,
     downloadArticlePDF,
-    getSubscriberArticleDetail
+    getSubscriberArticleDetail,
+    getRemainingPremiumTime
 };

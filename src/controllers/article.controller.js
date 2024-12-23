@@ -46,6 +46,7 @@ async function getFeaturedArticles(page = 1) {
                 a.title, 
                 a.abstract, 
                 a.featured_image, 
+                a.is_premium,
                 DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date, 
                 c.name AS category_name,
                 u.full_name AS author_name
@@ -54,10 +55,14 @@ async function getFeaturedArticles(page = 1) {
             JOIN Users u ON a.author_id = u.id
             WHERE a.status = 'published' 
             AND a.featured = 1
-            AND a.is_premium = 0
-            ORDER BY a.publish_date DESC
+            ORDER BY a.is_premium DESC, a.publish_date DESC
             LIMIT ? OFFSET ?
         `, [limit, offset]);
+
+        // Thêm badge cho bài Premium
+        articles.forEach(article => {
+            article.isPremiumBadge = article.is_premium ? 'Premium' : '';
+        });
 
         const totalArticles = countResult[0].total;
         const totalPages = Math.ceil(totalArticles / limit);
@@ -138,13 +143,6 @@ async function getArticleDetail(req, res) {
         const articleId = req.params.id;
         const isSubscriber = req.session.authUser?.role === 'subscriber';
         
-        // Tăng lượt xem
-        await db.execute(`
-            UPDATE Articles 
-            SET view_count = COALESCE(view_count, 0) + 1 
-            WHERE id = ?
-        `, [articleId]);
-
         // Lấy thông tin chi tiết bài viết
         const [articles] = await db.execute(`
             SELECT 
@@ -153,6 +151,7 @@ async function getArticleDetail(req, res) {
                 a.abstract,
                 a.content,
                 a.featured_image,
+                a.is_premium,
                 DATE_FORMAT(a.publish_date, '%d/%m/%Y %H:%i') as publish_date,
                 c.name AS category_name,
                 u.full_name AS author_name
@@ -170,6 +169,27 @@ async function getArticleDetail(req, res) {
         }
 
         const article = articles[0];
+
+        // Nếu là bài Premium và user không phải subscriber
+        if (article.is_premium && !isSubscriber) {
+            return res.render('premium-preview', {
+                layout: 'main',
+                article: {
+                    ...article,
+                    content: article.abstract // Chỉ hiện abstract
+                },
+                categories: await getCategories(),
+                currentUrl: req.originalUrl,
+                authUser: req.session.authUser
+            });
+        }
+
+        // Tăng lượt xem
+        await db.execute(`
+            UPDATE Articles 
+            SET view_count = COALESCE(view_count, 0) + 1 
+            WHERE id = ?
+        `, [articleId]);
 
         // Lấy comments của bài viết kèm thông tin người dùng
         const [comments] = await db.execute(`

@@ -39,6 +39,24 @@ const helpers = {
     eq: (a, b) => a === b,
     includes: (array, value) => Array.isArray(array) && array.includes(value),
     formatDate: (date, format) => dayjs(date).format(format),
+    add: function(a, b) {
+        return a + b;
+    },
+    eq: function (v1, v2) {
+        return v1 === v2;
+    },
+    formatDate: function(date) {
+        if (!date) return '';
+        const d = new Date(date);
+        return d.toLocaleString('vi-VN', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+    }
 };
 
 // Static files

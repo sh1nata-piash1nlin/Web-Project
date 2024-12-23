@@ -67,9 +67,27 @@
             <a href="/profile/changepwd" class="btn btn-warning">
                 <i class="bi bi-key"></i> Đổi mật khẩu
             </a>
-            <a href="/" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Trở về Trang chủ
-            </a>
+            {{#if isAuthenticated}}
+                {{#if authUser.role}}
+                    {{#if (eq authUser.role 'subscriber')}}
+                        <a href="/subscriber" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Trở về Trang chủ
+                        </a>
+                    {{else}}
+                        <a href="/" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Trở về Trang chủ
+                        </a>
+                    {{/if}}
+                {{else}}
+                    <a href="/" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Trở về Trang chủ
+                    </a>
+                {{/if}}
+            {{else}}
+                <a href="/" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Trở về Trang chủ
+                </a>
+            {{/if}}
         </div>
     </form>
 </div>
