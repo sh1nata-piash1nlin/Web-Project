@@ -12,6 +12,7 @@ const editorRoutes = require('./src/routes/editor.route');
 const exphbs = require('express-handlebars');
 const dayjs = require('dayjs');
 var express_handlebars_sections = require('express-handlebars-sections');//import hbs sections
+const FroalaEditor = require('wysiwyg-editor-node-sdk/lib/froalaEditor.js');
 
 //const FroalaEditor = require('wysiwyg-editor-node-sdk/lib/froalaEditor.js');
 //var express_handlebars_sections = require('express-handlebars-sections'); 
@@ -46,8 +47,8 @@ const helpers = {
 };
 
 app.use('/static', express.static('src/static'));
-app.use('/public', express.static(path.join(__dirname, 'src', 'public')));
-//app.use('/froala', express.static(path.join(__dirname,'node_modules/froala-editor')));
+app.use( express.static(path.join(__dirname, 'src', 'public')));
+app.use('/froala', express.static(path.join(__dirname,'node_modules/froala-editor')));
 
 
 app.use(express.json());
@@ -73,6 +74,11 @@ app.set('views', './src/views'); // Set the views directory
 // Connect to the database
 connectDB();
 
+
+
+//Routes
+const writerRoutes = require('./src/routes/writer.route.js');
+app.use('/writer', writerRoutes);
 
 app.use('/', guestRoutes);
 
