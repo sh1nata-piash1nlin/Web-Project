@@ -14,7 +14,8 @@ router.get('/', async (req, res) => {
         // Render the form with categories
         res.render('vwWriter/writer', { 
             layout : 'writer-editor.hbs',
-            categories });
+            categories 
+            });
     } catch (err) {
         console.error('Error fetching categories:', err);
         res.status(500).send('Error fetching categories');
