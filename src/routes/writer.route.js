@@ -3,7 +3,7 @@ const pool = require('../config/database.js'); // MySQL2 for database connection
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/writer', async (req, res) => {
     let connection;
     try {
         connection = await pool.getConnection();
@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
 
 
 // Route to handle saving the content from the Froala editor
-router.post('/save', async (req, res) => {
+router.post('/writer/save', async (req, res) => {
 
     // Destructure and validate data from the request body
     const { title, abstract, editorContent, category_id, author_id, premium, status, featured_image } = req.body;
@@ -96,7 +96,7 @@ router.post('/save', async (req, res) => {
 });
 
 
-router.get('/view', async (req, res) => {
+router.get('/writer/view', async (req, res) => {
     let connection;
     try {
         connection = await pool.getConnection();
@@ -142,6 +142,71 @@ router.get('/view', async (req, res) => {
     } catch (err) {
         console.error('Error retrieving articles:', err);
         res.status(500).json({ success: false, message: 'Error retrieving articles' });
+    } finally {
+        if (connection) connection.release(); // Ensure connection is released
+    }
+});
+
+// Route to fetch article details by ID and render the article view page
+router.get('/writer/articles/:id', async (req, res) => {
+    let connection;
+    try {
+        const articleId = req.params.id; // Get the article ID from the route parameter
+        connection = await pool.getConnection();
+
+        // Query to retrieve the article details along with category and author info
+        const articleQuery = `
+            SELECT 
+                articles.id, 
+                articles.title, 
+                articles.abstract, 
+                articles.content, 
+                articles.status, 
+                articles.is_premium, 
+                articles.author_id, 
+                DATE_FORMAT(articles.created_at, '%Y-%m-%d %H:%i:%s') AS publish_date,
+                categories.name AS category_name,
+                users.full_name AS author_name,  -- Fetch the author's full name
+                users.pen_name AS author_pen_name,  -- Optionally fetch the author's pen name
+                articles.featured_image
+            FROM articles
+            JOIN categories ON articles.category_id = categories.id
+            LEFT JOIN users ON articles.author_id = users.id
+            WHERE articles.id = ?
+        `;
+        const [articles] = await connection.execute(articleQuery, [articleId]);
+
+        if (articles.length === 0) {
+            return res.render('vwWriter/view', { message: "Article not found." });
+        }
+
+        const article = articles[0];  // Extract the first article from the result
+
+        // Query to fetch comments for the article
+        const commentsQuery = `
+            SELECT 
+                comments.id, 
+                comments.comment_text, 
+                comments.comment_date, 
+                users.full_name AS commenter_name,  -- Fetch commenter's full name
+                users.pen_name AS commenter_pen_name  -- Optionally fetch commenter's pen name
+            FROM comments
+            JOIN users ON comments.user_id = users.id
+            WHERE comments.article_id = ?
+            ORDER BY comments.comment_date DESC  -- Order comments by date (most recent first)
+        `;
+        const [comments] = await connection.execute(commentsQuery, [articleId]);
+
+        // Render the article detail page with comments
+        res.render('article-detail.hbs', {
+            article,
+            comments,
+            layout: 'writer-editor.hbs'
+        });
+
+    } catch (err) {
+        console.error('Error retrieving article:', err);
+        res.status(500).json({ success: false, message: 'Error retrieving article' });
     } finally {
         if (connection) connection.release(); // Ensure connection is released
     }
