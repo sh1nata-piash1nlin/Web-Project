@@ -40,7 +40,32 @@
         <!-- Textarea for Froala Editor -->
         <div id="froala-editor" name="editorContent"></div>
 
-        <button id="save-button" type="button" class="btn btn-primary">Save Content</button>
+        <!-- Category Dropdown -->
+        <div class="card mt-4 mb-4">
+            <div class="card-body">
+                <h4 class="card-title">Category</h4>
+                <select class="form-control" name="category_id" required>
+                    <option value="" disabled selected>Select a category</option>
+                    {{#each categories}}
+                        <option value="{{this.id}}">{{this.name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+
+        <!-- Premium Checkbox -->
+        <div class="card mt-4 mb-4 border-primary">
+            <div class="card-body">
+                <h4 class="card-title text-warning">Premium Article</h4>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="premium" name="premium" value="true">
+                    <label class="form-check-label" for="premium">Mark as premium</label>
+                </div>
+                <small class="form-text text-muted">Selecting this option will mark the article as premium and highlight it on the platform.</small>
+            </div>
+        </div>
+
+        <button id="save-button" type="button" class="btn btn-outline-primary btn-lg">Save Content</button>
     </form>
 
 </div>

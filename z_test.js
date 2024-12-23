@@ -35,7 +35,9 @@ app.set('views', './src/views'); // Set the views directory
 
 // Test route for rendering the Handlebars view
 app.get('/', (req, res) => {
-    res.render('vwWriter/writer');
+    res.render('vwWriter/writer',{
+      layout: 'writer-editor.hbs'
+    });
 });
 
 

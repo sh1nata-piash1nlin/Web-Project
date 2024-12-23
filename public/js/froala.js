@@ -190,8 +190,12 @@ function prepareDataAndSend() {
 
     // Get the content from the Froala editor
     const editorContent = editor.html.get(); // This returns the HTML content
-    const title = document.getElementById('article-title').value;  // Get title from the input field
-    const abstract = document.querySelector('input[name="abstract"]').value;  // Get abstract from the input field
+    const title = document.getElementById('article-title').value;
+    const abstract = document.querySelector('input[name="abstract"]').value;
+    const category_id = document.querySelector('select[name="category_id"]').value;
+    const premium = document.querySelector('input[name="premium"]').checked ? true : false;
+
+
 
     // Log the content to check if it's correct
     console.log('Editor content:', editorContent);
@@ -203,10 +207,11 @@ function prepareDataAndSend() {
         title: title,             // Title from the form
         abstract: abstract,       // Abstract from the form
         editorContent: editorContent, // Content from the Froala editor
-        category_id: 1,           // Example category ID
+        category_id: category_id,           // Example category ID
         author_id: 1,             // Example author ID
         status: 'draft',          // Default status
-        featured_image: null     // Optional featured image, can be null or added as needed
+        featured_image: null,     // Optional featured image, can be null or added as needed
+        premium:premium
     };
 
     // Send the data to the server via a POST request
