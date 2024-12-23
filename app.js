@@ -11,6 +11,8 @@ const session = require('express-session');
 const editorRoutes = require('./src/routes/editor.route');
 const exphbs = require('express-handlebars');
 const dayjs = require('dayjs');
+var express_handlebars_sections = require('express-handlebars-sections');//import hbs sections
+
 //const FroalaEditor = require('wysiwyg-editor-node-sdk/lib/froalaEditor.js');
 //var express_handlebars_sections = require('express-handlebars-sections'); 
 
