@@ -116,65 +116,8 @@
     </ul>
 </nav>
 </div>
-<!-- Add/Edit Article Modal -->
-<div class="modal fade" id="articleModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">Add New Article</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form id="articleForm" class="needs-validation" novalidate>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="mb-3">
-                                <label class="form-label">Title</label>
-                                <input type="text" class="form-control" id="articleTitle" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Abstract</label>
-                                <textarea id="articleAbstract" name="abstract" class="form-control"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Content</label>
-                                <textarea id="articleContent" name="content"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label class="form-label">Category</label>
-                                <select class="form-select" id="articleCategory" required>
-                                    <option value="">Select Category</option>
-                                    {{#each categories}}
-                                    <option value="{{this.id}}">{{this.name}}</option>
-                                    {{/each}}
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Status</label>
-                                <select class="form-select" id="articleStatus" required>
-                                    <option value="draft">Draft</option>
-                                    <option value="published">Published</option>
-                                    <option value="archived">Archived</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Featured Image</label>
-                                <input type="file" class="form-control" id="articleThumbnail" accept="image/*">
-                                <div id="thumbnailPreview" class="mt-2"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save Article</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+<!-- Edit Article Modal -->
+
 <!-- Add Article Modal -->
 <div class="modal fade" id="addArticleModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
@@ -183,7 +126,7 @@
                 <h5 class="modal-title">Add New Article</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form id="addArticleForm" class="needs-validation" novalidate>
+            <form id="articleForm" class="needs-validation" novalidate>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-8">
@@ -236,7 +179,7 @@
 
 <!-- Script for handling Add Article -->
 <script>
-    document.getElementById('addArticleForm').addEventListener('submit', async function (e) {
+    document.getElementById('articleForm').addEventListener('submit', async function (e) {
         e.preventDefault();
 
         const formData = new FormData(this);
@@ -279,11 +222,7 @@
     });
 
     // Reset form và preview khi đóng modal
-    document.getElementById('addArticleModal').addEventListener('hidden.bs.modal', function () {
-        document.getElementById('addArticleForm').reset();
-        document.getElementById('thumbnailPreview').innerHTML = '';
-        tinymce.get('articleContent').setContent('');
-    });
+
 </script>
 
 <!-- Include TinyMCE -->

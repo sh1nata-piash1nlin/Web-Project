@@ -62,6 +62,9 @@ app.engine('hbs', engine({
                 default:
                     return 'primary';
             }
+        },
+        eq: function (a, b) {
+            return a === b;
         }
     }
 }));

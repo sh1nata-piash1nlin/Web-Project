@@ -305,6 +305,143 @@ const adminController = {
             console.error('Error in deleteArticle:', error);
             res.status(500).json({ message: 'Internal Server Error' });
         }
+    },
+    async getUsers(req, res) {
+        try {
+            const [users] = await db.execute(`
+                SELECT 
+                    u.id,
+                    u.email,
+                    u.full_name,
+                    u.role,
+                    u.created_at,
+                    p.start_day as premium_start_date
+                FROM Users u
+                LEFT JOIN premium p ON u.id = p.user_id
+                ORDER BY u.created_at DESC
+            `);
+            const [draftArticles] = await db.execute(`
+                SELECT 
+                    d.id,
+                    d.articles_id,
+                    d.date,
+                    d.reject_reason,
+                    a.title
+                FROM draft d
+                JOIN Articles a ON d.articles_id = a.id
+                ORDER BY d.date DESC
+            `);
+            res.render('admin/users', {
+                layout: 'admin',
+                users,
+                draftArticles
+            });
+        } catch (error) {
+            console.error('Error in getUsers:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error fetching users'
+            });
+        }
+    },
+    async updateUserRole(req, res) {
+        try {
+            const userId = req.params.id;
+            const { role } = req.body;
+            if (!userId || !role) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'User ID and role are required'
+                });
+            }
+            // Kiểm tra role hợp lệ (chữ thường)
+            const validRoles = ['subscriber', 'writer', 'editor', 'admin'];
+            if (!validRoles.includes(role)) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid role'
+                });
+            }
+            await db.execute(
+                'UPDATE Users SET role = ? WHERE id = ?',
+                [role, userId]
+            );
+
+            res.json({
+                success: true,
+                message: 'User role updated successfully'
+            });
+        } catch (error) {
+            console.error('Error in updateUserRole:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error updating user role'
+            });
+        }
+    },
+    async deleteUser(req, res) {
+        try {
+            const userId = req.params.id;
+            await db.execute('DELETE FROM Users WHERE id = ?', [userId]);
+
+            res.json({
+                success: true,
+                message: 'User deleted successfully'
+            });
+        } catch (error) {
+            console.error('Error in deleteUser:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error deleting user'
+            });
+        }
+    },
+    async approveDraft(req, res) {
+        try {
+            const draftId = req.params.id;
+            // Lấy thông tin draft
+            const [draft] = await db.execute('SELECT * FROM draft WHERE id = ?', [draftId]);
+            if (!draft.length) {
+                return res.status(404).json({ message: 'Draft not found' });
+            }
+            // Cập nhật trạng thái bài viết thành published
+            await db.execute(
+                'UPDATE Articles SET status = "published" WHERE id = ?',
+                [draft[0].articles_id]
+            );
+            // Xóa draft
+            await db.execute('DELETE FROM draft WHERE id = ?', [draftId]);
+            res.json({ success: true, message: 'Draft approved successfully' });
+        } catch (error) {
+            console.error('Error in approveDraft:', error);
+            res.status(500).json({ success: false, message: 'Error approving draft' });
+        }
+    },
+    async rejectDraft(req, res) {
+        try {
+            const draftId = req.params.id;
+            const { reason } = req.body;
+            if (!reason) {
+                return res.status(400).json({ message: 'Reject reason is required' });
+            }
+            // Cập nhật lý do từ chối
+            await db.execute(
+                'UPDATE draft SET reject_reason = ? WHERE id = ?',
+                [reason, draftId]
+            );
+            // Cập nhật trạng thái bài viết
+            const [draft] = await db.execute('SELECT articles_id FROM draft WHERE id = ?', [draftId]);
+            if (draft.length) {
+                await db.execute(
+                    'UPDATE Articles SET status = "rejected" WHERE id = ?',
+                    [draft[0].articles_id]
+                );
+            }
+            res.json({ success: true, message: 'Draft rejected successfully' });
+        } catch (error) {
+            console.error('Error in rejectDraft:', error);
+            res.status(500).json({ success: false, message: 'Error rejecting draft' });
+        }
     }
 };
 

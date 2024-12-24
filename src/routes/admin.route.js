@@ -31,8 +31,15 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 // Articles routes
 router.get('/articles', adminController.getArticles);
-router.post('/articles', upload.single('thumbnail'), adminController.addArticle);
+router.post('/articles', upload.single('featuredImage'), adminController.addArticle);
 router.get('/articles/:id', adminController.getArticleById);
-router.put('/articles/:id', upload.single('thumbnail'), adminController.updateArticle);
+router.put('/articles/:id', upload.single('featuredImage'), adminController.updateArticle);
 router.delete('/articles/:id', adminController.deleteArticle);
+
+// user
+router.get('/users', adminController.getUsers);
+router.put('/users/:id/role', adminController.updateUserRole);
+router.delete('/users/:id', adminController.deleteUser);
+router.put('/drafts/:id/approve', adminController.approveDraft);
+router.put('/drafts/:id/reject', adminController.rejectDraft);
 module.exports = router;
