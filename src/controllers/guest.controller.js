@@ -71,3 +71,4 @@ async function renderHomepage(req, res) {
 module.exports = {
     renderHomepage,
 };
+

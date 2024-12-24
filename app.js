@@ -50,8 +50,9 @@ const helpers = {
 };
 
 app.use('/static', express.static('src/static'));
-app.use(express.static(path.join(__dirname, 'src', 'public')));
-app.use('/froala', express.static(path.join(__dirname, 'node_modules/froala-editor')));
+app.use( '/public',express.static(path.join(__dirname, 'src', 'public')));
+app.use('/froala', express.static(path.join(__dirname,'node_modules/froala-editor')));
+
 
 
 app.use(express.json());
@@ -90,6 +91,14 @@ app.engine('hbs', engine({
             return a === b;
         }
     }
+
+    // helpers, 
+    // helpers: {
+    //     format_number(val) {
+    //       return numeral(val).format('0,0');
+    //     },
+    //     section: express_handlebars_sections()
+    //   }
 }));
 app.set('view engine', 'hbs'); // Set the view engine to Handlebars
 app.set('views', './src/views'); // Set the views directory
@@ -103,7 +112,7 @@ app.set('views', './src/views'); // Set the views directory
 
 //Routes
 const writerRoutes = require('./src/routes/writer.route.js');
-app.use('/writer', writerRoutes);
+app.use('/', writerRoutes);
 
 app.use('/', guestRoutes);
 

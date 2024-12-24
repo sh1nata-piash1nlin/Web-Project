@@ -35,6 +35,7 @@ app.use(session({
 app.use('/static', express.static('src/static'));
 //app.use(express.static('public'));
 app.use(express.static(path.join(__dirname, 'src', 'public')));
+app.use( '/public',express.static(path.join(__dirname, 'src', 'public')));
 app.use('/froala', express.static(path.join(__dirname,'node_modules/froala-editor')));
 
 app.use(express.json()); // For parsing JSON bodies
@@ -57,7 +58,7 @@ app.set('views', './src/views'); // Set the views directory
 
 //Routes
 const writerRoutes = require('./src/routes/writer.route.js');
-app.use('/writer', writerRoutes);
+app.use('/', writerRoutes);
 
 
 // Test route for rendering the Handlebars view
