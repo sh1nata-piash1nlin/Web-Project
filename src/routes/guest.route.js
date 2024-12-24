@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const express = require('express');
 const router = express.Router();
 const guestController = require('../controllers/guest.controller');
@@ -11,7 +12,9 @@ const articleController = require('../controllers/article.controller');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Gọi hàm renderHomepage để hiển thị trang chủ
+
 router.get('/', guestController.renderHomepage);
+
 
 router.get('/login', async(req, res)=>{
     res.render('login.hbs',{
@@ -27,6 +30,7 @@ router.post('/login', async function (req, res) {
           showErrors: true,
       });
   }
+
   if (!bcrypt.compareSync(req.body.password, user.password)) {
       return res.render('login', {
           layout: 'login-layout',
@@ -36,12 +40,26 @@ router.post('/login', async function (req, res) {
 
   req.session.isAuthenticated = true;
   req.session.authUser = {
-      id: user.id, // Store the user's ID in the session
+      id: user.id,
       email: user.email,
-      avatar: user.avatar || '/static/img/default.png' // Use default avatar if none provided
+      avatar: user.avatar || '/static/img/default.png',
+      role: user.role === null ? 'guest' : user.role // If role is null, set to 'guest'
   };
 
-  res.redirect('/');
+  // Redirect based on role
+  if (user.role === 'guest' || !user.role) {
+      return res.redirect('/');
+  } else if (user.role === 'editor') {
+      return res.redirect('/editor');
+  } else if (user.role === 'writer') {
+      return res.redirect('/writer');
+  } else if (user.role === 'admin') {
+      return res.redirect('/admin');
+  }
+   else if (user.role === 'subscriber') {
+    return res.redirect('/subscriber');
+  }
+
 });
 
 router.get('/signup', async(req, res)=>{
@@ -50,30 +68,116 @@ router.get('/signup', async(req, res)=>{
     })
 })
 
+// Generate random captcha text with mixed case and numbers
+function generateCaptcha() {
+    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    const numbers = '0123456789';
+    const allChars = uppercase + lowercase + numbers;
+    
+    let captcha = '';
+    
+    // Ensure at least one of each type
+    captcha += uppercase.charAt(Math.floor(Math.random() * uppercase.length));
+    captcha += lowercase.charAt(Math.floor(Math.random() * lowercase.length));
+    captcha += numbers.charAt(Math.floor(Math.random() * numbers.length));
+    
+    // Fill the remaining 3 characters randomly from all possible characters
+    for (let i = 0; i < 3; i++) {
+        captcha += allChars.charAt(Math.floor(Math.random() * allChars.length));
+    }
+    
+    // Shuffle the captcha string
+    captcha = captcha.split('').sort(() => Math.random() - 0.5).join('');
+    
+    return captcha;
+}
+
+// Modify the signup route to redirect to captcha
 router.post('/signup', async (req, res) => {
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
-  // Check if email already exists in the database
-  const existingUser = await userService.findByUsername(email);
-  if (existingUser) {
-      // If email already exists, show an alert and re-render the signup page
-      return res.render('signup', {
-          layout: 'login-layout',
-          showErrors: true,
-          errorMessage: 'This email is already registered.',
-      });
-  }
+    // Check if email already exists
+    const existingUser = await userService.findByUsername(email);
+    if (existingUser) {
+        return res.render('signup', {
+            layout: 'login-layout',
+            showErrors: true,
+            errorMessage: 'This email is already registered.',
+        });
+    }
 
-  // Hash password before storing it
-  const hash_password = bcrypt.hashSync(password, 8);
-  const entity = {
-      email,
-      password: hash_password,
-  };
+    // Generate captcha and store in session
+    const captchaText = generateCaptcha();
+    req.session.captcha = {
+        text: captchaText,
+        email: email,
+        password: password
+    };
 
-  // Insert new user into the database
-  await userService.add(entity);
-  res.redirect('/login');
+    // Render captcha page
+    res.render('captcha', {
+        layout: 'login-layout',
+        captchaText: captchaText,
+        email: email,
+        password: password
+    });
+});
+
+// Add route for captcha verification
+router.post('/signup/verify-captcha', async (req, res) => {
+    const { userCaptcha, email, password } = req.body;
+    
+    // Verify captcha
+    if (!req.session.captcha || userCaptcha !== req.session.captcha.text) {
+        // Generate new captcha for the next attempt
+        const newCaptcha = generateCaptcha();
+        req.session.captcha = {
+            text: newCaptcha,
+            email: email,
+            password: password
+        };
+
+        return res.render('captcha', {
+            layout: 'login-layout',
+            captchaText: newCaptcha,
+            email: email,
+            password: password,
+            showErrors: true,
+            errorMessage: 'Invalid captcha. Please try again.'
+        });
+    }
+
+    // Hash password and create user
+    const hash_password = bcrypt.hashSync(password, 8);
+    const entity = {
+        email,
+        password: hash_password,
+    };
+
+    // Add user to database
+    await userService.add(entity);
+    
+    // Clear captcha session
+    delete req.session.captcha;
+    
+    // Redirect to login
+    res.redirect('/login');
+});
+
+// Add route for refreshing captcha
+router.get('/signup/refresh-captcha', (req, res) => {
+    const newCaptcha = generateCaptcha();
+    
+    // Initialize captcha session if it doesn't exist
+    if (!req.session.captcha) {
+        req.session.captcha = {};
+    }
+    
+    // Update the captcha text
+    req.session.captcha.text = newCaptcha;
+    
+    res.json({ captchaText: newCaptcha });
 });
 
 router.post('/logout', (req, res) => {
@@ -95,7 +199,7 @@ router.get('/profile', async (req, res) => {
 
   res.render('profile.hbs', {
       layout: 'login-layout',
-      user: req.session.authUser, // Pass user data (email, avatar) to the template
+      user: req.session.authUser, 
   });
 });
 
@@ -135,14 +239,12 @@ router.post('/profile', upload.single('avatar'), async (req, res) => {
 });
 
 
-// Forgot Password - Render UI
 router.get('/login/forgotpwd', (req, res) => {
   res.render('forgotpwd.hbs',{
     layout: 'login-layout',
     }); // Renders the Forgot Password UI
 });
 
-// Forgot Password - Handle Email Submission
 router.post('/login/forgotpwd', async (req, res) => {
   const email = req.body.email;
   const user = await userService.findByUsername(email);
@@ -178,12 +280,10 @@ router.post('/login/forgotpwd', async (req, res) => {
 });
 
 
-// Render OTP Page
 router.get('/login/forgotpwd/otp', (req, res) => {
   res.render('otp.hbs', { email: req.session.resetEmail, layout:'login-layout', });
 });
 
-// Handle OTP Verification (Mock OTP for simplicity)
 router.post('/login/forgotpwd/otp', async (req, res) => {
   const { otp } = req.body;
 
@@ -201,14 +301,12 @@ router.post('/login/forgotpwd/otp', async (req, res) => {
   });
 });
 
-// Render Reset Password Page
 router.get('/login/forgotpwd/resetpwd', (req, res) => {
   res.render('resetpwd.hbs',{
     layout:'login-layout',
   });
 });
 
-// Handle Reset Password Submission
 router.post('/login/forgotpwd/resetpwd', async (req, res) => {
   const { password } = req.body;
   const hash_password = bcrypt.hashSync(password, 8);
@@ -225,6 +323,10 @@ router.post('/login/forgotpwd/resetpwd', async (req, res) => {
 router.get('/article/:id', articleController.getArticleDetail);
 //Duong
 router.get('/category/:id', articleController.getCategoryArticles);
+//Duong  
+router.get('/search', articleController.searchArticles);
+// Route cho comments - có thể sử dụng bởi mọi user đã đăng nhập
+router.post('/articles/comments', articleController.addComment);
 
 router.get('/profile/changepwd', (req, res) => {
   if (!req.session.isAuthenticated) {
@@ -277,36 +379,112 @@ router.post('/profile/changepwd', async (req, res) => {
   }
 });
 
+
 router.get('/register-role', (req, res) => {
   if (!req.session.isAuthenticated) {
       return res.redirect('/login');
   }
 
-  // Render the register-role view (register-role.hbs)
   res.render('register-role',{
     layout: 'login-layout'
   });
 });
 
-// Route to handle the role registration logic
 router.post('/register-role', async (req, res) => {
   if (!req.session.isAuthenticated) {
       return res.redirect('/login');
   }
 
   const { role } = req.body;
-  const userId = req.session.authUser.id; // Access user ID from session data
+  const userId = req.session.authUser.id; 
 
   try {
-      // Update the user's role in the database
-      await userService.updateUser(userId, { role });
+    await userService.updateUser(userId, { role });
 
-      // Redirect to the profile page after successful role change
-      res.redirect('/profile');
+    req.session.authUser.role = role;
+
+    if (role === 'editor') {
+      res.redirect('/editor'); 
+    } else if (role === 'admin') {
+      res.redirect('/admin'); 
+    } else if (role === 'writer') {
+      res.redirect('/writer');
+    } 
+    else {
+      res.redirect('/profile'); 
+    }
   } catch (error) {
-      console.error(error);
-      res.status(500).send('An error occurred while updating the user role.');
+    console.error(error);
+    res.status(500).send('An error occurred while updating the user role.');
   }
 });
 
+router.get('/premium', (req, res) => {
+  if (!req.session.isAuthenticated) {
+    return res.redirect('/login');
+  }
+  res.render('subscriber-form', { 
+    title: 'Register as Subscriber',
+    layout: 'login-layout',
+  });
+});
+
+
+router.post('/premium', async (req, res) => {
+    if (!req.session.isAuthenticated) {
+        return res.redirect('/login');
+    }
+
+    try {
+        const userId = req.session.authUser.id;
+        const { card_number, cvv, full_name, email } = req.body;
+
+        // Calculate subscription end date (7 days from now)
+        const startDay = new Date();
+        const expiryDate = new Date(startDay.getTime() + (7 * 24 * 60 * 60 * 1000));
+
+        // Save premium subscription data
+        await userService.addPremiumSubscription({
+            user_id: userId,
+            card_number,
+            cvv,
+            start_day: startDay
+        });
+
+        // Update user's role and subscription expiry
+        await userService.updateSubscriptionExpiry(userId, expiryDate);
+
+        // Update session
+        req.session.authUser.role = 'subscriber';
+        req.session.authUser.subscription_expiry = expiryDate;
+
+
+        // Redirect to main page instead of /subscriber
+        res.redirect('/');
+    } catch (error) {
+        console.error('Premium subscription error:', error);
+        res.status(500).render('subscriber-form', {
+            layout: 'login-layout',
+            error: 'An error occurred during subscription. Please try again.'
+        });
+    }
+});
+
+
 module.exports = router;
+=======
+const express = require('express');
+const router = express.Router();
+const guestController = require('../controllers/guest.controller');
+
+// Gọi hàm renderHomepage để hiển thị trang chủ
+router.get('/', guestController.renderHomepage);
+
+router.get('/login', async(req, res)=>{
+    res.render('login.hbs',{
+        layout: 'login-layout',
+    })
+})
+
+module.exports = router;
+>>>>>>> hao_main

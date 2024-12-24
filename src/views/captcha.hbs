@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Verification</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gradient">
+    <div class="container h-100 d-flex align-items-center">
+        <div class="row justify-content-center w-100">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-3">
+                            <div class="security-icon-wrapper mb-2">
+                                <div class="security-icon">
+                                    <i class="bi bi-shield-check"></i>
+                                </div>
+                                <div class="security-pulse"></div>
+                            </div>
+                            <h2 class="security-title h4 mb-2">One Last Step!</h2>
+                            <p class="security-subtitle small mb-0">
+                                Complete this quick verification
+                            </p>
+                        </div>
+
+                        {{#if showErrors}}
+                        <div class="alert alert-danger py-2 small" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            {{errorMessage}}
+                        </div>
+                        {{/if}}
+
+                        <form action="/signup/verify-captcha" method="POST">
+                            <input type="hidden" name="email" value="{{email}}">
+                            <input type="hidden" name="password" value="{{password}}">
+                            
+                            <div class="captcha-section py-3">
+                                <div class="captcha-container mb-3">
+                                    <div class="captcha-code" id="captchaCode">
+                                        {{captchaText}}
+                                    </div>
+                                    <button type="button" class="refresh-btn" onclick="refreshCaptcha()">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </button>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label small mb-2">
+                                        <i class="bi bi-keyboard me-1"></i>
+                                        Enter the code shown above
+                                    </label>
+                                    <input type="text" 
+                                           name="userCaptcha" 
+                                           class="form-control" 
+                                           required 
+                                           autocomplete="off"
+                                           placeholder="Type the 6 characters">
+                                    <div class="form-text small">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Contains upper, lowercase & numbers
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    Complete Verification
+                                </button>
+                                <a href="/signup" class="btn btn-light">
+                                    <i class="bi bi-arrow-left me-2"></i>
+                                    Go Back
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f6f8fd 0%, #f1f4f9 100%);
+        min-height: 100vh;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .card {
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+    }
+
+    .security-icon-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .security-icon {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .security-pulse {
+        position: absolute;
+        top: -6px;
+        left: -6px;
+        right: -6px;
+        bottom: -6px;
+        border-radius: 50%;
+        background: #3b82f6;
+        opacity: 0.2;
+        animation: pulse 2s infinite;
+    }
+
+    .captcha-section {
+        background: #f8fafc;
+        border-radius: 12px;
+        margin-bottom: 1.25rem;
+    }
+
+    .captcha-container {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 2px solid #e2e8f0;
+    }
+
+    .captcha-code {
+        flex-grow: 1;
+        font-family: 'Courier New', monospace;
+        font-size: 2rem;
+        font-weight: bold;
+        letter-spacing: 8px;
+        text-align: center;
+        background: linear-gradient(45deg, #1e293b, #3b82f6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .refresh-btn {
+        background: none;
+        border: none;
+        color: #64748b;
+        font-size: 1.25rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 6px;
+        border-radius: 50%;
+    }
+
+    .refresh-btn:hover {
+        color: #3b82f6;
+        background: #f1f5f9;
+        transform: rotate(180deg);
+    }
+
+    .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.5rem 0.75rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    }
+
+    .btn-light {
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        color: #475569;
+    }
+
+    .btn-light:hover {
+        background: #f1f5f9;
+        transform: translateY(-1px);
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(0.95); opacity: 0.5; }
+        70% { transform: scale(1.05); opacity: 0.2; }
+        100% { transform: scale(0.95); opacity: 0.5; }
+    }
+
+    .alert {
+        border: none;
+        border-radius: 8px;
+    }
+
+    .alert-danger {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    </style>
+
+    <script>
+    function refreshCaptcha() {
+        const btn = document.querySelector('.refresh-btn');
+        btn.style.transform = 'rotate(360deg)';
+        
+        fetch('/signup/refresh-captcha')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('captchaCode').textContent = data.captchaText;
+                setTimeout(() => {
+                    btn.style.transform = 'rotate(0deg)';
+                }, 300);
+            });
+    }
+    </script>
+</body>
+</html>

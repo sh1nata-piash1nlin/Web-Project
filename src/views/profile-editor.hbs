@@ -89,19 +89,6 @@
         background-color: #6c757d;
         transform: scale(1.03);
       }
-
-      .premium-avatar {
-        border: 2px solid #FFD700 !important;
-        position: relative;
-      }
-
-      .premium-avatar::after {
-        content: '👑';
-        position: absolute;
-        top: -10px;
-        right: -5px;
-        font-size: 14px;
-      }
     </style>
   </head>
   <body>
@@ -117,18 +104,30 @@
             src="{{user.avatar}}"
             alt="User Avatar"
             id="avatar-preview"
-            class="img-thumbnail {{#if user.role}}{{#eq user.role 'subscriber'}}premium-avatar{{/eq}}{{/if}}"
+            class="img-thumbnail"
           />
           {{else}}
           <img
             src="https://via.placeholder.com/120"
             alt="Default Avatar"
             id="avatar-preview"
-            class="{{#if user.role}}{{#eq user.role 'subscriber'}}premium-avatar{{/eq}}{{/if}}"
           />
           {{/if}}
           <input type="file" id="avatar" name="avatar" accept="image/*" />
           <label for="avatar" class="bi bi-camera"></label>
+        </div>
+
+        <!-- Role (Vai trò) Input -->
+        <div class="mb-3">
+          <label for="role" class="form-label">Vai trò</label>
+          <input
+            type="text"
+            class="form-control"
+            id="role"
+            name="role"
+            value="{{user.role}}" 
+            readonly
+          >
         </div>
 
         <!-- Email Input -->
@@ -162,7 +161,6 @@
               id="full_name"
               name="full_name"
               value="{{user.full_name}}"
-              
             />
           </div>
         </div>
@@ -175,7 +173,7 @@
           <a href="/profile/changepwd" class="btn btn-warning">
             <i class="bi bi-key"></i> Đổi mật khẩu
           </a>
-          <a href="/" class="btn btn-secondary">
+          <a href="/editor" class="btn btn-secondary"> 
             <i class="bi bi-arrow-left"></i> Trở về Trang chủ
           </a>
         </div>

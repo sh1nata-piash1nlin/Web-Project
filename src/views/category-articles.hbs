@@ -1,4 +1,4 @@
-<div class="container mt-4">
+{{!-- <div class="container mt-4">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
@@ -90,6 +90,71 @@
             {{#if pagination.hasNextPage}}
             <li class="page-item">
                 <a class="page-link" href="?page={{pagination.nextPage}}">Trang sau</a>
+            </li>
+            {{/if}}
+        </ul>
+    </nav>
+    {{/if}}
+</div>  --}}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+            {{#if parentCategory}}
+            <li class="breadcrumb-item"><a href="/category/{{parentCategory.id}}">{{parentCategory.name}}</a></li>
+            {{/if}}
+            <li class="breadcrumb-item active">{{category.name}}</li>
+        </ol>
+    </nav>
+
+    <h1 class="mb-4">{{category.name}}</h1>
+
+    <div class="row">
+        <!-- Hiển thị tất cả bài viết trong grid -->
+        {{#each articles}}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <img src="/public/images/{{this.featured_image}}" 
+                     class="card-img-top" 
+                     alt="{{this.title}}"
+                     style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h3 class="card-title h5">
+                        <a href="/article/{{this.id}}" class="text-decoration-none text-dark">
+                            {{this.title}}
+                        </a>
+                    </h3>
+                    <p class="card-text">{{this.abstract}}</p>
+                </div>
+                <div class="card-footer bg-white">
+                    <small class="text-muted">
+                        Đăng bởi {{this.author_name}} • {{this.publish_date}}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+
+    <!-- Phân trang -->
+    {{#if pagination}}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {{#if pagination.hasPrevPage}}
+            <li class="page-item">
+                <a class="page-link" href="/category/{{category.id}}?page={{pagination.prevPage}}">Trang trước</a>
+            </li>
+            {{/if}}
+            
+            {{#each pagination.pages}}
+            <li class="page-item {{#if this.isCurrentPage}}active{{/if}}">
+                <a class="page-link" href="/category/{{../category.id}}?page={{this.pageNumber}}">{{this.pageNumber}}</a>
+            </li>
+            {{/each}}
+
+            {{#if pagination.hasNextPage}}
+            <li class="page-item">
+                <a class="page-link" href="/category/{{category.id}}?page={{pagination.nextPage}}">Trang sau</a>
             </li>
             {{/if}}
         </ul>

@@ -5,10 +5,22 @@ require('dotenv').config(); // Load environment variables
 const connectDB = require('./src/config/connectDB'); // Database connection
 const authRouter = require('./src/routes/auth.route'); // Authentication routes
 const guestRoutes = require('./src/routes/guest.route');
+//const writerRoutes = require('./src/routes/writer.route');
 const { engine } = require('express-handlebars'); // Import express-handlebars
 const session = require('express-session');
+
 const adminRoutes = require('./src/routes/admin.route');
+
+const editorRoutes = require('./src/routes/editor.route');
+const exphbs = require('express-handlebars');
+const dayjs = require('dayjs');
+var express_handlebars_sections = require('express-handlebars-sections');//import hbs sections
+const FroalaEditor = require('wysiwyg-editor-node-sdk/lib/froalaEditor.js');
+
+//const FroalaEditor = require('wysiwyg-editor-node-sdk/lib/froalaEditor.js');
+//var express_handlebars_sections = require('express-handlebars-sections'); 
 require('./passport'); // Passport setup
+
 const app = express();
 
 app.use(session({
@@ -29,8 +41,18 @@ app.use((req, res, next) => {
 app.use(cors({
     origin: process.env.URL_CLIENT, // Allow client URL specified in environment variables
 }));
+
+
+const helpers = {
+    eq: (a, b) => a === b,
+    includes: (array, value) => Array.isArray(array) && array.includes(value),
+    formatDate: (date, format) => dayjs(date).format(format),
+};
+
 app.use('/static', express.static('src/static'));
-app.use('/public', express.static(path.join(__dirname, 'src', 'public')));
+app.use( express.static(path.join(__dirname, 'src', 'public')));
+app.use('/froala', express.static(path.join(__dirname,'node_modules/froala-editor')));
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -39,6 +61,7 @@ app.use(express.urlencoded({ extended: true }));
 // Configure Handlebars as the view engine
 app.engine('hbs', engine({
     extname: '.hbs', // Use '.hbs' as the file extension for templates
+
     //defaultLayout: 'main',
     helpers: {
         truncate: function (str, len) {
@@ -67,6 +90,14 @@ app.engine('hbs', engine({
             return a === b;
         }
     }
+    helpers, 
+    // helpers: {
+    //     format_number(val) {
+    //       return numeral(val).format('0,0');
+    //     },
+    //     section: express_handlebars_sections()
+    //   }
+
 }));
 app.set('view engine', 'hbs'); // Set the view engine to Handlebars
 app.set('views', './src/views'); // Set the views directory
@@ -77,9 +108,19 @@ app.set('views', './src/views'); // Set the views directory
 connectDB();
 
 
+
+//Routes
+const writerRoutes = require('./src/routes/writer.route.js');
+app.use('/writer', writerRoutes);
+
 app.use('/', guestRoutes);
+
 app.use('/admin', adminRoutes);
 
+
+app.use('/', editorRoutes);
+
+//app.use('/', writerRoutes);
 // Routes
 app.use('/api/auth', authRouter); // Authentication routes (e.g., Google login)
 
@@ -87,15 +128,6 @@ app.use('/api/auth', authRouter); // Authentication routes (e.g., Google login)
 // console.log('Google Client ID:', process.env.GOOGLE_CLIENT_ID);
 // console.log('Google Client Secret:', process.env.GOOGLE_CLIENT_SECRET);
 
-// Render the login page
-// app.get('/login', (req, res) => {
-//     res.render('login',{layout: false}); // Render the login.hbs file in the views directory
-// });
-
-// Render the dashboard page
-// app.get('/dashboard', (req, res) => {
-//     res.render('dashboard'); // Render the dashboard.hbs file in the views directory
-// }); 
 
 
 // Start the server

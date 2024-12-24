@@ -1,0 +1,387 @@
+<!-- view article in editor dashboard -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{article.title}}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
+        <div class="container">
+            <a href="/editor" class="back-button me-3">
+                <i class="bi bi-arrow-left"></i>
+                <span>Back to Dashboard</span>
+            </a>
+            
+            <a class="navbar-brand" >
+                <div class="logo-container">
+                    <span class="logo-text">NNN</span>
+                </div>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="article-preview-card {{#if article.is_premium}}premium-article{{/if}}">
+            <!-- For debugging -->
+            {{#if article.is_premium}}
+                <!-- Premium badge should appear -->
+            {{else}}
+                <!-- Regular preview -->
+            {{/if}}
+            
+            <div class="status-badge {{#if article.is_premium}}premium-badge{{/if}}">
+                <i class="bi {{#if article.is_premium}}bi-star-fill{{else}}bi-eye{{/if}}"></i>
+                {{#if article.is_premium}}Premium Preview{{else}}Preview Mode{{/if}}
+            </div>
+
+            <!-- Article Header -->
+            <div class="article-header text-center">
+                <h1 class="article-title">{{article.title}}</h1>
+                
+                <div class="article-meta">
+                    <span class="meta-item">
+                        <i class="bi bi-person-circle"></i>
+                        {{author}}
+                    </span>
+                    <span class="meta-divider"></span>
+                    <span class="meta-item">
+                        <i class="bi bi-folder2-open"></i>
+                        {{category.name}}
+                    </span>
+                    <span class="meta-divider"></span>
+                    <span class="meta-item">
+                        <i class="bi bi-calendar3"></i>
+                        {{article.publish_date}}
+                    </span>
+                </div>
+
+                <!-- Tags -->
+                <div class="article-tags">
+                    {{#each tags}}
+                        <span class="tag-badge">
+                            <i class="bi bi-tag-fill"></i>
+                            {{this.name}}
+                        </span>
+                    {{/each}}
+                </div>
+            </div>
+
+            <!-- Featured Image -->
+            {{#if article.featured_image}}
+            <div class="featured-image-container">
+                <img src="/public/images/{{article.featured_image}}" 
+                     alt="{{article.title}}" 
+                     class="featured-image">
+            </div>
+            {{/if}}
+
+            <!-- Article Content -->
+            <div class="article-content">
+                {{{article.content}}}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="/editor" class="btn btn-primary btn-lg">
+                    <i class="bi bi-arrow-left-circle"></i>
+                    Return to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2024 NNN. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+    /* Global Styles */
+    body {
+        font-family: 'Inter', sans-serif;
+        color: #2d3748;
+        line-height: 1.6;
+    }
+
+    /* Logo Styling */
+    .logo-container {
+        padding: 8px 15px;
+        border-radius: 8px;
+        border: 2px solid #000;
+        transition: all 0.3s ease;
+    }
+
+    .logo-text {
+        font-size: 24px;
+        font-weight: 700;
+        color: #000;
+        letter-spacing: 1px;
+    }
+
+    .navbar-brand:hover .logo-container {
+        border-color: #1a73e8;
+    }
+
+    .navbar-brand:hover .logo-text {
+        color: #1a73e8;
+    }
+
+    /* Back Button */
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background-color: #f8fafc;
+        border-radius: 12px;
+        color: #475569;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .back-button:hover {
+        background-color: #e2e8f0;
+        color: #1a73e8;
+        transform: translateX(-3px);
+        text-decoration: none;
+    }
+
+    /* Article Preview Card */
+    .article-preview-card {
+        background: white;
+        border-radius: 16px;
+        padding: 3rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        position: relative;
+        margin-bottom: 2rem;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    /* Status Badge */
+    .status-badge {
+        position: absolute;
+        top: -15px;
+        right: 20px;
+        background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+        z-index: 10;
+    }
+
+    /* Article Header */
+    .article-title {
+        font-family: 'Merriweather', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        line-height: 1.3;
+        margin-bottom: 1.5rem;
+    }
+
+    .article-meta {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: #64748b;
+        flex-wrap: wrap;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .meta-divider {
+        width: 4px;
+        height: 4px;
+        background-color: #cbd5e1;
+        border-radius: 50%;
+    }
+
+    /* Tags */
+    .article-tags {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 2rem;
+    }
+
+    .tag-badge {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s ease;
+    }
+
+    .tag-badge:hover {
+        background: #e2e8f0;
+        transform: translateY(-2px);
+    }
+
+    /* Featured Image */
+    .featured-image-container {
+        margin: 2rem -3rem;
+        position: relative;
+        height: 400px;
+        overflow: hidden;
+    }
+
+    .featured-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Article Content */
+    .article-content {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #334155;
+        margin: 2rem 0;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        text-align: center;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: #1a73e8;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background: #1557b0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(26, 115, 232, 0.2);
+    }
+
+    /* Footer */
+    .footer {
+        background: white;
+        padding: 1.5rem 0;
+        border-top: 1px solid #e2e8f0;
+        color: #64748b;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .article-preview-card {
+            padding: 1.5rem;
+        }
+
+        .featured-image-container {
+            margin: 2rem -1.5rem;
+            height: 300px;
+        }
+
+        .article-title {
+            font-size: 2rem;
+        }
+
+        .article-meta {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .meta-divider {
+            display: none;
+        }
+    }
+
+    /* Premium Article Styling */
+    .premium-article {
+        background: linear-gradient(to bottom right, #fff, #fffdf0);
+        border: 2px solid #ffd700;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .premium-article::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            45deg,
+            transparent 0%,
+            transparent 45%,
+            rgba(255, 215, 0, 0.1) 50%,
+            transparent 55%,
+            transparent 100%
+        );
+        animation: premium-shine 3s infinite;
+        pointer-events: none;
+    }
+
+    .premium-badge {
+        background: linear-gradient(45deg, #ffd700, #ffed4a) !important;
+        color: #000 !important;
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3) !important;
+    }
+
+    .premium-badge i {
+        color: #ff6b6b;
+        animation: star-pulse 1.5s infinite;
+    }
+
+    @keyframes premium-shine {
+        0% {
+            transform: translate(-30%, -30%) rotate(45deg);
+        }
+        100% {
+            transform: translate(30%, 30%) rotate(45deg);
+        }
+    }
+
+    @keyframes star-pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

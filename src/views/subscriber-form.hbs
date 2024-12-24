@@ -1,0 +1,149 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Đăng ký Gói Premium</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Pricing Plans -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card pricing-card h-100 popular">
+                                <div class="popular-badge">Phổ biến</div>
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">7 ngày premium</h5>
+                                    <h2 class="price">499.000đ</h2>
+                                    <p class="text-muted">Tiết kiệm 15%</p>
+                                    <button class="btn btn-primary w-100">Chọn gói</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Form -->
+                    <form action="/premium" method="POST">
+                        <h4 class="mb-3">Thông tin thanh toán</h4>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Họ và tên</label>
+                                <input type="text" class="form-control" name="full_name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Số thẻ</label>
+                            <div class="input-group">
+                                <input type="text" 
+                                       class="form-control" 
+                                       name="card_number"
+                                       placeholder="1234 5678 9012 3456" 
+                                       maxlength="19"
+                                       autocomplete="cc-number"
+                                       required>
+                                <span class="input-group-text">
+                                    <i class="bi bi-credit-card"></i>
+                                </span>
+                            </div>
+                            <small class="text-muted">Nhập 16 số trên thẻ của bạn</small>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">CVV</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       name="cvv"
+                                       placeholder="123" 
+                                       pattern="\d{3}"
+                                       maxlength="3"
+                                       required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">
+                            Thanh toán ngay
+                        </button>
+                    </form>
+
+                    <!-- Payment Methods -->
+                    <div class="text-center mt-4">
+                        <p class="text-muted">Chúng tôi chấp nhận thanh toán qua</p>
+                        <div class="payment-methods">
+                            <i class="bi bi-credit-card mx-2"></i>
+                            <i class="bi bi-paypal mx-2"></i>
+                            <i class="bi bi-wallet2 mx-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.pricing-card {
+    transition: transform 0.3s;
+    border: 1px solid #dee2e6;
+}
+
+.pricing-card:hover {
+    transform: translateY(-5px);
+}
+
+.popular {
+    border: 2px solid #0d6efd;
+    position: relative;
+}
+
+.popular-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0d6efd;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.price {
+    color: #0d6efd;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.payment-methods {
+    font-size: 2rem;
+    color: #6c757d;
+}
+
+.payment-methods i {
+    transition: color 0.3s;
+}
+
+.payment-methods i:hover {
+    color: #0d6efd;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+</style> 
+

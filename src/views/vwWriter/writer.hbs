@@ -1,0 +1,73 @@
+
+{{#section 'css'}}
+ <!-- Include Froala CSS -->
+    <link rel="stylesheet" href="/froala/css/froala_editor.pkgd.min.css">
+    <link rel="stylesheet" href="/froala/css/froala_style.min.css">
+    <!-- Include jQuery (required by Froala Editor) -->
+    {{!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+    
+
+{{/section}}
+
+{{#section 'js'}}
+ <!-- Include your custom JS file to initialize the Froala editor -->
+ <script type="text/javascript" src="/froala/js/froala_editor.pkgd.min.js"></script>
+    <script src="/js/froala.js"></script>
+
+    
+{{/section}}
+
+<div class="container mt-4">
+    
+    <h1 class="text-muted mb-4 text-center">Work Space</h1>
+  
+    <!-- Optional: A form for saving content -->
+    <form action="/writer/save" method="POST">
+        
+        <div class="card mt-4 " >
+            <div class="card-body">
+                <h4 class="card-title">Title</h4>
+                <!-- Title input -->          
+                <input type="text" class="form-control" id="article-title" name="title" placeholder="Enter the article title" required>
+            </div>
+        </div>
+        <div class="card mt-4 mb-4">
+            <div class="card-body">
+                <h4 class="card-title">Abstract</h4>
+                <!-- Optional: Abstract input -->
+                <input type="text" class="form-control" name="abstract" placeholder="Enter the article abstract">
+            </div>
+        </div> 
+
+        <!-- Textarea for Froala Editor -->
+        <div id="froala-editor" name="editorContent"></div>
+
+        <!-- Category Dropdown -->
+        <div class="card mt-4 mb-4">
+            <div class="card-body">
+                <h4 class="card-title">Category</h4>
+                <select class="form-control" name="category_id" required>
+                    <option value="" disabled selected>Select a category</option>
+                    {{#each categories}}
+                        <option value="{{this.id}}">{{this.name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+
+        <!-- Premium Checkbox -->
+        <div class="card mt-4 mb-4 border-primary">
+            <div class="card-body">
+                <h4 class="card-title text-warning">Premium Article</h4>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="premium" name="premium" value="true">
+                    <label class="form-check-label" for="premium">Mark as premium</label>
+                </div>
+                <small class="form-text text-muted">Selecting this option will mark the article as premium and highlight it on the platform.</small>
+            </div>
+        </div>
+
+        <button id="save-button" type="button" class="btn btn-outline-primary btn-lg">Save Content</button>
+    </form>
+
+</div>

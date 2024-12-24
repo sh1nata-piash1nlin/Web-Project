@@ -21,6 +21,20 @@ module.exports = {
     }, 
     updateUser(id, updates) {
         return db('users').where('id', id).update(updates);
+    },
+
+    // Add premium subscription
+    addPremiumSubscription(premiumData) {
+        return db('premium').insert(premiumData);
+    },
+
+    // Update user's subscription expiry
+    updateSubscriptionExpiry(userId, expiryDate) {
+        return db('users')
+            .where('id', userId)
+            .update({
+                role: 'subscriber',
+                subscription_expiry: expiryDate
+            });
     }
-    
 };

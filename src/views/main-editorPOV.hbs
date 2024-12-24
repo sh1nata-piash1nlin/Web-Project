@@ -1,15 +1,16 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title> <!-- Dynamic Title -->
+    <title>{{title}}</title> 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-        {{{_sections.css}}}
-
+    <link 
+        rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    >
     <style>
         /* Color Variables */
         :root {
@@ -507,19 +508,92 @@
         background-color: #fceaea;
         color: #c0392b !important;
     }
+
+    /* Add these styles to your existing CSS */
+    .navbar {
+        padding-left: 0;
+        padding-right: 0;
+        width: 100%;
+    }
+
+    .container-fluid {
+        margin: 0;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Adjust the main nav spacing */
+    .main-nav {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    .premium-article, .regular-article {
+        position: relative;
+        margin-bottom: 30px; /* Increased bottom margin */
+        padding: 20px;      /* Increased padding */
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: adds subtle shadow */
+    }
+
+    .premium-article {
+        border: 2px solid #ffd700;
+        background: linear-gradient(to right, #fff, #fffdf0);
+    }
+
+    .regular-article {
+        border: 1px solid #eee;
+    }
+
+    /* Add gap between articles */
+    .row > div {
+        margin-bottom: 20px;
+    }
+
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background-color: #28a745;
+        border-radius: 20px;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 1px solid #218838;
+        font-size: 16px;
+    }
+
+    .back-button i {
+        font-size: 18px;
+    }
+
+    .back-button span {
+        font-weight: 500;
+    }
+
+    .back-button:hover {
+        background-color: #218838;
+        color: white;
+        transform: translateX(-3px);
+        text-decoration: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
     </style>
+
 </head>
 
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="{{#if isSubscriber}}/subscriber{{else}}/{{/if}}">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand">
                 <div class="logo-text">NNN</div>
             </a>
-
             <!-- Centered Search Form -->
-            <form class="d-flex mx-auto search-form" action="{{#if isSubscriber}}/subscriber/search{{else}}/search{{/if}}" method="get">
+            <form class="d-flex mx-auto search-form">
                 <div class="search-container">
                     <input class="search-input" type="search" name="q" placeholder="Tìm kiếm..." aria-label="Search">
                     <button class="search-button" type="submit">
@@ -529,74 +603,60 @@
             </form>
 
             <div class="d-flex align-items-center">
-                <a href="/premium" class="me-3 text-dark text-decoration-none">Premium</a>
-                <a href="{{#if isSubscriber}}/subscriber{{else}}/{{/if}}" class="me-3 text-dark text-decoration-none">Mới nhất</a>
+                <a href="/editor" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Editor Dashboard</span>
+                </a>
 
-                {{#if isAuthenticated}}
-                    <div class="dropdown">
-                        <img src="{{authUser.avatar}}"
-                            onerror="this.onerror=null; this.src='/src/static/img/default.png';"
-                            alt="User Avatar" 
-                            class="rounded-circle {{#if authUser.role}}{{#eq authUser.role 'subscriber'}}premium-avatar{{/eq}}{{/if}}" 
-                            style="width: 40px; height: 40px; cursor: pointer; {{#if authUser.role}}{{#eq authUser.role 'subscriber'}}border: 2px solid #FFD700 !important;{{/eq}}{{/if}}"
-                            id="navbarDropdownAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="ms-3">
+                    {{#if isAuthenticated}}
+                        <div class="dropdown">
+                            <img src="{{authUser.avatar}}"
+                                onerror="this.onerror=null; this.src='/src/static/img/default.png';"
+                                alt="User Avatar" 
+                                class="rounded-circle" 
+                                style="width: 40px; height: 40px; cursor: pointer; border: 2px solid #FFD700 !important;"
+                                id="navbarDropdownAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
-                        <div style="display: none;">
-                            Role: {{authUser.role}}
-                            Has Role: {{#if authUser.role}}yes{{else}}no{{/if}}
-                            Is Subscriber: {{#eq authUser.role 'subscriber'}}yes{{else}}no{{/eq}}
-                            Classes: rounded-circle {{#if authUser.role}}{{#eq authUser.role 'subscriber'}}premium-avatar{{/eq}}{{/if}}
+
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAvatar">
+                                <li><a class="dropdown-item" href="/profile-editor">Trang cá nhân</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="/logout" method="POST">
+                                        <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
+                                    </form>
+                                </li>
+                            </ul>
                         </div>
-
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAvatar">
-                            <li><a class="dropdown-item" href="/profile">Trang cá nhân</a></li>
-                            {{#unless (eq authUser.role 'subscriber')}}
-                                <li><a class="dropdown-item" href="/register-role">Đăng ký vai trò</a></li> 
-                            {{/unless}}
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form action="/logout" method="POST">
-                                    <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                {{else}}
-                    <a class="btn btn-outline-dark btn-sm" href="/login">Đăng nhập</a>
-                {{/if}}
+                    {{else}}
+                        <a class="btn btn-outline-dark btn-sm" href="/login">Đăng nhập</a>
+                    {{/if}}
+                </div>
             </div>
         </div>
     </nav>
 
     <!-- Secondary Navbar -->
     <nav class="navbar navbar-expand-lg bg-white border-bottom py-0">
-        <div class="container">
+        <div class="container-fluid px-4">
             <div class="navbar-collapse">
                 <ul class="navbar-nav main-nav d-flex justify-content-evenly w-100">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{#if isSubscriber}}/subscriber{{else}}/{{/if}}">
+                        <a class="nav-link">
                             <i class="bi bi-house-door home-icon"></i>
                         </a>
                     </li>
                     {{#each categories}}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" 
-                           href="{{#if ../isSubscriber}}/subscriber/category/{{this.id}}{{else}}/category/{{this.id}}{{/if}}" 
-                           id="navbarDropdown{{this.id}}"
-                           role="button" 
-                           data-bs-toggle="dropdown" 
-                           aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="/category/{{this.id}}" id="navbarDropdown{{this.id}}"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{this.name}}
                         </a>
                         {{#if this.subcategories.length}}
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown{{this.id}}">
                             {{#each this.subcategories}}
-                            <li>
-                                <a class="dropdown-item" 
-                                   href="{{#if ../../isSubscriber}}/subscriber/category/{{this.id}}{{else}}/category/{{this.id}}{{/if}}">
-                                    {{this.name}}
-                                </a>
-                            </li>
+                            <li><a class="dropdown-item" href="/category/{{this.id}}">{{this.name}}</a></li>
                             {{/each}}
                         </ul>
                         {{/if}}
@@ -609,19 +669,107 @@
 
     <!-- Main Content -->
     <div class="container mt-4">
-        {{#if isEditor}}
-            <!-- Special container for editor layout -->
-            <div class="editor-container">
-                {{{body}}}
-            </div>
-        {{else}}
-            <!-- Your existing layout structure -->
-            <div class="row">
-                <div class="col-lg-8">
-                    {{{body}}}
+        <div class="row">
+            <!-- Main Content Column -->
+            <div class="col-lg-8">
+                <!-- Featured Article -->
+                <div class="featured-article mb-4">
+                    {{#if featuredArticles.[0]}}
+                    <img src="/public/images/{{featuredArticles.[0].featured_image}}" alt="{{featuredArticles.[0].title}}"
+                        class="img-fluid mb-3">
+                    <h1 class="article-title">
+                        <a href="/article/{{featuredArticles.[0].id}}" class="text-dark text-decoration-none">
+                            {{featuredArticles.[0].title}}
+                        </a>
+                    </h1>
+                    <p class="lead">{{featuredArticles.[0].abstract}}</p>
+                    <div class="article-meta">
+                        <span>{{featuredArticles.[0].category_name}}</span> •
+                        <span>{{featuredArticles.[0].author_name}}</span> •
+                        <small>{{featuredArticles.[0].publish_date}}</small>
+                    </div>
+                    <div class="comment-count">
+                        <i class="bi bi-chat-dots"></i> {{featuredArticles.[0].comments}}
+                    </div>
+                    {{else}}
+                    <p>Không có bài báo nổi bật</p>
+                    {{/if}}
                 </div>
-                <!-- Sidebar -->
-                {{#unless hideDefaultSidebar}}
+
+                <!-- News Grid -->
+                <div class="row">
+                    {{#each featuredArticles}}
+                    <div class="{{#if is_premium}}premium-article{{else}}regular-article{{/if}}">
+                        {{#if is_premium}}
+                        <div class="premium-badge">
+                            <i class="bi bi-star-fill premium-star"></i>
+                            Premium
+                        </div>
+                        {{/if}}
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img src="/public/images/{{featured_image}}" 
+                                     class="img-fluid rounded" 
+                                     alt="{{title}}">
+                            </div>
+                            <div class="col-md-8">
+                                <h3 class="article-title">
+                                    <a href="/article/{{id}}" class="text-decoration-none">
+                                        {{title}}
+                                    </a>
+                                </h3>
+                                <p class="text-muted">{{abstract}}</p>
+                                <div class="article-meta">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar"></i> {{publish_date}}
+                                        <i class="bi bi-person ms-2"></i> {{author_name}}
+                                        <i class="bi bi-folder ms-2"></i> {{category_name}}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+
+                <!-- Pagination -->
+                {{#if pagination}}
+                <nav aria-label="Featured articles pagination" class="mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <small class="text-muted">
+                            Trang {{pagination.currentPage}} / {{pagination.totalPages}}
+                        </small>
+                    </div>
+                    <ul class="pagination justify-content-center">
+                        {{#if pagination.hasPrevPage}}
+                        <li class="page-item">
+                            <a class="page-link" href="/editor/editorPOV?page={{pagination.prevPage}}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        {{/if}}
+                        
+                        {{#each pagination.pages}}
+                        <li class="page-item {{#if this.isCurrentPage}}active{{/if}}">
+                            <a class="page-link" href="/editor/editorPOV?page={{this.pageNumber}}">{{this.pageNumber}}</a>
+                        </li>
+                        {{/each}}
+
+                        {{#if pagination.hasNextPage}}
+                        <li class="page-item">
+                            <a class="page-link" href="/editor/editorPOV?page={{pagination.nextPage}}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        {{/if}}
+                    </ul>
+                </nav>
+                {{/if}}
+            </div>
+
+            <!-- Sidebar -->
+            {{#unless hideDefaultSidebar}}
                 <div class="col-lg-4">
                     <div class="sidebar">
                         <!-- Featured Articles Sidebar -->
@@ -631,24 +779,42 @@
                             </div>
                             <div class="card-body">
                                 {{#each featuredArticles}}
-                                <div class="mb-3">
-                                    <h6>
-                                        {{#if ../isSubscriber}}
-                                            {{#if this.is_premium}}
-                                                <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                <div class="mb-3 d-flex align-items-start">
+                                    <!-- Thêm hình ảnh -->
+                                    <div class="flex-shrink-0 me-3" style="width: 100px;">
+                                        <img 
+                                            src="/public/images/{{this.featured_image}}" 
+                                            onerror="this.onerror=null; this.src='/static/img/default.png';"
+                                            alt="{{this.title}}"
+                                            class="img-fluid rounded"
+                                            style="width: 100px; height: 70px; object-fit: cover;"
+                                        >
+                                    </div>
+                                    <!-- Nội dung bài viết -->
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            {{#if ../isSubscriber}}
+                                                {{#if this.is_premium}}
+                                                    <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
+                                                {{else}}
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                                {{/if}}
                                             {{else}}
-                                                <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                                {{#if this.is_premium}}
+                                                    <a href="/premium-notice" class="text-dark text-decoration-none">
+                                                {{else}}
+                                                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
+                                                {{/if}}
                                             {{/if}}
-                                        {{else}}
-                                            {{#if this.is_premium}}
-                                                <a href="/premium-notice" class="text-dark text-decoration-none">
-                                            {{else}}
-                                                <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
-                                            {{/if}}
+                                                {{this.title}}
+                                            </a>
+                                        </h6>
+                                        <!-- Thêm ngày đăng -->
+                                        <small class="text-muted">{{this.publish_date}}</small>
+                                        {{#if this.is_premium}}
+                                            <span class="badge bg-warning text-dark ms-1">Premium</span>
                                         {{/if}}
-                                            {{this.title}}
-                                        </a>
-                                    </h6>
+                                    </div>
                                 </div>
                                 {{/each}}
                             </div>
@@ -686,7 +852,6 @@
 
                         <!-- Most Viewed Articles -->
                         
-
                         <!-- Tabs Content -->
                         <div class="tab-content mt-3">
                             {{#each [healthArticles, lifeArticles, techArticles, carArticles]}}
@@ -720,26 +885,6 @@
                     </div>
                 </div>
                 {{/unless}}
-            </div>
-        {{/if}}
-    </div>
-
-    <!-- Subscribe Modal -->
-    <div class="modal fade" id="subscribeModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Nội dung Premium</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Bạn cần đăng ký tài khoản Premium để đọc bài viết này.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <a href="/register" class="btn btn-primary">Đăng ký ngay</a>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -751,7 +896,7 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-header bg-dark text-white d-flex justify-content-between">
                             <h3 class="mb-0">Tin theo chuyên mục</h3>
-                            <a href="/" class="btn btn-outline-light btn-sm">
+                            <a href="/editor/editorPOV" class="btn btn-outline-light btn-sm">
                                 Tất cả tin
                                 <i class="fas fa-caret-right ml-2"></i>
                             </a>
@@ -959,31 +1104,24 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Right Section: 40% -->
                 <div class="col-lg-5">
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body bg-white text-black">
                             <h5 class="card-title">Bài viết được xem nhiều nhất</h5>
+                            <!-- Debug info -->
+                            {{#if debug.hasMostViewed}}
+                                
+                            
+                            {{/if}}
+                            
                             <ul class="list-unstyled">
                                 {{#each mostViewedArticles}}
                                 <li class="mb-3">
-                                    {{#if ../isSubscriber}}
-                                        {{#if this.is_premium}}
-                                            <a href="/subscriber/article/{{this.id}}" class="text-dark text-decoration-none">
-                                        {{else}}
-                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
-                                        {{/if}}
-                                    {{else}}
-                                        {{#if this.is_premium}}
-                                            <a href="/premium-notice" class="text-dark text-decoration-none">
-                                        {{else}}
-                                            <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
-                                        {{/if}}
-                                    {{/if}}
-                                    <i class="fas fa-eye mr-2"></i>
-                                    {{this.title}}
-                                    <small class="text-muted">({{this.view_count}} lượt xem)</small>
+                                    <a href="/article/{{this.id}}" class="text-dark">
+                                        <i class="fas fa-eye mr-2"></i>
+                                        {{this.title}}
+                                        <small class="text-muted">({{this.view_count}} lượt xem)</small>
                                     </a>
                                 </li>
                                 {{/each}}
@@ -995,349 +1133,117 @@
         </div>
     </section>
 
+
     <!-- Footer -->
     <footer class="bg-dark text-light mt-5">
         <div class="container py-4">
             <div class="row">
                 <div class="col-md-4">
-                    <h5>Về chúng tôi</h5>
-                    <!-- Footer content -->
+                    <h5 class="mb-3 border-bottom pb-2">Về chúng tôi</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Nhà báo Huy
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Biên tập viên Trung
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Biên tập viên Hào
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Nhà báo Trí
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Biên tập viên Dương
+                        </li>
+                    </ul>
                 </div>
                 <div class="col-md-4">
-                    <h5>Chuyên mục</h5>
-                    <!-- Categories -->
-                </div>
-                <div class="col-md-4">
-                    <h5>Liên hệ</h5>
-                    <!-- Contact info -->
-                </div>
-            </div>
-        </div>
-    </footer>   
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/public/js/tabs.js"></script>
-    {{{_sections.js}}}
-</body>
-</html>
-=======
-<!DOCTYPE html>
-<html lang="vi">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title> <!-- Dynamic Title -->
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    {{{_sections.css}}}
-    <style>
-        .navbar-brand img {
-            height: 40px;
-        }
-
-        .main-nav .nav-link {
-            color: #222;
-            padding: 0.5rem 1rem;
-            font-size: 14px;
-            white-space: nowrap;
-        }
-
-        .sidebar {
-            position: sticky;
-            top: 20px;
-        }
-
-        .article-title {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        .article-meta {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .comment-count {
-            color: #666;
-            font-size: 0.8rem;
-        }
-
-        .related-news {
-            border-left: 3px solid #e5e5e5;
-            padding-left: 15px;
-        }
-
-        .related-news h3 {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Thêm style cho dropdown menu */
-        .dropdown-menu {
-            border-radius: 0;
-            margin-top: 10;
-            border-top: none;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            padding: 0%;
-        }
-
-        .dropdown-item {
-            font-size: 14px;
-            padding: 0.5rem 1rem;
-        }
-
-        .dropdown:hover .dropdown-menu {
-            display: block;
-        }
-
-        .nav-item.dropdown:hover .nav-link {
-            background-color: #f8f9fa;
-        }
-
-        .home-icon {
-            font-size: 18px;
-            transition: transform 0.3s, color 0.3s;
-        }
-
-        .home-icon:hover {
-            color: #007bff;
-        }
-    </style>
-</head>
-
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <img src="/images/logo.svg" alt="VnExpress">
-            </a>
-
-            <div class="d-flex align-items-center">
-                <div class="me-3">Mới nhất</div>
-                <div class="me-3">International</div>
-                <a class="btn btn-outline-dark btn-sm" href="/login">Login</a>
-                {{!-- <div> 
-                    <a class="btn btn-sm btn-primary" href="/login" role="button">
-                        <i class="bi bi-hand-index"> Login </i>
-                </div> --}}
-            </div>
-        </div>
-    </nav>
-
-    <!-- Secondary Navbar -->
-    <nav class="navbar navbar-expand-lg bg-white border-bottom py-0">
-        <div class="container">
-            <div class="navbar-collapse">
-                <ul class="navbar-nav main-nav d-flex justify-content-evenly w-100">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            <i class="bi bi-house-door home-icon"></i>
-                        </a>
-                    </li>
-                    {{#each categories}}
-                    <li class="nav-item dropdown">
-                        <!-- Hiển thị danh mục cha -->
-                        <a class="nav-link dropdown-toggle" href="{{this.link}}" id="navbarDropdown{{this.id}}"
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{this.name}}
-                        </a>
-                        {{#if this.subcategories.length}}
-                        <!-- Chỉ hiển thị dropdown khi có danh mục con -->
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown{{this.id}}">
-                            {{#each this.subcategories}}
-                            <li><a class="dropdown-item" href="{{this.link}}">{{this.name}}</a></li>
-                            {{/each}}
-                        </ul>
-                        {{/if}}
-                    </li>
-                    {{/each}}
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="container mt-4">
-        <div class="row">
-            <!-- Main Content Column -->
-            <div class="col-lg-8">
-                {{{body}}}
-            </div>
-
-            <!-- Sidebar -->
-            <div class="col-lg-4">
-                <div class="sidebar">
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5 class="mb-0">Tin nổi bật</h5>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6"></div>
-                            <div class="col-lg-6">
-                                <div class="card-body">
-                                    {{#each featuredNews}}
-                                    <div class="related-news mb-3">
-                                        <h3><a href="{{this.link}}"
-                                                class="text-dark text-decoration-none">{{this.title}}</a>
-                                        </h3>
-                                        <div class="comment-count">
-                                            <i class="bi bi-chat-dots"></i> {{this.comments}}
-                                        </div>
-                                    </div>
-                                    {{/each}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">Tin mới nhất</h5>
-                        </div>
-                        <div class="card-body">
-                            {{#each latestNews}}
-                            <div class="related-news mb-3">
-                                <h3><a href="{{this.link}}" class="text-dark text-decoration-none">{{this.title}}</a>
-                                </h3>
-                            </div>
-                            {{/each}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <section class="bg-white py-5">
-        <div class="container">
-            <div class="row">
-                <!-- Left Section: 60% -->
-                <div class="col-lg-7 mb-4">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                            <h3 class="mb-0">Entertainment</h3>
-                            <a href="category-01.html" class="btn btn-outline-light btn-sm">
-                                View All
-                                <i class="fas fa-caret-right ml-2"></i>
+                    <h5 class="mb-3 border-bottom pb-2">Chuyên mục</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            {{#if isSubscriber}}
+                            <a href="/subscriber/category/8" class="text-light text-decoration-none hover-link">
+                            {{else}}
+                            <a href="/category/8" class="text-light text-decoration-none hover-link">
+                            {{/if}}
+                                <i class="fas fa-heartbeat me-2"></i>
+                                Sức khỏe
                             </a>
-                        </div>
-                        <div class="card-body">
-                            <ul class="nav nav-tabs" id="entertainmentTabs" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active text-dark" id="tab-all" data-toggle="tab" href="#tab1-1"
-                                        role="tab">All</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" id="tab-celebrity" data-toggle="tab" href="#tab1-2"
-                                        role="tab">Celebrity</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" id="tab-movies" data-toggle="tab" href="#tab1-3"
-                                        role="tab">Movies</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" id="tab-music" data-toggle="tab" href="#tab1-4"
-                                        role="tab">Music</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" id="tab-games" data-toggle="tab" href="#tab1-5"
-                                        role="tab">Games</a>
-                                </li>
-                            </ul>
-                            <div class="tab-content mt-4">
-                                <div class="tab-pane fade show active" id="tab1-1" role="tabpanel">
-                                    <div class="row">
-                                        {{#each posts}}
-                                        <div class="col-md-6 mb-4">
-                                            <div class="card h-100 border border-secondary shadow-sm">
-                                                <a href="{{this.link}}">
-                                                    <img src="{{this.image}}" class="card-img-top" alt="Post Image">
-                                                </a>
-                                                <div class="card-body bg-light">
-                                                    <h5 class="card-title">
-                                                        <a href="{{this.link}}" class="text-dark font-weight-bold">
-                                                            {{this.title}}
-                                                        </a>
-                                                    </h5>
-                                                    <p class="text-muted mb-0">
-                                                        <a href="{{this.categoryLink}}"
-                                                            class="text-secondary">{{this.category}}</a>
-                                                        <span class="mx-2">•</span>
-                                                        <small>{{this.date}}</small>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {{/each}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        </li>
+                        <li class="mb-2">
+                            {{#if isSubscriber}}
+                            <a href="/subscriber/category/9" class="text-light text-decoration-none hover-link">
+                            {{else}}
+                            <a href="/category/9" class="text-light text-decoration-none hover-link">
+                            {{/if}}
+                                <i class="fas fa-hand-holding-heart me-2"></i>
+                                Đời sống
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            {{#if isSubscriber}}
+                            <a href="/subscriber/category/11" class="text-light text-decoration-none hover-link">
+                            {{else}}
+                            <a href="/category/11" class="text-light text-decoration-none hover-link">
+                            {{/if}}
+                                <i class="fas fa-laptop-code me-2"></i>
+                                Công nghệ
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            {{#if isSubscriber}}
+                            <a href="/subscriber/category/12" class="text-light text-decoration-none hover-link">
+                            {{else}}
+                            <a href="/category/12" class="text-light text-decoration-none hover-link">
+                            {{/if}}
+                                <i class="fas fa-car me-2"></i>
+                                Xe
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-
-                <!-- Right Section: 40% -->
-                <div class="col-lg-5">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body bg-white text-black">
-                            <h5 class="card-title">Related Topics</h5>
-                            <ul class="list-unstyled">
-                                <li class="mb-3">
-                                    <a href="#" class="text-dark">
-                                        <i class="fas fa-chevron-right mr-2"></i> Topic 1
-                                    </a>
-                                </li>
-                                <li class="mb-3">
-                                    <a href="#" class="text-dark">
-                                        <i class="fas fa-chevron-right mr-2"></i> Topic 2
-                                    </a>
-                                </li>
-                                <li class="mb-3">
-                                    <a href="#" class="text-dark">
-                                        <i class="fas fa-chevron-right mr-2"></i> Topic 3
-                                    </a>
-                                </li>
-                                <li class="mb-3">
-                                    <a href="#" class="text-dark">
-                                        <i class="fas fa-chevron-right mr-2"></i> Topic 4
-                                    </a>
-                                </li>
-                            </ul>
-                            <a href="#" class="btn btn-outline-dark btn-sm">See More</a>
-                        </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3 border-bottom pb-2">Liên hệ</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2"></i>
+                            Email: NNNnews@news.com
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            Địa chỉ: 227 Nguyễn Văn Cừ, Quận 5, TP.HCM
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone me-2"></i>
+                            Hotline: (028) 3835 4266
+                        </li>
+                    </ul>
+                    <div class="mt-3">
+                        <a href="#" class="text-light me-3 hover-link">
+                            <i class="fab fa-facebook-square fa-2x"></i>
+                        </a>
+                        <a href="#" class="text-light me-3 hover-link">
+                            <i class="fab fa-twitter-square fa-2x"></i>
+                        </a>
+                        <a href="#" class="text-light hover-link">
+                            <i class="fab fa-youtube-square fa-2x"></i>
+                        </a>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-
-    <!-- Footer -->
-    <footer class="bg-dark text-light mt-5">
-        <div class="container py-4">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>Về chúng tôi</h5>
-                    <!-- Footer content -->
-                </div>
-                <div class="col-md-4">
-                    <h5>Chuyên mục</h5>
-                    <!-- Categories -->
-                </div>
-                <div class="col-md-4">
-                    <h5>Liên hệ</h5>
-                    <!-- Contact info -->
-                </div>
+            <div class="text-center mt-4 pt-3 border-top">
+                <small>&copy; 2024 NNN News. All rights reserved.</small>
             </div>
         </div>
     </footer>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    {{{_sections.js}}}
-</body>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/public/js/tabs.js"></script>
+</body>
 </html>
->>>>>>> hao_main
