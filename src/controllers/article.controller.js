@@ -133,7 +133,7 @@ async function getLatestArticles() {
 async function getArticleDetail(req, res) {
     try {
         const articleId = req.params.id;
-        
+
         // Tăng lượt xem
         await db.execute(`
             UPDATE Articles 
@@ -159,9 +159,9 @@ async function getArticleDetail(req, res) {
         `, [articleId]);
 
         if (articles.length === 0) {
-            return res.status(404).render('404', { 
+            return res.status(404).render('404', {
                 layout: 'main',
-                message: 'Bài viết không tồn tại' 
+                message: 'Bài viết không tồn tại'
             });
         }
 
@@ -199,7 +199,7 @@ async function getArticleDetail(req, res) {
 
         // Lấy danh mục để hiển thị menu
         const categories = await getCategories();
-        
+
         // Sử dụng hàm mới cho sidebar
         const featuredArticles = await getSidebarFeaturedArticles();
         const latestArticles = await getLatestArticles();
@@ -379,7 +379,7 @@ async function getAllArticles() {
 async function getMostViewedArticles() {
     try {
         console.log('Starting getMostViewedArticles...');
-        
+
         const [articles] = await db.execute(`
             SELECT 
                 a.id,
@@ -390,10 +390,10 @@ async function getMostViewedArticles() {
             ORDER BY a.view_count DESC
             LIMIT 4
         `);
-        
+
         console.log('Query executed successfully');
         console.log('Most viewed articles found:', articles);
-        
+
         return articles;
     } catch (error) {
         console.error('Error in getMostViewedArticles:', error);
@@ -426,9 +426,9 @@ async function renderHomepage(req, res) {
         });
     } catch (error) {
         console.error('Error in renderHomepage:', error);
-        res.status(500).render('error', { 
+        res.status(500).render('error', {
             layout: 'main',
-            message: 'Có lỗi xảy ra khi tải trang chủ' 
+            message: 'Có lỗi xảy ra khi tải trang chủ'
         });
     }
 }
@@ -545,7 +545,7 @@ async function getHealthArticles() {
             ORDER BY a.publish_date DESC
             LIMIT 5
         `, [healthCategoryId]);
-        
+
         return articles;
     } catch (error) {
         console.error('Error fetching health articles:', error);
@@ -573,7 +573,7 @@ async function getLifeArticles() {
             ORDER BY a.publish_date DESC
             LIMIT 5
         `, [lifeCategoryId]);
-        
+
         return articles;
     } catch (error) {
         console.error('Error fetching life articles:', error);
@@ -601,7 +601,7 @@ async function getTechArticles() {
             ORDER BY a.publish_date DESC
             LIMIT 5
         `, [techCategoryId]);
-        
+
         return articles;
     } catch (error) {
         console.error('Error fetching tech articles:', error);
@@ -629,14 +629,59 @@ async function getCarArticles() {
             ORDER BY a.publish_date DESC
             LIMIT 5
         `, [carCategoryId]);
-        
+
         return articles;
     } catch (error) {
         console.error('Error fetching car articles:', error);
         throw new Error('Failed to retrieve car articles');
     }
-}
 
+}
+async function addComment(req, res) {
+    try {
+        // Kiểm tra user đã đăng nhập chưa
+        if (!req.session.authUser) {
+            return res.status(401).json({
+                success: false,
+                message: 'Bạn cần đăng nhập để bình luận'
+            });
+        }
+
+        const { article_id, comment_text, returnUrl } = req.body;
+        const user_id = req.session.authUser.id;
+
+        // Validate input
+        if (!article_id || !comment_text || comment_text.trim() === '') {
+            return res.status(400).json({
+                success: false,
+                message: 'Nội dung bình luận không được để trống'
+            });
+        }
+
+        // Thêm comment vào database
+        await db.execute(`
+            INSERT INTO Comments (article_id, user_id, comment_text, comment_date)
+            VALUES (?, ?, ?, NOW())
+        `, [article_id, user_id, comment_text]);
+
+        // Redirect về trang trước đó
+        if (returnUrl) {
+            res.redirect(returnUrl);
+        } else {
+            // Fallback nếu không có returnUrl
+            const isSubscriber = req.session.authUser?.role === 'subscriber';
+            const baseUrl = isSubscriber ? '/subscriber/article/' : '/article/';
+            res.redirect(baseUrl + article_id);
+        }
+
+    } catch (error) {
+        console.error('Error in addComment:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Có lỗi xảy ra khi thêm bình luận'
+        });
+    }
+}
 
 module.exports = {
     getFeaturedArticles,
@@ -653,5 +698,5 @@ module.exports = {
     getTechArticles,
     getCarArticles,
     getAllArticles,
-
+    addComment,
 };

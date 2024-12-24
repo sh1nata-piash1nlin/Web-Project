@@ -1,4 +1,3 @@
-
 const db = require('../config/database');
 const articleController = require('./article.controller');
 
@@ -42,7 +41,7 @@ async function renderHomepage(req, res) {
         const carArticles = await articleController.getCarArticles();
         const mostViewedArticles = await articleController.getMostViewedArticles();
         const latestArticles = await articleController.getLatestArticles();
-        
+
 
         res.render('home', {
             layout: 'main',
@@ -62,9 +61,9 @@ async function renderHomepage(req, res) {
         });
     } catch (error) {
         console.error('Error in renderHomepage:', error);
-        res.status(500).render('error', { 
+        res.status(500).render('error', {
             layout: 'main',
-            message: 'Có lỗi xảy ra khi tải trang chủ' 
+            message: 'Có lỗi xảy ra khi tải trang chủ'
         });
     }
 }
@@ -72,3 +71,4 @@ async function renderHomepage(req, res) {
 module.exports = {
     renderHomepage,
 };
+

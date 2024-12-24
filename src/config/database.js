@@ -4,8 +4,8 @@ const mysql = require('mysql2/promise');
 const pool = mysql.createPool({
     host: 'localhost',       // Tên host của database (thường là 'localhost')
     user: 'root',            // Tên người dùng MySQL
-    password: '123123', // Mật khẩu của bạn
-    database: 'mysql_webnews_db',  // Tên database
+    password: 'Hoanghoahong789', // Mật khẩu của bạn
+    database: 'sql_webnews_db',  // Tên database
     waitForConnections: true, // Chờ nếu không có kết nối nào có sẵn
     connectionLimit: 10,      // Số kết nối tối đa trong pool
     queueLimit: 0             // Không giới hạn số lượng query trong hàng đợi

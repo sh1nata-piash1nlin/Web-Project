@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const { Sequelize } = require('sequelize');
 const sequelize = new Sequelize('oauth', 'root', "Hoanghoahong789", {
     host: 'localhost',
@@ -14,23 +13,3 @@ const connectDB = async () => {
         console.error('Unable to connect to the database:', error);
     }
 };
-
-=======
-const { Sequelize } = require('sequelize');
-const sequelize = new Sequelize('oauth', 'root', null, {
-    host: 'localhost',
-    dialect: 'mysql', 
-    logging: false, 
-}); 
-
-const connectDB = async () => {
-    try {
-        await sequelize.authenticate();
-        console.log('Connection DB has been established successfully.');
-    } catch (error) {
-        console.error('Unable to connect to the database:', error);
-    }
-};
-
->>>>>>> hao_main
-module.exports = connectDB;
