@@ -8,6 +8,9 @@ const guestRoutes = require('./src/routes/guest.route');
 //const writerRoutes = require('./src/routes/writer.route');
 const { engine } = require('express-handlebars'); // Import express-handlebars
 const session = require('express-session');
+
+const adminRoutes = require('./src/routes/admin.route');
+
 const editorRoutes = require('./src/routes/editor.route');
 const exphbs = require('express-handlebars');
 const dayjs = require('dayjs');
@@ -16,7 +19,6 @@ const FroalaEditor = require('wysiwyg-editor-node-sdk/lib/froalaEditor.js');
 
 //const FroalaEditor = require('wysiwyg-editor-node-sdk/lib/froalaEditor.js');
 //var express_handlebars_sections = require('express-handlebars-sections'); 
-
 require('./passport'); // Passport setup
 
 const app = express();
@@ -26,7 +28,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false }      // Use secure: true in production with HTTPS
-  }));
+}));
 
 // Middleware to pass session variables to all views
 app.use((req, res, next) => {
@@ -38,7 +40,8 @@ app.use((req, res, next) => {
 // Enable CORS
 app.use(cors({
     origin: process.env.URL_CLIENT, // Allow client URL specified in environment variables
-})); 
+}));
+
 
 const helpers = {
     eq: (a, b) => a === b,
@@ -58,6 +61,35 @@ app.use(express.urlencoded({ extended: true }));
 // Configure Handlebars as the view engine
 app.engine('hbs', engine({
     extname: '.hbs', // Use '.hbs' as the file extension for templates
+
+    //defaultLayout: 'main',
+    helpers: {
+        truncate: function (str, len) {
+            if (str && str.length > len) {
+                return str.substring(0, len) + '...';
+            }
+            return str;
+        },
+        formatDate: function (date) {
+            if (!date) return '';
+            return new Date(date).toLocaleDateString('vi-VN');
+        },
+        statusColor: function (status) {
+            switch (status) {
+                case 'published':
+                    return 'success';
+                case 'draft':
+                    return 'warning';
+                case 'archived':
+                    return 'secondary';
+                default:
+                    return 'primary';
+            }
+        },
+        eq: function (a, b) {
+            return a === b;
+        }
+    }
     helpers, 
     // helpers: {
     //     format_number(val) {
@@ -65,6 +97,7 @@ app.engine('hbs', engine({
     //     },
     //     section: express_handlebars_sections()
     //   }
+
 }));
 app.set('view engine', 'hbs'); // Set the view engine to Handlebars
 app.set('views', './src/views'); // Set the views directory
@@ -81,6 +114,9 @@ const writerRoutes = require('./src/routes/writer.route.js');
 app.use('/writer', writerRoutes);
 
 app.use('/', guestRoutes);
+
+app.use('/admin', adminRoutes);
+
 
 app.use('/', editorRoutes);
 

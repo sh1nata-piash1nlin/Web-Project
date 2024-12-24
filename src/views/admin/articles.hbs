@@ -1,0 +1,347 @@
+<div class="container-fluid mt-4"></div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Articles Management</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addArticleModal">
+        <i class="fas fa-plus"></i> Add Article
+    </button>
+</div>
+<!-- Search and Filter Section -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form id="filterForm" class="row g-3">
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="searchTitle" placeholder="Search by title...">
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" id="filterCategory">
+                    <option value="">All Categories</option>
+                    {{#each categories}}
+                    <option value="{{this.id}}">{{this.name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" id="filterStatus">
+                    <option value="">All Status</option>
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                    <option value="archived">Archived</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input type="date" class="form-control" id="dateFrom">
+                    <span class="input-group-text">to</span>
+                    <input type="date" class="form-control" id="dateTo">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Articles Table -->
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Published Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each articles}}
+            <tr>
+                <td>{{this.id}}</td>
+                <td>
+                    <div class="d-flex align-items-center">
+                        {{#if this.featured_image}}
+                        <img src="{{this.featured_image}}" class="me-2"
+                            style="width: 50px; height: 50px; object-fit: cover;">
+                        {{/if}}
+                        <div>
+                            <div class="fw-bold">{{truncate this.title 50}}</div>
+                            {{#if this.summary}}
+                            <small class="text-muted">{{truncate this.summary 100}}</small>
+                            {{/if}}
+                        </div>
+                    </div>
+                </td>
+                <td>{{this.category_name}}</td>
+                <td>
+                    <span class="badge bg-{{statusColor this.status}}">
+                        {{this.status}}
+                    </span>
+                </td>
+                <td>{{formatDate this.created_at}}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning" onclick="editArticle({{this.id}})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteArticle({{this.id}})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+<!-- Pagination -->
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {{#if pagination.prev}}
+        <li class="page-item">
+            <a class="page-link" href="?page={{pagination.prev}}">Previous</a>
+        </li>
+        {{/if}}
+
+        {{#each pagination.pages}}
+        <li class="page-item {{#if this.active}}active{{/if}}">
+            <a class="page-link" href="?page={{this.number}}">{{this.number}}</a>
+        </li>
+        {{/each}}
+        {{#if pagination.next}}
+        <li class="page-item">
+            <a class="page-link" href="?page={{pagination.next}}">Next</a>
+        </li>
+        {{/if}}
+    </ul>
+</nav>
+</div>
+<!-- Edit Article Modal -->
+
+<!-- Add Article Modal -->
+<div class="modal fade" id="addArticleModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Article</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="articleForm" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label class="form-label">Title</label>
+                                <input type="text" class="form-control" name="title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Abstract</label>
+                                <textarea id="addArticleAbstract" name="abstract"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Content</label>
+                                <textarea id="addArticleContent" name="content"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="category_id" required>
+                                    <option value="">Select Category</option>
+                                    {{#each categories}}
+                                    <option value="{{this.id}}">{{this.name}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" name="status" required>
+                                    <option value="draft">Draft</option>
+                                    <option value="published">Published</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Featured Image</label>
+                                <input type="file" class="form-control" name="featured_image" accept="image/*">
+                                <div id="thumbnailPreview" class="mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Article</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script for handling Add Article -->
+<script>
+    document.getElementById('articleForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        // Lấy nội dung từ TinyMCE
+        formData.set('content', tinymce.get('articleContent').getContent());
+
+        try {
+            const response = await fetch('/admin/articles', {
+                method: 'POST',
+                body: formData
+            });
+            if (response.ok) {
+                // Thành công
+                alert('Article added successfully!');
+                window.location.reload();
+            } else {
+                // Xử lý lỗi
+                const error = await response.json();
+                alert(error.message || 'Error adding article');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error adding article');
+        }
+    });
+
+    // Preview thumbnail khi chọn file
+    document.querySelector('input[name="thumbnail"]').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('thumbnailPreview').innerHTML = `
+               <img src="${e.target.result}" class="img-fluid" style="max-height: 200px">
+           `;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Reset form và preview khi đóng modal
+
+</script>
+
+<!-- Include TinyMCE -->
+<script
+    src="https://cdn.tiny.cloud/1/9k8c1w621la3anb0uswmqkbgy15h08v7mrdysjrco2keorao/tinymce/5/tinymce.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    // Khởi tạo TinyMCE cho content trong modal Add
+    tinymce.init({
+        selector: '#addArticleContent',
+        height: 500,
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+            'insertdatetime', 'media', 'table', 'help', 'wordcount'
+        ],
+        toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat',
+        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+    });
+
+    // Khởi tạo TinyMCE cho abstract trong modal Add
+    tinymce.init({
+        selector: '#addArticleAbstract',
+        height: 200,
+        menubar: false,
+        plugins: ['advlist', 'autolink', 'lists', 'link'],
+        toolbar: 'undo redo | bold italic | bullist numlist',
+        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+    });
+    // Form submission
+    document.getElementById('articleForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('title', document.getElementById('articleTitle').value);
+        formData.append('abstract', tinymce.get('articleAbstract').getContent());
+        formData.append('content', tinymce.get('articleContent').getContent());
+        formData.append('category_id', document.getElementById('articleCategory').value);
+        formData.append('status', document.getElementById('articleStatus').value);
+        const featuredImage = document.getElementById('articleThumbnail').files[0];
+        if (featuredImage) {
+            formData.append('featured_image', featuredImage);
+        }
+        try {
+            const response = await fetch('/admin/articles', {
+                method: 'POST',
+                body: formData
+            });
+            if (response.ok) {
+                alert('Article saved successfully!');
+                window.location.reload();
+            } else {
+                const error = await response.json();
+                alert(error.message || 'Error saving article');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error saving article');
+        }
+    });
+    // Preview thumbnail
+    document.getElementById('articleThumbnail').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('thumbnailPreview').innerHTML = `
+                   <img src="${e.target.result}" class="img-fluid" style="max-height: 200px">
+               `;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+    // Reset form khi đóng modal
+    document.getElementById('articleModal').addEventListener('hidden.bs.modal', function () {
+        document.getElementById('articleForm').reset();
+        document.getElementById('thumbnailPreview').innerHTML = '';
+        tinymce.get('articleContent').setContent('');
+        tinymce.get('articleAbstract').setContent('');
+    });
+    // Edit article function
+    async function editArticle(id) {
+        try {
+            const response = await fetch(`/admin/articles/${id}`);
+            const article = await response.json();
+            // Populate form trong modal edit
+            document.getElementById('articleTitle').value = article.title;
+            tinymce.get('articleContent').setContent(article.content || '');
+            tinymce.get('articleAbstract').setContent(article.abstract || '');
+            document.getElementById('articleCategory').value = article.category_id;
+            document.getElementById('articleStatus').value = article.status;
+            if (article.featured_image) {
+                document.getElementById('thumbnailPreview').innerHTML =
+                    `<img src="${article.featured_image}" class="img-fluid">`;
+            }
+            // Show modal edit
+            const modal = new bootstrap.Modal(document.getElementById('articleModal'));
+            modal.show();
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error loading article');
+        }
+    }
+    // Delete article function
+    async function deleteArticle(id) {
+        if (confirm('Are you sure you want to delete this article?')) {
+            try {
+                const response = await fetch(`/admin/articles/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    throw new Error('Failed to delete article');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error deleting article');
+            }
+        }
+    }
+
+</script>
