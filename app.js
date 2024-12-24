@@ -90,7 +90,7 @@ app.engine('hbs', engine({
             return a === b;
         }
     }
-    helpers, 
+    // helpers, 
     // helpers: {
     //     format_number(val) {
     //       return numeral(val).format('0,0');
