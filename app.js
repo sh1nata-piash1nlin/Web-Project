@@ -50,7 +50,7 @@ const helpers = {
 };
 
 app.use('/static', express.static('src/static'));
-app.use( express.static(path.join(__dirname, 'src', 'public')));
+app.use( '/public',express.static(path.join(__dirname, 'src', 'public')));
 app.use('/froala', express.static(path.join(__dirname,'node_modules/froala-editor')));
 
 
@@ -111,7 +111,7 @@ connectDB();
 
 //Routes
 const writerRoutes = require('./src/routes/writer.route.js');
-app.use('/writer', writerRoutes);
+app.use('/', writerRoutes);
 
 app.use('/', guestRoutes);
 
