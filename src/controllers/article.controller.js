@@ -713,6 +713,7 @@ async function addComment(req, res) {
             const baseUrl = isSubscriber ? '/subscriber/article/' : '/article/';
             res.redirect(baseUrl + article_id);
         }
+        //all merged
 
     } catch (error) {
         console.error('Error in addComment:', error);
