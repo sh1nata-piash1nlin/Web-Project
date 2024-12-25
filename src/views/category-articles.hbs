@@ -1,107 +1,15 @@
-{{!-- <div class="container mt-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-            {{#if parentCategory}}
-            <li class="breadcrumb-item"><a href="/category/{{parentCategory.id}}">{{parentCategory.name}}</a></li>
-            {{/if}}
-            <li class="breadcrumb-item active">{{category.name}}</li>
-        </ol>
-    </nav>
-
-    <h1 class="mb-4">{{category.name}}</h1>
-
-    <div class="row">
-        <!-- Featured Article of Category -->
-        {{#if articles.[0]}}
-        <div class="col-12 mb-4">
-            <div class="card">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img src="/public/images/{{articles.[0].featured_image}}" 
-                             class="img-fluid rounded-start" 
-                             alt="{{articles.[0].title}}"
-                             style="height: 100%; object-fit: cover;">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h2 class="card-title">
-                                <a href="/article/{{articles.[0].id}}" class="text-decoration-none text-dark">
-                                    {{articles.[0].title}}
-                                </a>
-                            </h2>
-                            <p class="card-text">{{articles.[0].abstract}}</p>
-                            <p class="card-text">
-                                <small class="text-muted">
-                                    Đăng bởi {{articles.[0].author_name}} • {{articles.[0].publish_date}}
-                                </small>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {{/if}}
-
-        <!-- Rest of Articles -->
-        {{#each articles}}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <img src="/public/images/{{this.featured_image}}" 
-                     class="card-img-top" 
-                     alt="{{this.title}}"
-                     style="height: 200px; object-fit: cover;">
-                <div class="card-body">
-                    <h3 class="card-title h5">
-                        <a href="/article/{{this.id}}" class="text-decoration-none text-dark">
-                            {{this.title}}
-                        </a>
-                    </h3>
-                    <p class="card-text">{{this.abstract}}</p>
-                </div>
-                <div class="card-footer bg-white">
-                    <small class="text-muted">
-                        Đăng bởi {{this.author_name}} • {{this.publish_date}}
-                    </small>
-                </div>
-            </div>
-        </div>
-        {{/each}}
-    </div>
-
-
-
-    <!-- Pagination -->
-    {{#if pagination}}
-    <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination justify-content-center">
-            {{#if pagination.hasPrevPage}}
-            <li class="page-item">
-                <a class="page-link" href="?page={{pagination.prevPage}}">Trang trước</a>
-            </li>
-            {{/if}}
-            
-            {{#each pagination.pages}}
-            <li class="page-item {{#if this.isCurrentPage}}active{{/if}}">
-                <a class="page-link" href="?page={{this.pageNumber}}">{{this.pageNumber}}</a>
-            </li>
-            {{/each}}
-
-            {{#if pagination.hasNextPage}}
-            <li class="page-item">
-                <a class="page-link" href="?page={{pagination.nextPage}}">Trang sau</a>
-            </li>
-            {{/if}}
-        </ul>
-    </nav>
-    {{/if}}
-</div>  --}}
 <div class="container mt-4">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="{{#if isSubscriber}}/subscriber{{else}}/{{/if}}">Trang chủ</a></li>
             {{#if parentCategory}}
-            <li class="breadcrumb-item"><a href="/category/{{parentCategory.id}}">{{parentCategory.name}}</a></li>
+            <li class="breadcrumb-item">
+                {{#if isSubscriber}}
+                    <a href="/subscriber/category/{{parentCategory.id}}">{{parentCategory.name}}</a>
+                {{else}}
+                    <a href="/category/{{parentCategory.id}}">{{parentCategory.name}}</a>
+                {{/if}}
+            </li>
             {{/if}}
             <li class="breadcrumb-item active">{{category.name}}</li>
         </ol>
@@ -110,17 +18,28 @@
     <h1 class="mb-4">{{category.name}}</h1>
 
     <div class="row">
-        <!-- Hiển thị tất cả bài viết trong grid -->
         {{#each articles}}
         <div class="col-md-6 mb-4">
-            <div class="card h-100">
+            <div class="card h-100 {{#if ../isSubscriber}}{{#if is_premium}}premium-article{{/if}}{{/if}}">
+                {{#if ../isSubscriber}}
+                    {{#if is_premium}}
+                    <div class="premium-badge">
+                        <i class="bi bi-star-fill premium-star"></i>
+                        Premium
+                    </div>
+                    {{/if}}
+                {{/if}}
                 <img src="/public/images/{{this.featured_image}}" 
                      class="card-img-top" 
                      alt="{{this.title}}"
                      style="height: 200px; object-fit: cover;">
                 <div class="card-body">
                     <h3 class="card-title h5">
-                        <a href="/article/{{this.id}}" class="text-decoration-none text-dark">
+                        {{#if ../isSubscriber}}
+                            <a href="/subscriber/article/{{this.id}}" class="text-decoration-none text-dark">
+                        {{else}}
+                            <a href="/article/{{this.id}}" class="text-decoration-none text-dark">
+                        {{/if}}
                             {{this.title}}
                         </a>
                     </h3>
@@ -136,28 +55,74 @@
         {{/each}}
     </div>
 
-    <!-- Phân trang -->
     {{#if pagination}}
     <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
             {{#if pagination.hasPrevPage}}
             <li class="page-item">
-                <a class="page-link" href="/category/{{category.id}}?page={{pagination.prevPage}}">Trang trước</a>
+                {{#if isSubscriber}}
+                    <a class="page-link" href="/subscriber/category/{{category.id}}?page={{pagination.prevPage}}">Trang trước</a>
+                {{else}}
+                    <a class="page-link" href="/category/{{category.id}}?page={{pagination.prevPage}}">Trang trước</a>
+                {{/if}}
             </li>
             {{/if}}
             
             {{#each pagination.pages}}
             <li class="page-item {{#if this.isCurrentPage}}active{{/if}}">
-                <a class="page-link" href="/category/{{../category.id}}?page={{this.pageNumber}}">{{this.pageNumber}}</a>
+                {{#if ../isSubscriber}}
+                    <a class="page-link" href="/subscriber/category/{{../category.id}}?page={{this.pageNumber}}">{{this.pageNumber}}</a>
+                {{else}}
+                    <a class="page-link" href="/category/{{../category.id}}?page={{this.pageNumber}}">{{this.pageNumber}}</a>
+                {{/if}}
             </li>
             {{/each}}
 
             {{#if pagination.hasNextPage}}
             <li class="page-item">
-                <a class="page-link" href="/category/{{category.id}}?page={{pagination.nextPage}}">Trang sau</a>
+                {{#if isSubscriber}}
+                    <a class="page-link" href="/subscriber/category/{{category.id}}?page={{pagination.nextPage}}">Trang sau</a>
+                {{else}}
+                    <a class="page-link" href="/category/{{category.id}}?page={{pagination.nextPage}}">Trang sau</a>
+                {{/if}}
             </li>
             {{/if}}
         </ul>
     </nav>
     {{/if}}
-</div> 
+</div>
+
+<style>
+.premium-article {
+    border: 2px solid #ffd700;
+    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.1);
+    background: linear-gradient(to right, #fff, #fffdf0);
+}
+
+.premium-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ffd700;
+    color: #000;
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+.premium-star {
+    color: #ff6b6b;
+    animation: starTwinkle 1.5s infinite;
+}
+
+@keyframes starTwinkle {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+</style> 

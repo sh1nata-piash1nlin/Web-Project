@@ -1,0 +1,96 @@
+<div class="container mt-4">
+    <div class="article-preview">
+        <div class="premium-banner">
+            <i class="bi bi-star-fill"></i>
+            <h3>Bài viết Premium</h3>
+            <p>Đăng ký gói Premium để đọc toàn bộ nội dung</p>
+            <a href="/premium" class="btn btn-warning">
+                <i class="bi bi-star-fill"></i> Đăng ký Premium ngay
+            </a>
+        </div>
+
+        <h1 class="article-title">{{article.title}}</h1>
+        <div class="article-meta">
+            <span><i class="bi bi-person"></i> {{article.author_name}}</span>
+            <span><i class="bi bi-calendar3"></i> {{article.publish_date}}</span>
+            <span><i class="bi bi-folder"></i> {{article.category_name}}</span>
+        </div>
+
+        {{#if article.featured_image}}
+        <img src="{{article.featured_image}}" alt="{{article.title}}" class="article-image">
+        {{/if}}
+
+        <div class="article-content">
+            {{{article.content}}}
+        </div>
+
+        <div class="premium-overlay">
+            <div class="premium-message">
+                <i class="bi bi-lock-fill"></i>
+                <h4>Nội dung này chỉ dành cho thành viên Premium</h4>
+                <p>Đăng ký ngay để truy cập toàn bộ nội dung Premium</p>
+                <a href="/premium" class="btn btn-lg btn-warning">
+                    <i class="bi bi-star-fill"></i> Đăng ký Premium
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.article-preview {
+    position: relative;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.premium-banner {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.premium-banner i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.article-content {
+    position: relative;
+    max-height: 300px;
+    overflow: hidden;
+}
+
+.premium-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(transparent, #fff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.premium-message {
+    background: rgba(255, 215, 0, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #FFD700;
+}
+
+.premium-message i {
+    font-size: 2rem;
+    color: #FFD700;
+    margin-bottom: 10px;
+}
+
+/* ... thêm các style khác nếu cần ... */
+</style> 

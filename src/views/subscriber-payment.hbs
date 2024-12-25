@@ -9,59 +9,70 @@
                     <!-- Pricing Plans -->
                     <div class="row mb-4">
                         <div class="col-md-4">
+                            <div class="card pricing-card h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">1 Tháng</h5>
+                                    <h2 class="price">99.000đ</h2>
+                                    <p class="text-muted">Thanh toán hàng tháng</p>
+                                    <button class="btn btn-outline-primary w-100">Chọn gói</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="card pricing-card h-100 popular">
                                 <div class="popular-badge">Phổ biến</div>
                                 <div class="card-body text-center">
-                                    <h5 class="card-title">7 ngày premium</h5>
+                                    <h5 class="card-title">6 Tháng</h5>
                                     <h2 class="price">499.000đ</h2>
                                     <p class="text-muted">Tiết kiệm 15%</p>
                                     <button class="btn btn-primary w-100">Chọn gói</button>
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="card pricing-card h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">12 Tháng</h5>
+                                    <h2 class="price">899.000đ</h2>
+                                    <p class="text-muted">Tiết kiệm 25%</p>
+                                    <button class="btn btn-outline-primary w-100">Chọn gói</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Payment Form -->
-                    <form action="/premium" method="POST">
+                    <form>
                         <h4 class="mb-3">Thông tin thanh toán</h4>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Họ và tên</label>
-                                <input type="text" class="form-control" name="full_name" required>
+                                <input type="text" class="form-control" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Email</label>
-                                <input type="email" class="form-control" name="email" required>
+                                <input type="email" class="form-control" required>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Số thẻ</label>
                             <div class="input-group">
-                                <input type="text" 
-                                       class="form-control" 
-                                       name="card_number"
-                                       placeholder="1234 5678 9012 3456" 
-                                       maxlength="19"
-                                       autocomplete="cc-number"
-                                       required>
+                                <input type="text" class="form-control" placeholder="1234 5678 9012 3456" required>
                                 <span class="input-group-text">
                                     <i class="bi bi-credit-card"></i>
                                 </span>
                             </div>
-                            <small class="text-muted">Nhập 16 số trên thẻ của bạn</small>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngày hết hạn</label>
+                                <input type="text" class="form-control" placeholder="MM/YY" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">CVV</label>
-                                <input type="text" 
-                                       class="form-control" 
-                                       name="cvv"
-                                       placeholder="123" 
-                                       pattern="\d{3}"
-                                       maxlength="3"
-                                       required>
+                                <input type="text" class="form-control" placeholder="123" required>
                             </div>
                         </div>
 

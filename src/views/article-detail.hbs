@@ -1,47 +1,109 @@
 <div class="container mt-4">
-    <div class="article-detail">
-        <!-- Category and Date -->
-        <div class="text-muted mb-2">
-            {{article.category_name}} • {{article.publish_date}}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{#if isSubscriber}}/subscriber{{else}}/{{/if}}">Trang chủ</a></li>
+            {{#if article.category_name}}
+            <li class="breadcrumb-item">
+                {{#if isSubscriber}}
+                    <a href="/subscriber/category/{{article.category_id}}">{{article.category_name}}</a>
+                {{else}}
+                    <a href="/category/{{article.category_id}}">{{article.category_name}}</a>
+                {{/if}}
+            </li>
+            {{/if}}
+            <li class="breadcrumb-item active">{{article.title}}</li>
+        </ol>
+    </nav>
+
+    <div class="article-container {{#if isSubscriber}}{{#if article.is_premium}}premium-article-detail{{/if}}{{/if}}">
+        {{#if isSubscriber}}
+            {{#if article.is_premium}}
+            <div class="premium-badge-large">
+                <i class="bi bi-star-fill premium-star"></i>
+                Premium Article
+            </div>
+            {{/if}}
+        {{/if}}
+
+        <h1 class="article-title mb-3">{{article.title}}</h1>
+        
+        <div class="article-meta mb-4">
+            <span class="me-3">
+                <i class="bi bi-calendar"></i> {{article.publish_date}}
+            </span>
+            <span class="me-3">
+                <i class="bi bi-person"></i> {{article.author_name}}
+            </span>
+            <span>
+                <i class="bi bi-folder"></i> {{article.category_name}}
+            </span>
         </div>
 
-        <!-- Title -->
-        <h1 class="article-title mb-4">{{article.title}}</h1>
-
-        <!-- Author -->
-        <div class="author-info mb-4">
-            <span class="text-muted">Bởi {{article.author_name}}</span>
-        </div>
-
-        <!-- Featured Image -->
         {{#if article.featured_image}}
-        <div class="featured-image mb-4">
-            <img src="/public/images/{{article.featured_image}}" class="img-fluid" alt="{{article.title}}">
+        <div class="featured-image-container mb-4">
+            <img src="/public/images/{{article.featured_image}}" 
+                 class="img-fluid rounded" 
+                 alt="{{article.title}}">
         </div>
         {{/if}}
 
-        <!-- Abstract -->
-        <div class="abstract mb-4">
-            <p class="lead">{{article.abstract}}</p>
-        </div>
-
-        <!-- Content -->
-        <div class="content mb-4">
+        <div class="article-content">
             {{{article.content}}}
         </div>
 
-        <!-- Comments Section -->
-        <div class="comments-section mt-5">
-            <h4>Bình luận ({{comments.length}})</h4>
+        {{#if isSubscriber}}
+            {{#if article.is_premium}}
+            <div class="text-center mt-4">
+                <a href="/subscriber/article/{{article.id}}/download" 
+                   class="btn btn-warning download-btn">
+                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                    Tải bài viết
+                </a>
+            </div>
+            {{/if}}
+        {{/if}}
+    </div>
+
+    {{!-- Phần comments --}}
+    <div class="comments-section mt-4">
+        <h4>Bình luận ({{comments.length}})</h4>
+        
+        {{#if authUser}}
+        <div class="comment-form mb-4">
+            <form action="/articles/comments" method="POST">
+                <input type="hidden" name="article_id" value="{{article.id}}">
+                <input type="hidden" name="returnUrl" value="{{currentUrl}}">
+                <div class="form-group">
+                    <textarea 
+                        class="form-control" 
+                        name="comment_text" 
+                        rows="3" 
+                        placeholder="Viết bình luận của bạn..."
+                        required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Gửi bình luận</button>
+            </form>
+        </div>
+        {{else}}
+        <div class="alert alert-info">
+            Vui lòng <a href="/login">đăng nhập</a> để bình luận
+        </div>
+        {{/if}}
+
+        <div id="commentsList">
             {{#each comments}}
             <div class="comment mb-3">
-                <div class="comment-content p-3 bg-light rounded">
-                    <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
                         <strong>{{this.user_name}}</strong>
-                        <small class="text-muted">{{this.comment_date}}</small>
+                        {{#if this.role}}
+                            <span class="badge bg-secondary ms-2">{{this.role}}</span>
+                        {{/if}}
                     </div>
-                    <p class="mb-0 mt-2">{{this.comment_text}}</p>
+                    <small class="text-muted">{{this.comment_date}}</small>
                 </div>
+                <p class="mb-1 mt-2">{{this.comment_text}}</p>
+                <hr>
             </div>
             {{/each}}
         </div>
@@ -49,27 +111,82 @@
 </div>
 
 <style>
-    .article-title {
-        font-size: 2.5rem;
-        font-weight: bold;
-        line-height: 1.2;
-    }
+.premium-article-detail {
+    position: relative;
+    border: 3px solid #ffd700;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 6px 12px rgba(255, 215, 0, 0.15);
+    background: linear-gradient(to right, #fff, #fffdf0);
+}
 
-    .featured-image img {
-        width: 100%;
-        max-height: 500px;
-        object-fit: cover;
-    }
+.premium-badge-large {
+    position: absolute;
+    top: -15px;
+    right: 20px;
+    background: #ffd700;
+    color: #000;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
 
-    .content {
-        font-size: 1.1rem;
-        line-height: 1.8;
-    }
+.premium-article-detail .article-title {
+    color: #1a1a1a;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+}
 
-    .abstract {
-        font-size: 1.2rem;
-        color: #666;
-        border-left: 4px solid #007bff;
-        padding-left: 1rem;
-    }
+.premium-article-detail .featured-image-container {
+    border: 2px solid #ffd700;
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.premium-article-detail .article-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.premium-star {
+    color: #ff6b6b;
+    animation: starTwinkle 1.5s infinite;
+}
+
+@keyframes starTwinkle {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.download-btn {
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+    border: 2px solid #ffd700;
+    background: linear-gradient(to right, #ffd700, #ffed4a);
+    color: #000;
+    font-weight: bold;
+    padding: 6px 15px;
+    font-size: 0.9rem;
+}
+
+.download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.2);
+    background: linear-gradient(to right, #ffed4a, #ffd700);
+    border-color: #ffed4a;
+}
+
+.download-btn i {
+    margin-right: 6px;
+    font-size: 0.9rem;
+}
 </style> 

@@ -1,51 +1,112 @@
 <div class="container mt-4">
-    <h1>Kết quả tìm kiếm cho "{{searchTerm}}"</h1>
+    <h1 class="mb-4">Kết quả tìm kiếm cho "{{searchTerm}}"</h1>
+
     <div class="row">
-        {{#if articles.length}}
-            {{#each articles}}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <img src="/public/images/{{this.featured_image}}" class="card-img-top" alt="{{this.title}}">
-                    <div class="card-body">
-                        <h3 class="card-title h5">
-                            <a href="/article/{{this.id}}" class="text-decoration-none text-dark">
-                                {{this.title}}
-                            </a>
-                        </h3>
-                        <p class="card-text">{{this.abstract}}</p>
+        {{#each articles}}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 {{#if ../isSubscriber}}{{#if is_premium}}premium-article{{/if}}{{/if}}">
+                {{#if ../isSubscriber}}
+                    {{#if is_premium}}
+                    <div class="premium-badge">
+                        <i class="bi bi-star-fill premium-star"></i>
+                        Premium
                     </div>
+                    {{/if}}
+                {{/if}}
+                <img src="/public/images/{{this.featured_image}}" 
+                     class="card-img-top" 
+                     alt="{{this.title}}"
+                     style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h3 class="card-title h5">
+                        {{#if ../isSubscriber}}
+                            <a href="/subscriber/article/{{this.id}}" class="text-decoration-none text-dark">
+                        {{else}}
+                            <a href="/article/{{this.id}}" class="text-decoration-none text-dark">
+                        {{/if}}
+                            {{this.title}}
+                        </a>
+                    </h3>
+                    <p class="card-text">{{this.abstract}}</p>
+                </div>
+                <div class="card-footer bg-white">
+                    <small class="text-muted">
+                        Đăng bởi {{this.author_name}} • {{this.publish_date}}
+                    </small>
                 </div>
             </div>
-            {{/each}}
-        {{else}}
-            <p>Không tìm thấy bài viết nào.</p>
-        {{/if}}
+        </div>
+        {{/each}}
     </div>
+
     {{#if pagination}}
-    <nav aria-label="Search results navigation">
+    <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
             {{#if pagination.hasPrevPage}}
             <li class="page-item">
-                <a class="page-link" href="?q={{searchTerm}}&page={{pagination.prevPage}}" aria-label="Previous">
-                    <span aria-hidden="true">Trang trước;</span>
-                </a>
+                {{#if isSubscriber}}
+                    <a class="page-link" href="/subscriber/search?q={{searchTerm}}&page={{pagination.prevPage}}">Trang trước</a>
+                {{else}}
+                    <a class="page-link" href="/search?q={{searchTerm}}&page={{pagination.prevPage}}">Trang trước</a>
+                {{/if}}
             </li>
             {{/if}}
-
+            
             {{#each pagination.pages}}
-            <li class="page-item {{#if isCurrentPage}}active{{/if}}">
-                <a class="page-link" href="?q={{../searchTerm}}&page={{pageNumber}}">{{pageNumber}}</a>
+            <li class="page-item {{#if this.isCurrentPage}}active{{/if}}">
+                {{#if ../isSubscriber}}
+                    <a class="page-link" href="/subscriber/search?q={{../searchTerm}}&page={{this.pageNumber}}">{{this.pageNumber}}</a>
+                {{else}}
+                    <a class="page-link" href="/search?q={{../searchTerm}}&page={{this.pageNumber}}">{{this.pageNumber}}</a>
+                {{/if}}
             </li>
             {{/each}}
 
             {{#if pagination.hasNextPage}}
             <li class="page-item">
-                <a class="page-link" href="?q={{searchTerm}}&page={{pagination.nextPage}}" aria-label="Next">
-                    <span aria-hidden="true">Trang sau</span>
-                </a>
+                {{#if isSubscriber}}
+                    <a class="page-link" href="/subscriber/search?q={{searchTerm}}&page={{pagination.nextPage}}">Trang sau</a>
+                {{else}}
+                    <a class="page-link" href="/search?q={{searchTerm}}&page={{pagination.nextPage}}">Trang sau</a>
+                {{/if}}
             </li>
             {{/if}}
         </ul>
     </nav>
     {{/if}}
-</div> 
+</div>
+
+<style>
+.premium-article {
+    border: 2px solid #ffd700;
+    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.1);
+    background: linear-gradient(to right, #fff, #fffdf0);
+}
+
+.premium-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ffd700;
+    color: #000;
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+.premium-star {
+    color: #ff6b6b;
+    animation: starTwinkle 1.5s infinite;
+}
+
+@keyframes starTwinkle {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+</style> 

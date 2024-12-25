@@ -1,38 +1,29 @@
 const db = require('../utils/db.js');
 const dayjs = require('dayjs');
-const mysql = require('mysql2/promise');
-const config = require('../config/config');
-
-const pool = mysql.createPool({
-  host: 'localhost',       // Tên host của database (thường là 'localhost')
-  user: 'root',            // Tên người dùng MySQL
-  password: '', // Mật khẩu của bạn
-  database: 'sql_webnews_db',  // Tên database
-  waitForConnections: true, // Chờ nếu không có kết nối nào có sẵn
-  connectionLimit: 10,      // Số kết nối tối đa trong pool
-  queueLimit: 0             // Không giới hạn số lượng query trong hàng đợi
-});
-
 
   // Get all draft articles
   exports.getDraftArticles = async () => {
-    const [articles] = await pool.execute(`
-        SELECT 
-            a.id,
-            a.title,
-            a.featured_image,
-            a.created_at,
-            a.status,
-            a.is_premium,
-            c.name AS category_name,
-            u.full_name AS author_name
-        FROM Articles a
-        LEFT JOIN Categories c ON a.category_id = c.id
-        LEFT JOIN Users u ON a.author_id = u.id
-        WHERE a.status = 'draft'
-        ORDER BY a.created_at ASC
-    `);
-    return articles;
+  const drafts = await db('Articles')
+    .select(
+      'Articles.id',
+      'Articles.title',
+      'Articles.status',
+      'Articles.created_at',
+      'Articles.featured_image', 
+      'Users.full_name AS author_name',
+      'Categories.name AS category_name'
+    )
+    .join('Users', 'Articles.author_id', 'Users.id')
+    .join('Categories', 'Articles.category_id', 'Categories.id')
+    .where('Articles.status', 'draft')
+    .orderBy('Articles.created_at', 'asc');
+
+  // Format the date using dayjs and handle missing featured_image
+  return drafts.map(draft => ({
+    ...draft,
+    created_at: dayjs(draft.created_at).format('DD/MM/YYYY'), 
+    featured_image: draft.featured_image || '/static/img/default.png', 
+  }));
   };
 
   // Fetch article details by ID for editing
@@ -114,6 +105,7 @@ const pool = mysql.createPool({
         date: db.fn.now(), // Use the database's current timestamp
       });
   
+      console.log(`Article ${articleId} has been rejected.`);
     } catch (err) {
       console.error('Error rejecting article:', err);
       throw err;
@@ -121,40 +113,46 @@ const pool = mysql.createPool({
   };
   
   // Update article with new details
-  exports.updateArticle = async (data) => {
-    try {
-      const { id, category_id, tags, updated_at } = data;
-
-      await db.transaction(async (trx) => {
-        // Update article basic info
-        await trx('Articles')
-          .where('id', id)
-          .update({
-            category_id,
-            updated_at,
-            status: 'published',
-          });
-
-        // Handle multiple tags
-        if (Array.isArray(tags) && tags.length > 0) {
-          // Create array of tag entries
-          const tagEntries = tags.map(tagId => ({
-            article_id: id,
-            tag_id: parseInt(tagId)
-          }));
-
-          // Insert each tag entry separately
-          for (const tagEntry of tagEntries) {
-            await trx('article_tags').insert(tagEntry);
+  exports.updateArticle = async ({ id, category_id, tags, updated_at }) => {
+    // Ensure tags is an array
+    if (!Array.isArray(tags)) {
+      if (typeof tags === 'string') {
+        try {
+          tags = JSON.parse(tags); // Parse stringified array
+          if (!Array.isArray(tags)) {
+            throw new Error();
           }
+        } catch (err) {
+          tags = [tags]; // Treat it as a single value and wrap it in an array
         }
-      });
-
-      return { success: true };
-    } catch (error) {
-      console.error('Error updating article:', error);
-      return { success: false, error: error.message };
+      } else {
+        tags = [tags]; // Treat it as a single value and wrap it in an array
+      }
     }
+  
+    await db.transaction(async (trx) => {
+      // Update article's category and publish date
+      await trx('Articles')
+        .where('id', id)
+        .update({
+          category_id,
+          updated_at,
+          status: 'published', // Change status to published
+        });
+  
+      // Delete existing tags for the article
+      await trx('article_tags')
+        .where('article_id', id)
+        .del();
+  
+      // Insert new tags for the article
+      const tagEntries = tags.map((tagId) => ({
+        article_id: id,
+        tag_id: tagId,
+      }));
+  
+      await trx('article_tags').insert(tagEntries);
+    });
   };
   // Get article details for the rejection form
   exports.getArticleById = async (articleId) => {
@@ -195,7 +193,7 @@ exports.getAllArticles = async () => {
     )
     .join('Users', 'Articles.author_id', 'Users.id')
     .join('Categories', 'Articles.category_id', 'Categories.id')
-    .orderBy('Articles.created_at', 'asc');
+    .orderBy('Articles.created_at', 'desc');
 
   return articles.map(article => ({
     ...article,
@@ -204,73 +202,24 @@ exports.getAllArticles = async () => {
   }));
 };
 
-exports.getFeaturedArticles = async (page = 1) => {
-  try {
-    const limit = 5;
-    const offset = (page - 1) * limit;
+exports.getFeaturedArticles = async (page) => {
+  const limit = 10;
+  const offset = (page - 1) * limit;
+  
+  const articles = await db('Articles')
+    .select(
+      'Articles.*',
+      'Users.full_name AS author_name',
+      'Categories.name AS category_name'
+    )
+    .join('Users', 'Articles.author_id', 'Users.id')
+    .join('Categories', 'Articles.category_id', 'Categories.id')
+    .where('Articles.status', 'published')
+    .orderBy('Articles.publish_date', 'desc')
+    .limit(limit)
+    .offset(offset);
 
-    // Use pool.execute instead of db.execute
-    const [articles] = await pool.execute(`
-      SELECT 
-        a.id,
-        a.title,
-        a.abstract,
-        a.featured_image,
-        a.is_premium,
-        a.featured,
-        DATE_FORMAT(a.publish_date, '%d/%m/%Y') as publish_date,
-        c.name AS category_name,
-        u.full_name AS author_name,
-        COUNT(cm.id) as comments
-      FROM Articles a
-      LEFT JOIN Categories c ON a.category_id = c.id
-      LEFT JOIN Users u ON a.author_id = u.id
-      LEFT JOIN Comments cm ON a.id = cm.article_id
-      WHERE a.featured = 1 
-      AND a.status = 'published'
-      GROUP BY a.id
-      ORDER BY a.publish_date DESC
-      LIMIT ? OFFSET ?
-    `, [limit, offset]);
-
-    // Get total count for pagination
-    const [countResult] = await pool.execute(`
-      SELECT COUNT(*) as total 
-      FROM Articles 
-      WHERE featured = 1 
-      AND status = 'published'
-    `);
-
-    const total = countResult[0].total;
-    const totalPages = Math.ceil(total / limit);
-
-    // Create pagination object
-    const pagination = {
-      pages: [],
-      hasPrevPage: page > 1,
-      hasNextPage: page < totalPages,
-      prevPage: page - 1,
-      nextPage: page + 1,
-      currentPage: page,
-      totalPages: totalPages
-    };
-
-    // Generate page numbers
-    for (let i = 1; i <= totalPages; i++) {
-      pagination.pages.push({
-        pageNumber: i,
-        isCurrentPage: i === page
-      });
-    }
-
-    return {
-      articles,
-      pagination
-    };
-  } catch (error) {
-    console.error('Error in getFeaturedArticles:', error);
-    throw error;
-  }
+  return articles;
 };
 
 exports.getSidebarFeaturedArticles = async () => {

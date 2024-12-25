@@ -1,16 +1,19 @@
 const mysql = require('mysql2/promise');
 
-// Cấu hình kết nối database
 const pool = mysql.createPool({
-    host: 'localhost',       // Tên host của database (thường là 'localhost')
-    user: 'root',            // Tên người dùng MySQL
-    password: 'Hoanghoahong789', // Mật khẩu của bạn
-    database: 'sql_webnews_db',  // Tên database
-    waitForConnections: true, // Chờ nếu không có kết nối nào có sẵn
-    connectionLimit: 10,      // Số kết nối tối đa trong pool
-    queueLimit: 0             // Không giới hạn số lượng query trong hàng đợi
+    host: 'localhost',
+    user: 'root',
+    password: 'duong',
+    database: 'mysql_webnews_db',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    connectTimeout: 60000,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 0
 });
 
+// Kiểm tra kết nối
 (async () => {
     try {
         const connection = await pool.getConnection();
@@ -18,6 +21,7 @@ const pool = mysql.createPool({
         connection.release();
     } catch (err) {
         console.error('Database connection error:', err.message);
+        // Thử kết nối lại sau 5 giây
         setTimeout(() => {
             console.log('Attempting to reconnect...');
             pool.getConnection()

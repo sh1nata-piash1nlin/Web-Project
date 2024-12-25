@@ -25,25 +25,70 @@
 
 <!-- News Grid -->
 <div class="row">
-    {{#each featuredArticles}}
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <img src="/public/images/{{this.featured_image}}" class="card-img-top" alt="{{this.title}}">
-            <div class="card-body">
-                <h3 class="card-title" style="font-size: 1.2rem;">
-                    <a href="/article/{{this.id}}" class="text-dark text-decoration-none">
-                        {{this.title}}
-                    </a>
-                </h3>
-                <p class="card-text" style="font-size: 0.9rem;">{{this.abstract}}</p>
-                <div class="article-meta" style="font-size: 0.8rem;">
-                    <span>{{this.category_name}}</span> •
-                    <small>{{this.publish_date}}</small>
+    {{#if isSubscriber}}
+        {{!-- Giao diện cho Subscriber --}}
+        {{#each featuredArticles}}
+            <div class="{{#if is_premium}}premium-article{{else}}regular-article{{/if}}">
+                {{#if is_premium}}
+                <div class="premium-badge">
+                    <i class="bi bi-star-fill premium-star"></i>
+                    Premium
+                </div>
+                {{/if}}
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="/public/images/{{featured_image}}" 
+                             class="img-fluid rounded" 
+                             alt="{{title}}">
+                    </div>
+                    <div class="col-md-8">
+                        <h3 class="article-title">
+                            <a href="/subscriber/article/{{id}}" class="text-decoration-none">
+                                {{title}}
+                            </a>
+                        </h3>
+                        <p class="text-muted">{{abstract}}</p>
+                        <div class="article-meta">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i> {{publish_date}}
+                                <i class="bi bi-person ms-2"></i> {{author_name}}
+                                <i class="bi bi-folder ms-2"></i> {{category_name}}
+                            </small>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    {{/each}}
+        {{/each}}
+    {{else}}
+        {{!-- Giao diện cho User thường --}}
+        {{#each featuredArticles}}
+            <div class="regular-article">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="/public/images/{{featured_image}}" 
+                             class="img-fluid rounded" 
+                             alt="{{title}}">
+                    </div>
+                    <div class="col-md-8">
+                        <h3 class="article-title">
+                            <a href="/article/{{id}}" class="text-decoration-none">
+                                {{title}}
+                            </a>
+                        </h3>
+                        <p class="text-muted">{{abstract}}</p>
+                        <div class="article-meta">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i> {{publish_date}}
+                                <i class="bi bi-person ms-2"></i> {{author_name}}
+                                <i class="bi bi-folder ms-2"></i> {{category_name}}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    {{/if}}
 </div>
 
 <!-- Pagination -->
@@ -52,69 +97,66 @@
     <ul class="pagination justify-content-center">
         {{#if pagination.hasPrevPage}}
         <li class="page-item">
-            <a class="page-link" href="/?page={{pagination.prevPage}}">Trang trước</a>
+            {{#if isSubscriber}}
+                <a class="page-link" href="/subscriber?page={{pagination.prevPage}}">Trang trước</a>
+            {{else}}
+                <a class="page-link" href="/?page={{pagination.prevPage}}">Trang trước</a>
+            {{/if}}
         </li>
         {{/if}}
-
+        
         {{#each pagination.pages}}
         <li class="page-item {{#if this.isCurrentPage}}active{{/if}}">
-            <a class="page-link" href="/?page={{this.pageNumber}}">{{this.pageNumber}}</a>
+            {{#if ../isSubscriber}}
+                <a class="page-link" href="/subscriber?page={{this.pageNumber}}">{{this.pageNumber}}</a>
+            {{else}}
+                <a class="page-link" href="/?page={{this.pageNumber}}">{{this.pageNumber}}</a>
+            {{/if}}
         </li>
         {{/each}}
 
         {{#if pagination.hasNextPage}}
         <li class="page-item">
-            <a class="page-link" href="/?page={{pagination.nextPage}}">Trang sau</a>
+            {{#if isSubscriber}}
+                <a class="page-link" href="/subscriber?page={{pagination.nextPage}}">Trang sau</a>
+            {{else}}
+                <a class="page-link" href="/?page={{pagination.nextPage}}">Trang sau</a>
+            {{/if}}
         </li>
         {{/if}}
     </ul>
 </nav>
 {{/if}}
-=======
-<!-- Featured Article -->
-<div class="featured-article mb-4">
-    <img src="{{path_to_image}}" alt="Featured News" class="img-fluid mb-3">
-    <h1 class="article-title">
-        <a href="#" class="text-dark text-decoration-none">
-            {{featuredArticleTitle}}
-        </a>
-    </h1>
-    <p class="lead">{{featuredArticleLead}}</p>
-    <div class="comment-count">
-        <i class="bi bi-chat-dots"></i> {{featuredArticleComments}}
-    </div>
-</div>
 
-<!-- News Grid -->
-<div class="row">
-    {{#each newsGrid}}
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <img src="{{this.image}}" class="card-img-top" alt="News Image">
-            <div class="card-body">
-                <h3 class="card-title">
-                    <a href="{{this.link}}" class="text-dark text-decoration-none">
-                        {{this.title}}
-                    </a>
-                </h3>
-                <p class="card-text">{{this.shortDescription}}</p>
-                <div class="comment-count">
-                    <i class="bi bi-chat-dots"></i> {{this.comments}}
-                </div>
-            </div>
-        </div>
-    </div>
-    {{/each}}
-</div>
+<style>
+.premium-article {
+    position: relative;
+    border: 2px solid #ffd700;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.1);
+    background: linear-gradient(to right, #fff, #fffdf0);
+}
 
-<!-- Latest News List -->
-<div class="latest-news mt-4">
-    <h4 class="border-bottom pb-2">Tin mới nhất</h4>
-    <div class="list-group list-group-flush">
-        {{#each latestNews}}
-        <a href="{{this.link}}" class="list-group-item list-group-item-action">
-            {{this.title}}
-        </a>
-        {{/each}}
-    </div>
-</div>
+.premium-badge {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    background: #ffd700;
+    color: #000;
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.regular-article {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+</style>
